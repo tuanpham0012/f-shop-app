@@ -18,8 +18,8 @@ services:
   web-api:
     container_name: web-api
     build:
-      context: ./server/ShopAppApi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./server/ShopAppApi/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       #- ASPNETCORE_URLS=http://+:80
