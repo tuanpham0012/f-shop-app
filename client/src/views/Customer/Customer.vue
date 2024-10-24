@@ -143,7 +143,7 @@ onBeforeMount(async () => {
             </option> -->
           </select>
         </div>
-        <div class="d-flex align-items-center w-[250px] me-2"><select-search placeholder="-- Vui lòng Chọn --" :listData="customers" display="name" keyValue="id"></select-search></div>
+        <div class="w-[250px] me-2"><select-search placeholder="-- Vui lòng Chọn --" :listData="customers" display="name" keyValue="id"></select-search></div>
         
       </div>
       <button class="btn btn-primary" @click="toggleCreate()">
