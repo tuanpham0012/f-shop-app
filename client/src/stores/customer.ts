@@ -60,7 +60,7 @@ export const useCustomerStore = defineStore('customer', {
             return await _create(`${apiUrl}/customers`, data);
         },
         show(id:any){
-            _show(`${apiUrl}/Customer/${id}`).
+            _show(`${apiUrl}/customers/${id}`).
             then(res => {
                 this.customer = res.data
             })
