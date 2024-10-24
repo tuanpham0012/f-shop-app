@@ -94,6 +94,7 @@ const props = defineProps({
     },
     listData: {
         type: Array,
+        required: true,
         default: function () {
             return [];
         },

@@ -12,26 +12,23 @@ const query = reactive({
     pageSize: 30,
     search: "",
     page: 1,
-    status: null,
+    categoryId: null,
 });
 const showModal = ref(false);
 const showViewDetailModal = ref(false);
 const id = ref<any>(null);
-const products = computed(() => {
-    return productStore.$state.entries.data;
-});
-const currenPage = computed(() => {
-    return productStore.$state.entries.meta?.currentPage ?? query.page;
-});
-const pageSize = computed(() => {
-    return productStore.$state.entries.meta?.pageSize ?? query.pageSize;
-});
-const totalPages = computed(() => {
-    return productStore.$state.entries.meta?.totalPages ?? 1;
-});
-const totalCount = computed(() => {
-    return productStore.$state.entries.meta?.totalCount ?? 1;
-});
+
+const categories = computed( () => productStore.$state.categories.data)
+
+const products = computed(() => productStore.$state.entries.data);
+
+const currenPage = computed(() => productStore.$state.entries.meta?.currentPage ?? query.page);
+
+const pageSize = computed(() => productStore.$state.entries.meta?.pageSize ?? query.pageSize);
+
+const totalPages = computed(() => productStore.$state.entries.meta?.totalPages ?? 1);
+
+const totalCount = computed(() => productStore.$state.entries.meta?.totalCount ?? 1);
 const changePage = async (value: any) => {
     console.log(value);
 
@@ -87,9 +84,9 @@ watch(
 );
 
 watch(
-    () => query.status,
-    () => {
-        getListData();
+    () => query.categoryId,
+    async () => {
+        await getListData();
     }
 );
 
@@ -112,6 +109,7 @@ const statusTag = (status: number) => {
 
 onBeforeMount(async () => {
     await getListData();
+    await productStore.getListCategory({});
 });
 </script>
 <template>
@@ -135,21 +133,7 @@ onBeforeMount(async () => {
                         />
                     </div>
                 </div>
-                <div class="d-flex align-items-center w-auto me-2">
-                    <select class="form-select" v-model="query.status">
-                        <option selected :value="null">Chọn trạng thái</option>
-                        <option selected :value="0">Chưa kích hoạt</option>
-                        <option selected :value="1">Hoạt động</option>
-                        <option selected :value="2">Đã khoá</option>
-                        <!-- <option
-              v-for="(item, index) in props.statuses"
-              :key="index"
-              :value="index"
-            > @click="toggleShowModal()"
-              {{ item }}
-            </option> -->
-                    </select>
-                </div>
+                <div class="w-[250px] me-2"><select-search placeholder="-- Loại sản phẩm --" :listData="categories" display="name" keyValue="id" v-model="query.categoryId"></select-search></div>
             </div>
             <button class="btn btn-primary" @click="toggleCreate()">
                 <i class="feather icon-plus"></i>

@@ -7,6 +7,7 @@ namespace ShopAppApi.Request
 {
     public class ProductRequest : BaseRequest
     {
+        public long? CategoryId { get; set;} = null!;
     }
 
     public partial class StoreProductRequest

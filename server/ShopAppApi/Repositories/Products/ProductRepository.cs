@@ -139,6 +139,11 @@ namespace ShopAppApi.Repositories.Products
                     query = query.Include(include);
                 }
             }
+
+            if (request.CategoryId != null)
+            {
+                query = query.Where(q => q.CategoryId == request.CategoryId);
+            }
             return await PaginatedList<Product>.CreateAsync(query.AsNoTracking(), request.Page, request.PageSize);
         }
 

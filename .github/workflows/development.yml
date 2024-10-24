@@ -11,4 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.1
       - run: docker compose -f docker-compose.yml up -d --build
+      - run: docker image prune -f
       # - run: npm test
