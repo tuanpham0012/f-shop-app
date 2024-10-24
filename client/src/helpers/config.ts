@@ -9,7 +9,7 @@ switch (env) {
         apiUrl = `https://${import.meta.env.VITE_VUE_APP_DOMAIN_PROD}/api/v1`;
         break;
     case "development":
-        apiUrl = `http://${import.meta.env.VITE_VUE_APP_DOMAIN_DEV}/api/v1`;
+        apiUrl = `${window.location.hostname}:${import.meta.env.VITE_VUE_APP_PORT_DEV}/api/v1`;
         break;
     default:
         apiUrl = "http://localhost:5077/api/v1";
