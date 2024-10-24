@@ -3,7 +3,7 @@ export let apiUrl = "";
 const env = import.meta.env.VITE_VUE_APP_ENV;
 console.log(import.meta.env.VITE_VUE_APP_ENV);
 
-console.log(window.location.hostname);
+console.log(window.location.host);
 
 
 
@@ -12,7 +12,7 @@ switch (env) {
         apiUrl = `https://${import.meta.env.VITE_VUE_APP_DOMAIN_PROD}/api/v1`;
         break;
     case "development":
-        apiUrl = `${window.location.hostname}:${import.meta.env.VITE_VUE_APP_PORT_DEV}/api/v1`;
+        apiUrl = `${window.location.host}:${import.meta.env.VITE_VUE_APP_PORT_DEV}/api/v1`;
         break;
     default:
         apiUrl = "http://localhost:5077/api/v1";
