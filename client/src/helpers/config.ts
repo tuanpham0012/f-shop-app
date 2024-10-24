@@ -3,6 +3,9 @@ export let apiUrl = "";
 const env = import.meta.env.VITE_VUE_APP_ENV;
 console.log(import.meta.env.VITE_VUE_APP_ENV);
 
+console.log(window.location.hostname);
+
+
 
 switch (env) {
     case "production":
