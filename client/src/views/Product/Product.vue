@@ -115,7 +115,7 @@ onBeforeMount(async () => {
                             type="text"
                             class="form-control mb-lg-0 p-2"
                             id="customerCode"
-                            placeholder="Tìm kiếm(tên, email, sdt..)"
+                            placeholder="Tìm kiếm (tên sản phẩm)"
                             v-model="query.search"
                         />
                     </div>
