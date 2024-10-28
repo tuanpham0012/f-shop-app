@@ -5,11 +5,17 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-ubuntu:
     runs-on: [self-hosted, ubuntu-112]
-
+    name: Build Ubuntu
     steps:
       - uses: actions/checkout@v4.2.1
       - run: docker compose -f docker-compose.yml up -d --build
       - run: docker image prune -f -a
-      # - run: npm test
+  build-windows:
+    runs-on: [self-hosted]
+    name: Build Windows
+    steps:
+      - uses: actions/checkout@v4.2.1
+      - run: docker compose -f docker-compose.yml up -d --build
+      - run: docker image prune -f -a
