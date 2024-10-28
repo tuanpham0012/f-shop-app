@@ -94,19 +94,6 @@ const getListData = async () => {
     await productStore.getList(query);
 };
 
-const statusTag = (status: number) => {
-    switch (status) {
-        case 0:
-            return '<span class="badge bg-label-warning me-1">Chưa kích hoạt</span>';
-        case 1:
-            return '<span class="badge bg-label-success me-1">Hoạt động</span>';
-        case 2:
-            return '<span class="badge bg-label-primary me-1">Đã khoá</span>';
-        default:
-            break;
-    }
-};
-
 onBeforeMount(async () => {
     await getListData();
     await productStore.getListCategory({});
@@ -118,17 +105,17 @@ onBeforeMount(async () => {
         <div class="d-flex justify-content-between mx-3 my-2">
             <div class="d-flex">
                 <div class="d-flex align-items-center w-auto me-2">
-                    <div class="w-75px me-1">
+                    <!-- <div class="w-75px me-1">
                         <label for="customerCode" class="col-form-label"
                             >Tìm kiếm</label
                         >
-                    </div>
+                    </div> -->
                     <div class="w-100px ms-1">
                         <input
                             type="text"
                             class="form-control mb-lg-0 p-2"
                             id="customerCode"
-                            placeholder="Nhập tên, email, sdt.."
+                            placeholder="Tìm kiếm(tên, email, sdt..)"
                             v-model="query.search"
                         />
                     </div>
