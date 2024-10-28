@@ -12,9 +12,11 @@ namespace ShopAppApi.Request
 
     public partial class StoreProductRequest
     {
-        public string Name { get; set; } = null!;
+        [Required]
+        public string? Name { get; set; }
 
         public double Price { get; set; }
+        public int Stock { get; set; }
 
         public string? ImgThumb { get; set; }
 
@@ -24,7 +26,7 @@ namespace ShopAppApi.Request
 
         public string? Alias { get; set; }
         [Required]
-        public long CategoryId { get; set; }
+        public long? CategoryId { get; set; }
 
         public long? SupplierId { get; set; }
 
@@ -39,15 +41,11 @@ namespace ShopAppApi.Request
         [CodeUniqueAttribute("Options")]
         public string? Code { get; set; }
 
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         public byte Visual { get; set; }
 
         public byte Order { get; set; }
-
-        public DateTime? CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
 
         public virtual ICollection<OptionValuesRequest> OptionValues { get; set; } = [];
     }
@@ -60,29 +58,23 @@ namespace ShopAppApi.Request
         public string? Value { get; set; }
 
         public string? Label { get; set; }
-
-        public DateTime? CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
     }
     public class SkusRequest {
 
-        public string BarCode { get; set; } = null!;
+        public string? BarCode { get; set; } = null!;
 
+        [Required]
         public double Price { get; set; }
 
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; } = null!;
 
         public int Stock { get; set; }
-
-        public DateTime? CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
         public virtual ICollection<VariantRequest> Variants { get; set; } = [];
     }
 
     public class VariantRequest
     {
+        [Required]
         public string? Code { get; set; }
     }
 

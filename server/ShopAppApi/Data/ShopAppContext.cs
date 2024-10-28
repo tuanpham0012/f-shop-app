@@ -63,7 +63,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__carts__3213E83FEBA99E0C");
+            entity.HasKey(e => e.Id).HasName("PK__carts__3213E83F23033B86");
 
             entity.ToTable("carts");
 
@@ -99,7 +99,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__categori__3213E83F5B0A9517");
+            entity.HasKey(e => e.Id).HasName("PK__categori__3213E83F52DD8DC6");
 
             entity.ToTable("categories");
 
@@ -131,7 +131,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__customer__3213E83FBB41251A");
+            entity.HasKey(e => e.Id).HasName("PK__customer__3213E83F54C7B864");
 
             entity.ToTable("customers");
 
@@ -176,7 +176,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Discount>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__discount__3213E83FE65BD8D1");
+            entity.HasKey(e => e.Id).HasName("PK__discount__3213E83F21700C26");
 
             entity.ToTable("discounts");
 
@@ -208,7 +208,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<FailedJob>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__failed_j__3213E83FC2AF5B39");
+            entity.HasKey(e => e.Id).HasName("PK__failed_j__3213E83FA23259E3");
 
             entity.ToTable("failed_jobs");
 
@@ -230,7 +230,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Migration>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__migratio__3213E83FC95C6F2A");
+            entity.HasKey(e => e.Id).HasName("PK__migratio__3213E83F99A40055");
 
             entity.ToTable("migrations");
 
@@ -243,7 +243,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Option>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__options__3213E83F178DA779");
+            entity.HasKey(e => e.Id).HasName("PK__options__3213E83F4D2DB022");
 
             entity.ToTable("options");
 
@@ -278,7 +278,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<OptionValue>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__option_v__3213E83F989B962B");
+            entity.HasKey(e => e.Id).HasName("PK__option_v__3213E83FDC9A4BC9");
 
             entity.ToTable("option_values");
 
@@ -316,7 +316,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83FB50F6838");
+            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83FBC9EE30F");
 
             entity.ToTable("orders");
 
@@ -357,7 +357,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__order_de__3213E83F3462B3F4");
+            entity.HasKey(e => e.Id).HasName("PK__order_de__3213E83FB361689B");
 
             entity.ToTable("order_details");
 
@@ -413,7 +413,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<PersonalAccessToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__personal__3213E83F607BD3B1");
+            entity.HasKey(e => e.Id).HasName("PK__personal__3213E83FE0401F37");
 
             entity.ToTable("personal_access_tokens");
 
@@ -449,7 +449,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__products__3213E83F48B140DB");
+            entity.HasKey(e => e.Id).HasName("PK__products__3213E83FE5290008");
 
             entity.ToTable("products");
 
@@ -479,6 +479,9 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.Price)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("price");
+            entity.Property(e => e.Stock)
+                .HasDefaultValueSql("('0')")
+                .HasColumnName("stock");
             entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
             entity.Property(e => e.Unit)
                 .HasMaxLength(150)
@@ -489,7 +492,6 @@ public partial class ShopAppContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("products_category_id_foreign");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.Products)
@@ -499,7 +501,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<ProductComment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F92B15C90");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FB920CA5F");
 
             entity.ToTable("product_comments");
 
@@ -531,7 +533,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<ProductStatistic>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F49E5F7C8");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F38D498E9");
 
             entity.ToTable("product_statistics");
 
@@ -564,7 +566,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Sku>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__skus__3213E83FDE50B544");
+            entity.HasKey(e => e.Id).HasName("PK__skus__3213E83F3F8D8FBB");
 
             entity.ToTable("skus");
 
@@ -597,7 +599,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Supplier>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__supplier__3213E83FA0F5CB88");
+            entity.HasKey(e => e.Id).HasName("PK__supplier__3213E83F45AB5EA1");
 
             entity.ToTable("suppliers");
 
@@ -638,7 +640,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__users__3213E83F5AFAF7CF");
+            entity.HasKey(e => e.Id).HasName("PK__users__3213E83FC43CC692");
 
             entity.ToTable("users");
 
@@ -671,7 +673,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Variant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__variants__3213E83FBDC0EF06");
+            entity.HasKey(e => e.Id).HasName("PK__variants__3213E83FEA183B04");
 
             entity.ToTable("variants");
 

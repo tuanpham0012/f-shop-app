@@ -39,7 +39,8 @@ namespace ShopAppApi.Repositories.Products
                 };
                 _context.Add(entry);
                 await _context.SaveChangesAsync();
-
+                double minPrice = Double.MaxValue;
+                int maxStock = Int32.MinValue;
                 foreach (var option in product.Options)
                 {
                     var _option = new Option
@@ -68,8 +69,8 @@ namespace ShopAppApi.Repositories.Products
                             UpdatedAt = DateTime.UtcNow,
                         };
                         _context.Add(_value);
-                        await _context.SaveChangesAsync();
                     }
+                    await _context.SaveChangesAsync();
                 }
 
                 foreach (var sku in product.Skus)
@@ -83,7 +84,9 @@ namespace ShopAppApi.Repositories.Products
                         Stock = sku.Stock,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
+                        
                     };
+                    minPrice = sku.Price < minPrice ? sku.Price : minPrice;
                     _context.Add(_sku);
                     await _context.SaveChangesAsync();
 
@@ -102,9 +105,10 @@ namespace ShopAppApi.Repositories.Products
                                 UpdatedAt = DateTime.UtcNow,
                             };
                             _context.Add(_variant);
-                            await _context.SaveChangesAsync();
+                            
                         }
                     }
+                    await _context.SaveChangesAsync();
                 }
                 transaction.Commit();
                 //return entry;

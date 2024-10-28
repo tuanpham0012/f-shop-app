@@ -304,10 +304,10 @@
                     <!-- Tạo biến thể -->
                     <div class="col-sm-12">
                         <button
-                            class="btn btn-secondary"
-                            @click="generateSKUs()"
+                            class="btn btn-info"
+                            @click="generateSKUs()" v-if="product.options.length > 0"
                         >
-                            Tạo
+                            Tạo biến thể
                         </button>
 
                         <div
@@ -480,7 +480,7 @@ const optionErrors = ref<Array<String>>([]);
 
 const defaultColor = ref("#ffffff");
 
-const editing = ref(true)
+const editing = ref(false)
 
 const fillAll = reactive({
     price: 0,
@@ -669,11 +669,13 @@ const generateCombinations = (arrays: any) => {
 };
 
 const save = () => {
-    if(editing){
+    console.log(editing.value);
+    
+    if(editing.value){
         return
     }
     if (product.value.id == null) {
-        productStore.create(product).then( res => {
+        productStore.create(product.value).then( res => {
             console.log(res);
             successMessage(res.data?.message ?? 'Thêm mới thành công!');
             emits('close', true)

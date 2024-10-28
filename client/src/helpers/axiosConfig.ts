@@ -12,11 +12,11 @@ const http = axios.create(axiosDefaults)
     //register interceptor like this
 http.interceptors.request.use(
     (response) => {
-        if(response.headers.loading){
-            document.body.classList.add("loading");
-        }else{
-            document.body.classList.remove("loading");
-        }
+        // if(response.headers.loading){
+        //     document.body.classList.add("loading");
+        // }else{
+        //     document.body.classList.remove("loading");
+        // }
         return response;
     },
     (error) => {

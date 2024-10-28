@@ -13,6 +13,8 @@ public partial class Product
 
     public double Price { get; set; }
 
+    public int Stock { get; set; }
+
     public string? ImgThumb { get; set; }
 
     public string? Unit { get; set; }
@@ -25,7 +27,7 @@ public partial class Product
 
     public long? SupplierId { get; set; }
 
-    public long CategoryId { get; set; }
+    public long? CategoryId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -33,7 +35,7 @@ public partial class Product
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; }
 
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 

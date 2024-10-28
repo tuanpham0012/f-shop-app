@@ -383,6 +383,7 @@ onMounted(() => {
 .box {
     position: relative;
     width: 100%;
+    height: 40px;
     .disabled {
         // background-color: #e7e3e3 !important;
         pointer-events: none;
