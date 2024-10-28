@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: [win-server, docker-app]
+    runs-on: [self-hosted]
 
     steps:
       - uses: actions/checkout@v4.2.1
