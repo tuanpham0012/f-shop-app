@@ -135,7 +135,7 @@ onBeforeMount(async () => {
                         <th>STT</th>
                         <th>Tên sản phẩm</th>
                         <th>Phân loại</th>
-                        <th>Nguồn</th>
+                        <th>NCC</th>
                         <th>Giá bán</th>
                         <th>Đơn vị</th>
                         <th>Actions</th>
