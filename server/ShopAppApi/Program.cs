@@ -1,8 +1,13 @@
+using Coravel;
+using Coravel.Scheduling.Schedule.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using ShopAppApi;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
+using ShopAppApi.Job;
 using ShopAppApi.Middlewares;
+using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Repositories.RepoCustomer;
 using System.Text.Json.Serialization;
@@ -28,7 +33,11 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 
+builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
+
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddHostedService<Worker>();
 
 builder.Services.AddCors(options =>
 {
@@ -45,8 +54,21 @@ builder.Services.AddControllers().AddJsonOptions(x =>
       x.JsonSerializerOptions.WriteIndented = true;
   });
 
+  var influxUrl = $"{builder.Configuration["InfluxSettings:Host"]}?org={builder.Configuration["InfluxSettings:Org"]}&bucket={builder.Configuration["InfluxSettings:Bucket"]}&token={builder.Configuration["InfluxSettings:Token"]}";
+builder.Services.AddHealthChecks()
+    .AddInfluxDB(influxUrl, name: "influx-database", tags: ["influxdb"]);
+
+builder.Services.AddScheduler();
+builder.Services.AddTransient<HealthCheckJobInvocable>();
+
+
 
 var app = builder.Build();
+
+app.Services.UseScheduler(scheduler =>
+{
+    scheduler.Schedule<HealthCheckJobInvocable>().EveryThirtySeconds().PreventOverlapping(nameof(HealthCheckJobInvocable));
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -55,6 +77,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     //app.UseHttpsRedirection();
 }
+
 
 app.UseCors(MyAllowSpecificOrigins);
 

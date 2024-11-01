@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopAppApi.Data;
+using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using System.Diagnostics;
+using System;
 
 namespace ShopAppApi.Controllers.Admin
 {
     [ApiController]
     [Route("products")]
-    public class ProductController : Controller
+    public class ProductController(IProductRepository _repo) : Controller
     {
-        private readonly IProductRepository _repo;
-
-        public ProductController(IProductRepository repo) { _repo = repo; }
 
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery]ProductRequest request)
         {
             var entries = await _repo.GetAll(request, ["Options", "Options.OptionValues", "Skus", "Skus.Variants", "Category", "Supplier"]);
+            
             return Ok(new ResponsePaginatedCollection<Product>(entries));
         }
 
