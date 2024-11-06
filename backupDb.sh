@@ -8,7 +8,7 @@ HOSTFILEPATH=$5
 MSSQL_TOOL=mssql-tools
 
 echo "Kiểm tra mssql-tools"
-docker exec -i $CONTAINER_NAME sh -c "test -f /opt/mssql-tools18"
+docker exec -i $CONTAINER_NAME sh -c "test -f /opt/mssql-tools18/bin/sqlcmd"
 file_exists=$?
 if [ $file_exists -eq 0 ]; then
   echo "MSSQL_TOOL : mssql-tools18"
