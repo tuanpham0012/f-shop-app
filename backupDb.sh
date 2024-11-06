@@ -4,7 +4,16 @@ CONTAINER_NAME=$1
 DATABASE_NAME=$2
 DATABASE_USERNAME=$3
 DATABASE_PASSWORD=$4
-HOSTFILEPATH=$5 #/backups/sql-server/ss456
+HOSTFILEPATH=$5
+MSSQL_TOOL=mssql-tools
+
+echo "Kiểm tra mssql-tools"
+docker exec -i $CONTAINER_NAME sh -c "test -f /opt/mssql-tools18"
+file_exists=$?
+if [ $file_exists -eq 0 ]; then
+  echo "MSSQL_TOOL : mssql-tools18"
+  MSSQL_TOOL=mssql-tools18
+fi
 
 echo "Tạo tên file backup với thời gian hiện tại"
 DateTime=$(date +'%Y_%m_%d_%H_%M_%S')
@@ -16,7 +25,7 @@ mkdir -p $HOSTFILEPATH
 
 echo ""
 echo "Bắt đầu backup database '$DATABASE_NAME' trên docker_container '$CONTAINER_NAME' với tên file '$FileName'"
-docker exec -i $CONTAINER_NAME /opt/mssql-tools18/bin/sqlcmd -S localhost -U $DATABASE_USERNAME -P $DATABASE_PASSWORD -C -Q "BACKUP DATABASE [$DATABASE_NAME] TO DISK = N'/var/opt/mssql/backup/$FileName.bak' WITH COMPRESSION, NOINIT, NAME = '$DATABASE_NAME-full', SKIP, NOREWIND, NOUNLOAD, STATS = 5"
+docker exec -i $CONTAINER_NAME /opt/$MSSQL_TOOL/bin/sqlcmd -S localhost -U $DATABASE_USERNAME -P $DATABASE_PASSWORD -Q "BACKUP DATABASE [$DATABASE_NAME] TO DISK = N'/var/opt/mssql/backup/$FileName.bak' WITH COMPRESSION, NOINIT, NAME = '$DATABASE_NAME-full', SKIP, NOREWIND, NOUNLOAD, STATS = 5"
 
 echo ""
 echo "Sao chep file backup từ docker_container về thư mục lưu trữ file backup trên server"
