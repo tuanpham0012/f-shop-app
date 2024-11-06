@@ -5,14 +5,14 @@ DATABASE_NAME=$2
 DATABASE_USERNAME=$3
 DATABASE_PASSWORD=$4
 HOSTFILEPATH=$5
-MSSQL_TOOL=mssql-tools
+MSSQL_TOOL="mssql-tools"
 
 echo "Kiểm tra mssql-tools"
 docker exec -i $CONTAINER_NAME sh -c "test -f /opt/mssql-tools18/bin/sqlcmd"
 file_exists=$?
 if [ $file_exists -eq 0 ]; then
   echo "MSSQL_TOOL : mssql-tools18"
-  MSSQL_TOOL=mssql-tools18
+  MSSQL_TOOL="mssql-tools18"
 fi
 
 echo "Tạo tên file backup với thời gian hiện tại"
