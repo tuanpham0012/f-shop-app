@@ -25,7 +25,7 @@ mkdir -p $HOSTFILEPATH
 
 echo ""
 echo "Bắt đầu backup database '$DATABASE_NAME' trên docker_container '$CONTAINER_NAME' với tên file '$FileName'"
-docker exec -i $CONTAINER_NAME /opt/$MSSQL_TOOL/bin/sqlcmd -S localhost -U $DATABASE_USERNAME -P -C $DATABASE_PASSWORD -Q "BACKUP DATABASE [$DATABASE_NAME] TO DISK = N'/var/opt/mssql/backup/$FileName.bak' WITH COMPRESSION, NOINIT, NAME = '$DATABASE_NAME-full', SKIP, NOREWIND, NOUNLOAD, STATS = 5"
+docker exec -i $CONTAINER_NAME /opt/$MSSQL_TOOL/bin/sqlcmd -S localhost -U $DATABASE_USERNAME -P $DATABASE_PASSWORD -Q -C "BACKUP DATABASE [$DATABASE_NAME] TO DISK = N'/var/opt/mssql/backup/$FileName.bak' WITH COMPRESSION, NOINIT, NAME = '$DATABASE_NAME-full', SKIP, NOREWIND, NOUNLOAD, STATS = 5"
 
 echo ""
 echo "Sao chep file backup từ docker_container về thư mục lưu trữ file backup trên server"
