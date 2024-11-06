@@ -1,10 +1,10 @@
 #--------Cơ chế backup DATABASE ----------------
 
-CONTAINER_NAME=$s1
-DATABASE_NAME=$s2
-DATABASE_USERNAME=$s3
-DATABASE_PASSWORD=$s4
-HOSTFILEPATH=$s1 #/backups/sql-server/
+CONTAINER_NAME=$1
+DATABASE_NAME=$2
+DATABASE_USERNAME=$3
+DATABASE_PASSWORD=$4
+HOSTFILEPATH=$5 #/backups/sql-server/
 
 echo "Tạo tên file backup với thời gian hiện tại"
 DateTime=$(date +'%Y_%m_%d_%H_%M_%S')
