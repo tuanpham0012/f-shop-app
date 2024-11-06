@@ -1,10 +1,10 @@
 #--------Cơ chế backup DATABASE ----------------
 
-CONTAINER_NAME=sqlserver
-DATABASE_NAME=shop_app
-DATABASE_USERNAME=sa
-DATABASE_PASSWORD=Anhem123@
-HOSTFILEPATH=/backups/sql-server/
+CONTAINER_NAME=$s1
+DATABASE_NAME=$s2
+DATABASE_USERNAME=$s3
+DATABASE_PASSWORD=$s4
+HOSTFILEPATH=$s5
 
 echo "Tạo tên file backup với thời gian hiện tại"
 DateTime=$(date +'%Y_%m_%d')
