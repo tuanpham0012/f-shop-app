@@ -12,7 +12,7 @@ services:
     restart: always
     hostname: sqlserver
     networks:
-      - database
+      - th-network
 
   web-api:
     container_name: web-api
@@ -29,7 +29,9 @@ services:
       - sqlserver
     restart: always
     networks:
-      - database
+      - th-network
+    # deploy:
+    #   replicas: 3
 
   web-app:
     container_name: web-app
@@ -62,7 +64,7 @@ services:
       - DOCKER_INFLUXDB_INIT_RETENTION=10w
       - INFLUXD_SESSION_LENGTH=60000 
     networks:
-      - database
+      - th-network
 
   aspire-dashboard:
     image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6
@@ -73,7 +75,7 @@ services:
     environment:
       - TZ=Asia/Ho_Chi_Minh
     networks:
-      - database
+      - th-network
   mongodb:
     container_name: mongodb
     image: mongo:latest
@@ -88,11 +90,12 @@ services:
     volumes:
       - mongodatabase:/data
     networks:
-      - database
+      - th-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
 networks:
-  database:
+  th-network:
+    # external: true
 volumes:
   sql_data:
     name: sql_data

@@ -12,7 +12,7 @@ docker exec $CONTAINER_NAME mkdir -p $MONGO_VOLUME_PATH/restores
 
 echo ""
 echo "Sao chép file backup từ $RESTORE_FILE_NAME đến docker_container '$CONTAINER_NAME'. Chú ý: container phải đã được chạy!"
-$CopyFilePath="${RESTORE_FILE_PATH}/${RESTORE_FILE_NAME}"
+CopyFilePath="${RESTORE_FILE_PATH}/${RESTORE_FILE_NAME}"
 docker cp $CopyFilePath  $CONTAINER_NAME':'$MONGO_VOLUME_PATH/restores/$RESTORE_FILE_NAME
 
 echo ""

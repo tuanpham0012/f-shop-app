@@ -15,7 +15,6 @@ echo ""
 echo "Tạo thư mục lưu trữ file backup trên server"
 mkdir -p $HOST_FILE_PATH
 
-
 echo ""
 echo "Bắt đầu backup database '$DATABASE_NAME' trên docker_container '$CONTAINER_NAME' với tên file '$FILE_NAME'"
 
@@ -23,7 +22,7 @@ docker exec -i $CONTAINER_NAME /usr/bin/mongodump --username $MONGO_INITDB_ROOT_
 
 echo ""
 echo "Sao chep file backup từ docker_container về thư mục lưu trữ file backup trên server"
-docker cp $CONTAINER_NAME':'$MONGO_VOLUME_PATH/$FILE_NAME.dump $HOST_FILE_PATH\$FILE_NAME.dump
+docker cp $CONTAINER_NAME':'$MONGO_VOLUME_PATH/$FILE_NAME.dump $HOST_FILE_PATH/$FILE_NAME.dump
 
 echo ""
 echo "Xoá file backup trên docker_container sau khi backup xong"
