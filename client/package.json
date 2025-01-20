@@ -13,15 +13,17 @@
     "deploy": "sh deploy.sh"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.2",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.7.7",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "pinia": "^2.1.7",
-    "sweetalert2": "^11.14.1",
+    "sweetalert2": "^11.6.13",
     "uuid": "^10.0.0",
     "vue": "^3.4.29",
-    "vue-router": "^4.3.3",
-    "@tailwindcss/forms": "^0.5.2"
+    "vue-advanced-cropper": "^2.8.9",
+    "vue-router": "^4.3.3"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",

@@ -12,95 +12,33 @@
             <div class="row gx-5" v-if="product">
                 <div class="col-lg-6">
                     <div
-                        class="border rounded-4 mb-3 d-flex justify-content-center"
+                        class="border rounded-4 mb-3 d-flex justify-content-center w-[525px] h-[525px] bg-gray-300 d-flex justify-center items-center"
                     >
                         <a
                             data-fslightbox="mygalley"
                             class="rounded-4"
                             target="_blank"
                             data-type="image"
-                            href="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big.webp"
                         >
                             <img
-                                style="
-                                    max-width: 100%;
-                                    max-height: 100vh;
-                                    margin: auto;
-                                "
-                                class="rounded-4 fit"
-                                src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big.webp"
+                                class="w-100 h-100 object-contain"
+                                loading='lazy'
+                                :src="imgSelect? viewFile(imgSelect) : viewFile(product.images[indexImg])"
                             />
                         </a>
                     </div>
                     <div class="d-flex justify-content-center mb-3">
                         <a
                             data-fslightbox="mygalley"
-                            class="border mx-1 rounded-2 item-thumb"
-                            target="_blank"
-                            data-type="image"
-                            href="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big1.webp"
+                            class="d-flex justify-center items-center border mx-1 p-1 rounded-2 item-thumb w-[60px] h-[60px] box-content cursor-pointer"
+                            v-for="(img, index) in product.images" :key="index"
+                            @click="() => {indexImg = index; imgSelect = null}"
+                            :class="{ 'border-info' : index == indexImg}"
                         >
                             <img
-                                width="60"
-                                height="60"
-                                class="rounded-2"
-                                src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big1.webp"
-                            />
-                        </a>
-                        <a
-                            data-fslightbox="mygalley"
-                            class="border mx-1 rounded-2 item-thumb"
-                            target="_blank"
-                            data-type="image"
-                            href="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big2.webp"
-                        >
-                            <img
-                                width="60"
-                                height="60"
-                                class="rounded-2"
-                                src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big2.webp"
-                            />
-                        </a>
-                        <a
-                            data-fslightbox="mygalley"
-                            class="border mx-1 rounded-2 item-thumb"
-                            target="_blank"
-                            data-type="image"
-                            href="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big3.webp"
-                        >
-                            <img
-                                width="60"
-                                height="60"
-                                class="rounded-2"
-                                src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big3.webp"
-                            />
-                        </a>
-                        <a
-                            data-fslightbox="mygalley"
-                            class="border mx-1 rounded-2 item-thumb"
-                            target="_blank"
-                            data-type="image"
-                            href="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big4.webp"
-                        >
-                            <img
-                                width="60"
-                                height="60"
-                                class="rounded-2"
-                                src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big4.webp"
-                            />
-                        </a>
-                        <a
-                            data-fslightbox="mygalley"
-                            class="border mx-1 rounded-2 item-thumb"
-                            target="_blank"
-                            data-type="image"
-                            href="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big.webp"
-                        >
-                            <img
-                                width="60"
-                                height="60"
-                                class="rounded-2"
-                                src="https://mdbcdn.b-cdn.net/img/bootstrap-ecommerce/items/detail1/big.webp"
+                                class="w-100 h-100 object-contain"
+                                loading='lazy'
+                                :src="viewFile(img)"
                             />
                         </a>
                     </div>
@@ -152,14 +90,14 @@
                                     >
                                 </div>
                                 <div class="d-flex gap-1 col-md-9">
-                                    <a
-                                        class="btn btn- btn-outline-secondary"
+                                    <div
+                                        class="p-[4px] mx-2 border rounded-md cursor-pointer text-gray-800 font-semibold"
                                         v-for="(
                                             value, j
                                         ) in option.optionValues"
                                         :key="j"
                                         :class="{
-                                            'btn-outline-danger':
+                                            'border-info shadow-2xl shadow-cyan-800/30':
                                                 selected.findIndex(
                                                     (x) =>
                                                         x.optionValueId ==
@@ -168,25 +106,42 @@
                                         }"
                                         @click="selectOption(value)"
                                     >
-                                        {{ value.label }}
-                                    </a>
+                                        <div
+                                            v-if="option.visual == 1"
+                                            :class="`w-[25px] h-[25px]`"
+                                            :style="`background-color: ${value.value}`"
+                                        ></div>
+                                        <div v-else>
+                                            <a
+                                                class="p-2"
+                                            >
+                                                {{ value.label }}
+                                            </a>
+                                        </div>
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="container my-3">
+                    <h4>Chi tiết sản phẩm</h4>
+                    <div class="description" v-html="product.description"></div>
+                    </div>
                 <div class="container">
+                    <h4>Danh sách biến thể</h4>
                     <table class="table">
                         <thead class="table-light">
                             <tr>
                                 <th>STT</th>
                                 <th>Thuộc tính</th>
                                 <th>Giá bán</th>
-                                <th>Số lượng</th>
+                                <!-- <th>Số lượng</th> -->
                                 <th>Mã hàng</th>
                             </tr>
                         </thead>
-                        <tbody class="table-border-bottom-0">
+                        <tbody class="">
                             <tr
                                 v-for="(item, index) in product.skus"
                                 :key="index"
@@ -207,9 +162,9 @@
                                 >
                                     {{ displayPrice(item.price) + " đ" }}
                                 </td>
-                                <td class="w-[150px]">
+                                <!-- <td class="w-[150px]">
                                     {{ item.stock }}
-                                </td>
+                                </td> -->
 
                                 <td>
                                     {{ item.barCode }}
@@ -240,6 +195,7 @@ import { useProductStore } from "@/stores/product";
 import { errorMessage } from "@/helpers/toast";
 import { isNumber } from "@/helpers/helpers";
 import { displayPrice } from "@/services/utils";
+import { viewFile } from "@/helpers/helpers";
 const props = defineProps({
     id: {
         type: [Number, String as () => string | null],
@@ -248,12 +204,15 @@ const props = defineProps({
     },
 });
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(["close"]);
 
 const productStore = useProductStore();
 
 const selected = ref<any>([]);
 const skuSelect = ref<any>(null);
+
+const indexImg = ref(0)
+const imgSelect = ref(null)
 
 const selectOption = (value: any) => {
     skuSelect.value = null;
@@ -271,18 +230,17 @@ const selectOption = (value: any) => {
         selected.value.splice(index, 1);
     }
     if (oldValue == value.id) {
+        imgSelect.value = null
         return;
     }
-
+    imgSelect.value = value.image
     selected.value.push(item);
 
     product.value.skus.every((sku: any) => {
         const check = onlyInLeft(sku.variants, selected.value, isSameUser);
-        console.log(check);
 
         if (check.length == 0) {
             skuSelect.value = sku;
-            console.log(skuSelect.value);
             return false;
         }
         return true;
@@ -308,4 +266,8 @@ onBeforeMount(async () => {
     await productStore.show(props.id);
 });
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.description > * {
+    all: unset !important
+}
+</style>

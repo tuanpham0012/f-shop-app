@@ -8,28 +8,28 @@ services:
     ports:
       - "1434:1433"
     volumes:
-      - sql_data:/var/opt/mssql
+      - d:/volumes/shop_app/mssql/data:/var/opt/mssql/data
     restart: always
     hostname: sqlserver
     networks:
-      - th-network
+      - qipf-network
 
   web-api:
-    container_name: web-api
+    # container_name: web-api
     build:
       context: .
-      dockerfile: ./server/ShopAppApi/Dockerfile
+      dockerfile: ./server/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       #- ASPNETCORE_URLS=http://+:80
       - "ConnectionStrings__DockerData=Server=sqlserver;Database=shop_app;User Id=sa;Password=Anhem123@;TrustServerCertificate=true"
-    ports:
-      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
     depends_on:
       - sqlserver
     restart: always
     networks:
-      - th-network
+      - qipf-network
     # deploy:
     #   replicas: 3
 
@@ -42,64 +42,59 @@ services:
         - VITE_VUE_APP_ENV=development
     environment:
       - VITE_VUE_APP_ENV=development
-    ports:
-      - "3000:80"
+    # ports:
+    #   - "3000:80"
     restart: always
+    networks:
+      - qipf-network
 
-  influxdb:
-    image: influxdb:latest
-    restart: always
-    ports:
-      - 8086:8086
-    volumes:
-      - influxdb:/var/lib/influxdb2
-    environment:
-      - TZ=Asia/Ho_Chi_Minh
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=influx
-      - DOCKER_INFLUXDB_INIT_PASSWORD=Anhem123@
-      - DOCKER_INFLUXDB_INIT_ORG=th-org
-      - DOCKER_INFLUXDB_INIT_BUCKET=metrics
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=influxdbtoken
-      - DOCKER_INFLUXDB_INIT_RETENTION=10w
-      - INFLUXD_SESSION_LENGTH=60000 
-    networks:
-      - th-network
+  # influxdb:
+  #   image: influxdb:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8086:8086
+  #   volumes:
+  #     - influxdb:/var/lib/influxdb2
+  #   environment:
+  #     - TZ=Asia/Ho_Chi_Minh
+  #     - DOCKER_INFLUXDB_INIT_MODE=setup
+  #     - DOCKER_INFLUXDB_INIT_USERNAME=influx
+  #     - DOCKER_INFLUXDB_INIT_PASSWORD=Anhem123@
+  #     - DOCKER_INFLUXDB_INIT_ORG=th-org
+  #     - DOCKER_INFLUXDB_INIT_BUCKET=metrics
+  #     - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=influxdbtoken
+  #     - DOCKER_INFLUXDB_INIT_RETENTION=10w
+  #     - INFLUXD_SESSION_LENGTH=60000 
+  #   networks:
+  #     - qipf-network
 
-  aspire-dashboard:
-    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6
-    restart: always
-    ports:
-      - 8386:18888
-      - 4317:18889
-    environment:
-      - TZ=Asia/Ho_Chi_Minh
-    networks:
-      - th-network
-  mongodb:
-    container_name: mongodb
-    image: mongo:latest
-    restart: always
-    ports:
-      - 61111:27017
-    environment:
-      - MONGO_INITDB_DATABASE=TestDb
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=Anhem123@
-      - TZ=Asia/Ho_Chi_Minh
-    volumes:
-      - mongodatabase:/data
-    networks:
-      - th-network
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+  # aspire-dashboard:
+  #   image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:8.0.0-preview.6
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8386:18888
+  #     - 4317:18889
+  #   environment:
+  #     - TZ=Asia/Ho_Chi_Minh
+  #   networks:
+  #     - qipf-network
+  # mongodb:
+  #   container_name: mongodb
+  #   image: mongo:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 61111:27017
+  #   environment:
+  #     - MONGO_INITDB_DATABASE=TestDb
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=Anhem123@
+  #     - TZ=Asia/Ho_Chi_Minh
+  #   volumes:
+  #     - mongodatabase:/data
+  #   networks:
+  #     - qipf-network
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
 networks:
-  th-network:
-    # external: true
-volumes:
-  sql_data:
-    name: sql_data
-  influxdb:
-    name: influxdb
-  mongodatabase:
-    name: mongodatabase
+  qipf-network:
+    external: true

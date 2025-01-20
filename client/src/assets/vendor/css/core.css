@@ -2143,9 +2143,10 @@ progress {
 }
 .form-label {
   margin-bottom: 0.5rem;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #566a7f;
+  letter-spacing: inherit;
 }
 
 .col-form-label {
@@ -7604,12 +7605,12 @@ button:focus {
   font-size: 1.125rem;
 }
 
-.form-label,
+/* .form-label,
 .col-form-label {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: inherit;
-}
+} */
 
 .form-label-lg {
   font-size: 1rem;
@@ -8962,9 +8963,9 @@ button.list-group-item-gray.active {
   z-index: 5 !important;
 }
 
-.border {
+/* .border {
   border: 1px solid #d9dee3 !important;
-}
+} */
 
 .border-0 {
   border: 0 !important;

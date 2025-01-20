@@ -7,7 +7,7 @@ import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
 
 const customerStore = useCustomerStore();
 const query = reactive({
-  pageSize: 30,
+  pageSize: 25,
   search: "",
   page: 1,
   status: null,

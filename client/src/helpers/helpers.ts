@@ -1,3 +1,5 @@
+import { apiUrl } from "@/helpers/config";
+
 export const printfValueArray = (arr: any) => {
     let result = "";
     for (let i = 0; i < arr.length; i++) {
@@ -6,12 +8,12 @@ export const printfValueArray = (arr: any) => {
     return result;
 };
 
-export const randomPassword = (length = 8) => {
+export const randomPassword = (length = 8, symbol = true, lowercase = true) => {
     var c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     var charset =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    var n = charset.length;
-    var punctuation = "!@#$%&";
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    charset = lowercase ? charset + 'abcdefghijklmnopqrstuvwxyz' : charset
+    var punctuation = symbol ? '!@#$%&' : '';
     var retVal = c.charAt(Math.floor(Math.random() * c.length));
     for (var i = 0; i < length - 2; ++i) {
         retVal += charset.charAt(Math.floor(Math.random() * charset.length));
@@ -30,3 +32,12 @@ export const isNumber = (evt:any) => {
     }
     return true;
 };
+
+export const viewFile = (link:string) => {
+    if(!link)
+        return 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
+    if(link && link.length < 250){
+        return `${apiUrl}/files/download/${link}`
+    }
+    return link
+}

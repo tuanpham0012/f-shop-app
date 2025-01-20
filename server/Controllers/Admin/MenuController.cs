@@ -1,0 +1,80 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using ShopAppApi.Data;
+using ShopAppApi.Repositories.Menus;
+using ShopAppApi.Request;
+using ShopAppApi.Response;
+
+namespace ShopAppApi.Controllers.Admin
+{
+    [ApiController]
+    [Route("menus")]
+    public class MenuController(IMenuRepository repository) : Controller
+    {
+        private readonly IMenuRepository _repo = repository;
+        private readonly Dictionary<string, int> menuType = new()
+        {
+            {"admin", 1}, {"user", 2}
+        };
+
+        [HttpGet("get-tree")]
+        public async Task<IActionResult> GetTree([FromQuery(Name = "type")] string? type)
+        {
+            var mnType = type != null && menuType.ContainsKey(type) ? menuType[type] : 0;
+            var entries = await _repo.GetAll();
+            var tree = _repo.BuildTree(entries);
+
+            return Ok(new ResponseCollection<MenuTree>(mnType > 0 ? tree.Where(x => x.Id == mnType).First().Children : tree));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var entries = await _repo.GetAll();
+            var tree = _repo.BuildTree(entries);
+
+            return Ok(new ResponseCollection<MenuTree>(tree));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Store(StoreMenuRequest menu)
+        {
+            try
+            {
+                await _repo.Create(menu);
+                return Ok(new SuccessResponse(200, "Thêm mới thành công"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> Show(long Id)
+        {
+            try
+            {
+                var entry = await _repo.Show(Id);
+                return Ok(new ResponseOne<Menu>(entry));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponse(400,ex.Message));
+            }
+        }
+
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> Update(long Id, UpdateMenuRequest menu)
+        {
+            try
+            {
+                await _repo.Update(Id, menu);
+                return Ok(new SuccessResponse(200, "Cập nhật thành công"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponse(422, ex.Message, ex.ToString()));
+            }
+        }
+    }
+}

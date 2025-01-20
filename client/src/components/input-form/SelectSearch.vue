@@ -11,23 +11,24 @@
                 @click="toggleShow()"
                 :class="{ focus: showList == true }"
             >
-                <span
-                    class="content"
-                    style="white-space: nowrap"
-                    >{{
-                        dataSelect != null && props.display in dataSelect
-                            ? dataSelect[props.display]
-                            : props.placeholder
-                    }}</span
-                >
+                <span class="content" style="white-space: nowrap">{{
+                    dataSelect != null && props.display in dataSelect
+                        ? dataSelect[props.display]
+                        : props.placeholder
+                }}</span>
                 <span class="icon" v-if="!disabled"
                     ><i class="fa-solid fa-chevron-right fs-8 text-gray-600"></i
                 ></span>
             </div>
+
             <div
                 class="options-container"
                 v-if="showList"
-                :style="{ top: top + 'px', left: left + 'px', minWidth: maxWidth + 'px' }"
+                :style="{
+                    top: top + 'px',
+                    left: left + 'px',
+                    minWidth: maxWidth + 'px',
+                }"
             >
                 <div class="search-box">
                     <input
@@ -39,9 +40,16 @@
                 <div class="list">
                     <div
                         class="option"
+                        :class="{
+                            active: props.modelValue == null,
+                        }"
                         id="1"
                         @click="setDataSelect(null)"
-                        v-if="listData && listData.length > 0"
+                        v-if="
+                            listData &&
+                            listData.length > 0 &&
+                            !props.firstSelected
+                        "
                     >
                         {{ props.placeholder }}
                     </div>
@@ -80,6 +88,10 @@ import { removeVietnameseTones } from "@/services/utils";
 import { storeToRefs } from "pinia";
 
 const props = defineProps({
+    firstSelected: {
+        type: Boolean,
+        default: false,
+    },
     placeholder: {
         type: String,
         default: "--Tất cả--",
@@ -243,7 +255,7 @@ const position = () => {
         }
         left.value = rect.left;
         maxWidth.value = elem.offsetWidth;
-        minWidth.value = elem.offsetWidth
+        minWidth.value = elem.offsetWidth;
         showList.value = false;
     }
 };
@@ -392,6 +404,21 @@ onMounted(() => {
             background-color: rgb(230, 230, 230) !important;
             color: #ffffff !important;
         }
+    }
+}
+::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+::-webkit-scrollbar-track {
+    border-radius: 14px;
+    background-color: var(--bs-white) !important;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #8592a38f !important;
+    border-radius: 14px;
+    &:hover {
+        background-color: var(--bs-secondary) !important;
     }
 }
 </style>

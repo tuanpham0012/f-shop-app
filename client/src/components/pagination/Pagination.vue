@@ -17,10 +17,10 @@
             v-model="pageSize"
           >
             <option :value="10">10</option>
-            <option :value="30">30</option>
+            <option :value="25">25</option>
             <option :value="50">50</option>
-            <option :value="100">100</option>
-            <option :value="150">150</option>
+            <!-- <option :value="100">100</option>
+            <option :value="150">150</option> -->
           </select>
         </div>
       </div>
@@ -29,7 +29,7 @@
           >Hiển thị
           {{ (currentPage - 1) * pageSize + 1 }}
           -
-          {{ (currentPage - 1) * pageSize + pageSize }}
+          {{ ((currentPage - 1) * pageSize + pageSize) > props.totalCount ? props.totalCount : ((currentPage - 1) * pageSize + pageSize) }} 
           / {{ props.totalCount }} bản ghi.</label
         >
       </div>
@@ -39,7 +39,7 @@
         <ul class="pagination pagination-outline align-items-center pt-3 me-5">
           <li
             class="page-item previous"
-            v-if="currentPage > 1"
+            v-if="props.currentPage > 1"
             @click.prevent="changePage((currentPage -= 1))"
           >
             <a href="#" class="page-link"
@@ -51,8 +51,8 @@
             v-for="(page, index) in pageView(props.totalPages)"
             :key="index"
             :class="{
-              active: page == currentPage,
-              disable: typeof page == 'string',
+              'active': page == props.currentPage,
+              'disabled': typeof page == 'string',
             }"
             @click.prevent="changePage(page)"
           >
@@ -60,7 +60,7 @@
           </li>
           <li
             class="page-item next"
-            v-if="currentPage < props.totalPages"
+            v-if="props.currentPage < props.totalPages"
             @click.prevent="changePage((currentPage += 1))"
           >
             <a href="#" class="page-link"
@@ -69,14 +69,14 @@
           </li>
         </ul>
       </div>
-      <div class="d-flex g-3 align-items-center min-w-[175px] flex-wrap">
-        <div class="max-w-[75px] pe-2">
+      <div class="d-flex g-3 align-items-center max-w-[175px]">
+        <div class="max-w-[100px] pe-2">
           <label for="toPage" class="col-form-label">Tới trang</label>
         </div>
-        <div class="p-0">
+        <div class="p-0 max-w-[50px]">
           <input
             type="text"
-            class="form-control pe-5 max-w-[30px]"
+            class="form-control"
             @keypress="filter($event)"
             v-model="currentPage"
           />
@@ -151,9 +151,19 @@ watch(
   }
 );
 
+watch(
+  () => currentPage.value,
+  debounce((newValue, oldValue) => {
+    if (newValue >= props.totalPages) {
+      currentPage.value = props.totalPages;
+    }
+    changePage(currentPage.value);
+  },400)
+);
+
 const pageView = (totalPages, delta = 1) => {
   const truncate = true;
-  const curPage = parseInt(currentPage.value);
+  const curPage = parseInt(props.currentPage);
 
   const range = delta + 4; // use for handle visible number of links left side
 
@@ -214,7 +224,7 @@ const filter = (evt) => {
 };
 </script>
 <style lang="scss" scoped>
-.disable {
+.active, .disabled {
   pointer-events: none;
 }
 

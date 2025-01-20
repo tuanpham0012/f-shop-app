@@ -1,34 +1,51 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from "vue";
-import { useProductStore } from "../../stores/product";
+import {
+    useProductStore,
+    useBrandStore,
+    useCategoryStore,
+} from "../../stores/product";
 import debounce from "lodash.debounce";
 import ProductModal from "./ProductModal.vue";
 import ProductViewDetail from "./ProductViewDetail.vue";
 import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
 import { displayPrice } from "@/services/utils";
+import { viewFile } from "@/helpers/helpers";
 
 const productStore = useProductStore();
+const brandStore = useBrandStore();
+const categoryStore = useCategoryStore();
 const query = reactive({
-    pageSize: 30,
+    pageSize: 25,
     search: "",
     page: 1,
     categoryId: null,
+    brandId: null,
 });
 const showModal = ref(false);
 const showViewDetailModal = ref(false);
 const id = ref<any>(null);
 
-const categories = computed( () => productStore.$state.categories.data)
+const categories = computed(() => categoryStore.$state.entries.data);
+const brands = computed(() => brandStore.$state.entries.data);
 
 const products = computed(() => productStore.$state.entries.data);
 
-const currenPage = computed(() => productStore.$state.entries.meta?.currentPage ?? query.page);
+const currenPage = computed(
+    () => productStore.$state.entries.meta?.currentPage ?? query.page
+);
 
-const pageSize = computed(() => productStore.$state.entries.meta?.pageSize ?? query.pageSize);
+const pageSize = computed(
+    () => productStore.$state.entries.meta?.pageSize ?? query.pageSize
+);
 
-const totalPages = computed(() => productStore.$state.entries.meta?.totalPages ?? 1);
+const totalPages = computed(
+    () => productStore.$state.entries.meta?.totalPages ?? 1
+);
 
-const totalCount = computed(() => productStore.$state.entries.meta?.totalCount ?? 1);
+const totalCount = computed(
+    () => productStore.$state.entries.meta?.totalCount ?? 1
+);
 const changePage = async (value: any) => {
     console.log(value);
 
@@ -84,8 +101,8 @@ watch(
 );
 
 watch(
-    () => query.categoryId,
-    async () => {
+    () => [query.categoryId, query.brandId],
+    async ([newValue1], [newValue2]) => {
         await getListData();
     }
 );
@@ -96,7 +113,8 @@ const getListData = async () => {
 
 onBeforeMount(async () => {
     await getListData();
-    await productStore.getListCategory({});
+    await categoryStore.getList({});
+    await brandStore.getList({});
 });
 </script>
 <template>
@@ -120,7 +138,24 @@ onBeforeMount(async () => {
                         />
                     </div>
                 </div>
-                <div class="w-[250px] me-2"><select-search placeholder="-- Loại sản phẩm --" :listData="categories" display="name" keyValue="id" v-model="query.categoryId"></select-search></div>
+                <div class="w-[250px] me-2">
+                    <select-search
+                        placeholder="-- Loại sản phẩm --"
+                        :listData="categories"
+                        display="name"
+                        keyValue="id"
+                        v-model="query.categoryId"
+                    ></select-search>
+                </div>
+                <div class="w-[250px] me-2">
+                    <select-search
+                        placeholder="-- Thương hiệu --"
+                        :listData="brands"
+                        display="name"
+                        keyValue="id"
+                        v-model="query.brandId"
+                    ></select-search>
+                </div>
             </div>
             <button class="btn btn-primary" @click="toggleCreate()">
                 <i class="feather icon-plus"></i>
@@ -133,11 +168,13 @@ onBeforeMount(async () => {
                 <thead class="table-light">
                     <tr>
                         <th>STT</th>
+                        <th>Hình ảnh</th>
                         <th>Tên sản phẩm</th>
                         <th>Phân loại</th>
-                        <th>NCC</th>
+                        <th>Thương hiệu</th>
                         <th>Giá bán</th>
-                        <th>Đơn vị</th>
+                        <th>Đơn vị bán</th>
+                        <th>Đơn vị mua</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -146,6 +183,15 @@ onBeforeMount(async () => {
                         <td>
                             <strong>{{ index + 1 }}</strong>
                         </td>
+                        <td>
+                            <img
+                                :src="viewFile(item.images[0] ?? null)
+                                        
+                                "
+                                class="w-[60px] h-[60px] object-contain"
+                                loading="lazy"
+                            />
+                        </td>
                         <td class="max-w-[350px]">
                             <strong>{{ item.name }}</strong>
                             <p class="m-0 text-break overflow-hidden">
@@ -153,14 +199,21 @@ onBeforeMount(async () => {
                             </p>
                         </td>
                         <td>{{ item.category?.name }}</td>
-                        <td>{{ item.supplier?.name }}</td>
+                        <td>{{ item.brand?.name }}</td>
                         <td>{{ displayPrice(item.price) + " đ" }}</td>
-                        <td>{{ item.unit }}</td>
+                        <td>{{ item.unitBuy }}</td>
+                        <td>{{ item.unitSell }}</td>
                         <td class="text-center">
                             <button
                                 type="button"
                                 class="btn btn-sm btn-icon btn-outline-info me-1"
-                                @click="() => { id = item.id; showViewDetailModal = !showViewDetailModal}"
+                                @click="
+                                    () => {
+                                        id = item.id;
+                                        showViewDetailModal =
+                                            !showViewDetailModal;
+                                    }
+                                "
                             >
                                 <i class="fa fa-solid fa-info"></i>
                             </button>
@@ -182,7 +235,6 @@ onBeforeMount(async () => {
                                     class="tf-icons bx bx-trash-alt bx-xs"
                                 ></span>
                             </button>
-                            
                         </td>
                     </tr>
                 </tbody>
@@ -196,11 +248,25 @@ onBeforeMount(async () => {
             @change-page="changePage"
         />
     </div>
-    <ProductModal v-if="showModal" :id="id" @close="() => {toggleModal(); id = null}" />
+    <ProductModal
+        v-if="showModal"
+        :id="id"
+        @close="
+            (value) => {
+                toggleModal(value);
+                id = null;
+            }
+        "
+    />
     <ProductViewDetail
         v-if="showViewDetailModal"
         :id="id"
-        @close="() => {showViewDetailModal = !showViewDetailModal; id = null}"
+        @close="
+            () => {
+                showViewDetailModal = !showViewDetailModal;
+                id = null;
+            }
+        "
     />
 </template>
 

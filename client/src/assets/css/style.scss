@@ -26,18 +26,18 @@
         // }
     }
     &::-webkit-scrollbar {
-        width: 7px !important;
-        height: 7px !important;
+        width: 6px !important;
+        height: 6px !important;
     }
     &::-webkit-scrollbar-track {
         border-radius: 10px;
         background-color: var(--bs-white) !important;
     }
     &::-webkit-scrollbar-thumb {
-        background-color: rgb(189, 189, 189) !important;
+        background-color: rgb(221, 221, 221) !important;
         border-radius: 10px;
         &:hover {
-            background-color: rgb(139, 139, 139) !important;
+            background-color: rgb(173, 173, 173) !important;
         }
     }
 }
@@ -53,5 +53,11 @@
     }
     &:last-child::after {
         content: "";
+    }
+}
+.disabled {
+    background-color: rgb(246, 246, 246);
+    * {
+        background-color: rgb(246, 246, 246);
     }
 }
