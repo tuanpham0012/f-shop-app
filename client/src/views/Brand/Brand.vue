@@ -93,19 +93,6 @@ const getListData = async () => {
   await brandStore.getList(query);
 };
 
-const statusTag = (status: number) => {
-  switch (status) {
-    case 0:
-      return '<span class="badge bg-label-warning me-1">Chưa kích hoạt</span>';
-    case 1:
-      return '<span class="badge bg-label-success me-1">Hoạt động</span>';
-    case 2:
-      return '<span class="badge bg-label-primary me-1">Đã khoá</span>';
-    default:
-      break;
-  }
-};
-
 onBeforeMount(async () => {
   await getListData();
 });

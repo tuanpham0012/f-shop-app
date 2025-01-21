@@ -21,7 +21,8 @@ namespace ShopAppApi.Repositories.Products
 
         public async Task<Tax> Create(StoreTaxRequest tax)
         {
-            Tax newTax = new Tax{
+            Tax newTax = new()
+            {
                 Name = tax.Name,
                 Value = tax.Value,
                 NotUse = false,
@@ -32,6 +33,43 @@ namespace ShopAppApi.Repositories.Products
             await _context.Taxes.AddAsync(newTax);
             await _context.SaveChangesAsync();
             return newTax;
+        }
+
+        public async Task<Tax> Show(long id)
+        {
+            var tax = await _context.Taxes.FirstOrDefaultAsync(x => x.Id == id); 
+            return tax ?? throw new ArgumentException("Not found");
+        }
+
+        public async Task Update(long id, UpdateTaxRequest request)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            var brand = _context.Taxes.FirstOrDefault(x => x.Id == id);
+            if (brand != null)
+            {
+                brand.Name = request.Name;
+                brand.NotUse = request.NotUse;
+                brand.CreatedAt = DateTime.UtcNow;
+                brand.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+        }
+
+        public async Task Delete(long Id)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            var brand = _context.Brands.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
+            if (brand != null)
+            {
+                if(brand.Products.Count > 0)
+                {
+                    throw new ArgumentException("Brand has products");
+                }
+                _context.Brands.Remove(brand);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
         }
     }
 }

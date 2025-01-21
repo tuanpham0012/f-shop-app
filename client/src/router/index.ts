@@ -10,14 +10,26 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/customers',
-      name: 'customers',
-      component: () => import('../views/Customer/Customer.vue')
-    },
-    {
-      path: '/menus',
-      name: 'menus',
-      component: () => import('../views/Menu/Menu.vue')
+      path: '/',
+      name: 'setting',
+      children: [
+        {
+          path: '/customers',
+          name: 'customers',
+          component: () => import('../views/Customer/Customer.vue')
+        },
+        {
+          path: '/menus',
+          name: 'menus',
+          component: () => import('../views/Menu/Menu.vue')
+        },
+        {
+          path: '/taxes',
+          name: 'taxes',
+          component: () => import('../views/Tax/Tax.vue')
+        },
+      ]
+      
     },
     {
       path: '/',

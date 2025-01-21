@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from "vue";
-import { useCustomerStore } from "../../stores/customer";
+import { useTaxStore } from "../../stores/tax";
 import debounce from "lodash.debounce";
-import CustomerModal from "./CustomerModal.vue";
+import TaxModal from "./TaxModal.vue";
 import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
 
-const customerStore = useCustomerStore();
+const taxStore = useTaxStore();
 const query = reactive({
   pageSize: 30,
   search: "",
@@ -14,20 +14,20 @@ const query = reactive({
 });
 const showModal = ref(false);
 const id = ref(null);
-const customers = computed(() => {
-  return customerStore.$state.customers.data;
+const taxes = computed(() => {
+  return taxStore.$state.entries.data;
 });
 const currenPage = computed(() => {
-  return customerStore.$state.customers.meta?.currentPage ?? query.page;
+  return taxStore.$state.entries.meta?.currentPage ?? query.page;
 });
 const pageSize = computed(() => {
-  return customerStore.$state.customers.meta?.pageSize ?? query.pageSize;
+  return taxStore.$state.entries.meta?.pageSize ?? query.pageSize;
 });
 const totalPages = computed(() => {
-  return customerStore.$state.customers.meta?.totalPages ?? 1;
+  return taxStore.$state.entries.meta?.totalPages ?? 1;
 });
 const totalCount = computed(() => {
-  return customerStore.$state.customers.meta?.totalCount ?? 1;
+  return taxStore.$state.entries.meta?.totalCount ?? 1;
 });
 const changePage = async (value: any) => {
   console.log(value);
@@ -59,7 +59,7 @@ const toggleDelete = (id: any) => {
   }).then((result) => {
     if (result.isConfirmed) {
       console.log("deleting...");
-      customerStore
+      taxStore
         .delete(id)
         .then((res) => {
           successMessage(res.data?.message ?? "Xoá khách hàng thành công!");
@@ -89,7 +89,7 @@ watch(
 );
 
 const getListData = async () => {
-  await customerStore.getList(query);
+  await taxStore.getList(query);
 };
 
 const statusTag = (status: number) => {
@@ -156,27 +156,22 @@ onBeforeMount(async () => {
         <thead class="table-light">
           <tr>
             <th>STT</th>
-            <th>Khách hàng</th>
-            <th>Điện thoại</th>
-            <th>Email</th>
+            <th>Tên</th>
+            <th>Tỉ lệ</th>
             <th>Trạng thái</th>
-            <th>Actions</th>
+            <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-          <tr v-for="(item, index) in customers" :key="index">
+          <tr v-for="(item, index) in taxes" :key="index">
             <td>
               <strong>{{ index + 1 }}</strong>
             </td>
-            <td class="max-w-[350px]">
-              <strong>{{ item.name }}</strong>
-              <p class="m-0 text-break overflow-hidden" :title="item.address">
-                <i class="bx bxs-map bx-xs"></i>{{ item.address }}
-              </p>
+            <td>
+              {{ item.name }}
             </td>
-            <td>{{ item.phone }}</td>
-            <td>{{ item.email }}</td>
-            <td v-html="statusTag(item.status)"></td>
+            <td>{{ item.value }}</td>
+            <td> {{ item.notUse ? "Ngưng sử dụng" : "Sử dụng" }}</td>
             <td class="text-center">
               <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" @click="toggleEdit(item.id)">
                 <span class="tf-icons bx bx-edit-alt bx-xs"></span>

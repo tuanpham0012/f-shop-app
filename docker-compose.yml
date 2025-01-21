@@ -8,7 +8,7 @@ services:
     ports:
       - "1434:1433"
     volumes:
-      - d:/volumes/shop_app/mssql/data:/var/opt/mssql/data
+      - c:/volumes/shop_app/mssql/data:/var/opt/mssql/data
     restart: always
     hostname: sqlserver
     networks:

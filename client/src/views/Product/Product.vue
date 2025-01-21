@@ -24,7 +24,7 @@ const query = reactive({
 });
 const showModal = ref(false);
 const showViewDetailModal = ref(false);
-const id = ref<any>(null);
+const id = ref(null);
 
 const categories = computed(() => categoryStore.$state.entries.data);
 const brands = computed(() => brandStore.$state.entries.data);
@@ -102,7 +102,7 @@ watch(
 
 watch(
     () => [query.categoryId, query.brandId],
-    async ([newValue1], [newValue2]) => {
+    async () => {
         await getListData();
     }
 );
