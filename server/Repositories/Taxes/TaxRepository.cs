@@ -44,13 +44,13 @@ namespace ShopAppApi.Repositories.Products
         public async Task Update(long id, UpdateTaxRequest request)
         {
             using var transaction = _context.Database.BeginTransaction();
-            var brand = _context.Taxes.FirstOrDefault(x => x.Id == id);
-            if (brand != null)
+            var tax = _context.Taxes.FirstOrDefault(x => x.Id == id) ?? throw new ArgumentException("Not found");
+            if (tax != null)
             {
-                brand.Name = request.Name;
-                brand.NotUse = request.NotUse;
-                brand.CreatedAt = DateTime.UtcNow;
-                brand.UpdatedAt = DateTime.UtcNow;
+                tax.Name = request.Name;
+                tax.NotUse = request.NotUse;
+                tax.Value = request.Value;
+                tax.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -59,14 +59,14 @@ namespace ShopAppApi.Repositories.Products
         public async Task Delete(long Id)
         {
             using var transaction = _context.Database.BeginTransaction();
-            var brand = _context.Brands.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
-            if (brand != null)
+            var tax = _context.Taxes.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
+            if (tax != null)
             {
-                if(brand.Products.Count > 0)
+                if(tax.Products.Count > 0)
                 {
-                    throw new ArgumentException("Brand has products");
+                    throw new ArgumentException("Thuế này đang được sử, không thể xóa!");
                 }
-                _context.Brands.Remove(brand);
+                _context.Taxes.Remove(tax);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

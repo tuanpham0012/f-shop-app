@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { _getList, _create, _update, _show } from "@/helpers/axiosConfig";
+import { _getList, _create, _update, _show, _destroy } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
 
 export const useTaxStore = defineStore("tax", {
@@ -8,8 +8,8 @@ export const useTaxStore = defineStore("tax", {
             entries: {
                 code: 200,
                 message: "",
-                data: [],
-                meta: null,
+                data: [] as any[],
+                meta: null as any,
             },
             entry: null,
         };
@@ -36,11 +36,14 @@ export const useTaxStore = defineStore("tax", {
             await _show(`${apiUrl}/taxes/${id}`)
                 .then((res) => {
                     console.log(res.data);
-                    this.entries = res.data;
+                    this.entry = res.data.data;
                 })
                 .catch((err) => {
                     console.log(err);
                 });
         },
+        async delete(id: any) {
+                    return await _destroy(`${apiUrl}/taxes/${id}`);
+                },
     },
 });

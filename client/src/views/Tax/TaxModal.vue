@@ -103,19 +103,15 @@ const tax = computed(() =>
 
 const errors = ref<any>(null);
 
-const showPassword = ref<Boolean>(false);
-
 const save = async () => {
     if (tax.value.id == null) {
         await taxStore
             .create(tax.value)
             .then((res) => {
-                console.log(res);
                 successMessage(res.data?.message ?? "Thêm mới thành công!");
                 emits("close", res.data.data);
             })
             .catch((err) => {
-                console.log(err);
                 errors.value = err.response.data.errors;
             });
     } else {

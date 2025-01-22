@@ -36,7 +36,7 @@ const changePage = async (value: any) => {
   query.page = value.currentPage;
   await getListData();
 };
-const toggleModal = (refresh = false) => {
+const toggleModal = (refresh = null) => {
   showModal.value = !showModal.value;
   if (refresh) getListData();
 };
@@ -52,8 +52,8 @@ const toggleCreate = () => {
 
 const toggleDelete = (id: any) => {
   confirmAlert({
-    title: "Xoá khách hàng?",
-    text: "Xác nhận xoá khách hàng!!!",
+    title: "Xoá dữ liệu?",
+    text: "Xác nhận xoá dữ liệu!!!",
     confirmButtonText: "Xác nhận",
     cancelButtonText: "Huỷ",
   }).then((result) => {
@@ -62,13 +62,13 @@ const toggleDelete = (id: any) => {
       taxStore
         .delete(id)
         .then((res) => {
-          successMessage(res.data?.message ?? "Xoá khách hàng thành công!");
-          if (customers.value.length <= 1 && currenPage.value > 1) {
+          successMessage(res.data?.message ?? "Xoá dữ liệu thành công!");
+          if (taxes.value.length <= 1 && currenPage.value > 1) {
             query.page -= 1;
           }
           getListData();
         })
-        .catch((err) => errorMessage("Errorr!!"));
+        .catch((err) => errorMessage(err.response.data.title));
     }
   });
 };
@@ -90,19 +90,6 @@ watch(
 
 const getListData = async () => {
   await taxStore.getList(query);
-};
-
-const statusTag = (status: number) => {
-  switch (status) {
-    case 0:
-      return '<span class="badge bg-label-warning me-1">Chưa kích hoạt</span>';
-    case 1:
-      return '<span class="badge bg-label-success me-1">Hoạt động</span>';
-    case 2:
-      return '<span class="badge bg-label-primary me-1">Đã khoá</span>';
-    default:
-      break;
-  }
 };
 
 onBeforeMount(async () => {
@@ -193,7 +180,7 @@ onBeforeMount(async () => {
       @change-page="changePage"
     />
   </div>
-  <CustomerModal v-if="showModal" :id="id" @close="toggleModal" />
+  <TaxModal v-if="showModal" :id="id" @close="toggleModal" />
 </template>
 
 <style lang="scss" scoped>
