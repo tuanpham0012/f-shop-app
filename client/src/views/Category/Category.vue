@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, watch } from "vue";
-import { useCustomerStore } from "../../stores/customer";
+import { ref, reactive, computed, onBeforeMount, watch, type ComputedRef } from "vue";
+import { useCategoryStore } from "../../stores/product";
 import debounce from "lodash.debounce";
-import CustomerModal from "./CustomerModal.vue";
+import CategoryModal from "./CategoryModal.vue";
 import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
+import TableCategoryRow from "./TableCategoryRow.vue";
 
-const customerStore = useCustomerStore();
+const categoryStore = useCategoryStore();
 const query = reactive({
   pageSize: 30,
   search: "",
@@ -14,20 +15,20 @@ const query = reactive({
 });
 const showModal = ref(false);
 const id = ref(null);
-const customers = computed(() => {
-  return customerStore.$state.customers.data;
+const categories: ComputedRef<any> = computed(() => {
+  return categoryStore.$state.listTree.data;
 });
 const currenPage = computed(() => {
-  return customerStore.$state.customers.meta?.currentPage ?? query.page;
+  return categoryStore.$state.listTree.meta?.currentPage ?? query.page;
 });
 const pageSize = computed(() => {
-  return customerStore.$state.customers.meta?.pageSize ?? query.pageSize;
+  return categoryStore.$state.listTree.meta?.pageSize ?? query.pageSize;
 });
 const totalPages = computed(() => {
-  return customerStore.$state.customers.meta?.totalPages ?? 1;
+  return categoryStore.$state.listTree.meta?.totalPages ?? 1;
 });
 const totalCount = computed(() => {
-  return customerStore.$state.customers.meta?.totalCount ?? 1;
+  return categoryStore.$state.listTree.meta?.totalCount ?? 1;
 });
 const changePage = async (value: any) => {
   console.log(value);
@@ -59,11 +60,11 @@ const toggleDelete = (id: any) => {
   }).then((result) => {
     if (result.isConfirmed) {
       console.log("deleting...");
-      customerStore
+      categoryStore
         .delete(id)
         .then((res) => {
           successMessage(res.data?.message ?? "Xoá khách hàng thành công!");
-          if (customers.value.length <= 1 && currenPage.value > 1) {
+          if (categories.value.length <= 1 && currenPage.value > 1) {
             query.page -= 1;
           }
           getListData();
@@ -89,21 +90,9 @@ watch(
 );
 
 const getListData = async () => {
-  await customerStore.getList(query);
+  await categoryStore.getListTree(query);
 };
 
-const statusTag = (status: number) => {
-  switch (status) {
-    case 0:
-      return '<span class="badge bg-label-warning me-1">Chưa kích hoạt</span>';
-    case 1:
-      return '<span class="badge bg-label-success me-1">Hoạt động</span>';
-    case 2:
-      return '<span class="badge bg-label-primary me-1">Đã khoá</span>';
-    default:
-      break;
-  }
-};
 
 onBeforeMount(async () => {
   await getListData();
@@ -155,38 +144,14 @@ onBeforeMount(async () => {
       <table class="table table-hover">
         <thead class="table-light">
           <tr>
-            <th>STT</th>
-            <th>Khách hàng</th>
-            <th>Điện thoại</th>
-            <th>Email</th>
+            <th>Tên</th>
+            <th>Số lượng sản phẩm</th>
             <th>Trạng thái</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-          <tr v-for="(item, index) in customers" :key="index">
-            <td>
-              <strong>{{ index + 1 }}</strong>
-            </td>
-            <td class="max-w-[350px]">
-              <strong>{{ item.name }}</strong>
-              <p class="m-0 text-break overflow-hidden" :title="item.address">
-                <i class="bx bxs-map bx-xs"></i>{{ item.address }}
-              </p>
-            </td>
-            <td>{{ item.phone }}</td>
-            <td>{{ item.email }}</td>
-            <td v-html="statusTag(item.status)"></td>
-            <td class="text-center">
-              <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" @click="toggleEdit(item.id)">
-                <span class="tf-icons bx bx-edit-alt bx-xs"></span>
-              </button>
-              <button type="button" class="btn btn-sm btn-icon btn-outline-secondary me-1" @click="toggleDelete(item.id)">
-                <span class="tf-icons bx bx-trash-alt bx-xs"></span>
-              </button>
-              
-            </td>
-          </tr>
+            <TableCategoryRow v-for="(item, index) in categories" :key="index" :entry="item" @toggleEdit="toggleEdit" />
         </tbody>
       </table>
     </div>
@@ -198,7 +163,7 @@ onBeforeMount(async () => {
       @change-page="changePage"
     />
   </div>
-  <CustomerModal v-if="showModal" :id="id" @close="toggleModal" />
+  <CategoryModal v-if="showModal" :id="id" @close="toggleModal" />
 </template>
 
 <style lang="scss" scoped>

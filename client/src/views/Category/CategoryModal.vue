@@ -1,138 +1,172 @@
 <template>
-    <modal
-        :title="!id ? 'Thêm mới thuế sản phẩm' : 'Cập nhật thuế sản phẩm'"
-        modal-size="modal-lg"
-        @close="
-            () => {
-                emits('close');
-            }
-        "
-    >
-        <template #body>
+  <modal
+    :title="!id ? 'Thêm mới thuế sản phẩm' : 'Cập nhật thuế sản phẩm'"
+    modal-size="modal-lg"
+    @close="
+      () => {
+        emits('close');
+      }
+    "
+  >
+    <template #body>
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-6 mb-3">
             <div class="col-sm-12">
-                <div class="row">
-                    <div class="col-sm-6 mb-3">
-                        <div class="col-sm-12">
-                            <label for="name" class="form-label required"
-                                >Tên thuế</label
-                            >
-                        </div>
-                        <div class="input-group">
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="name"
-                                v-model="tax.name"
-                            />
-                        </div>
-                        <Feedback :errors="errors?.Name" />
-                    </div>
-
-                    <div class="col-sm-6 mb-3">
-                        <div class="col-sm-12">
-                            <label for="email" class="form-label required"
-                                >Giá trị</label
-                            >
-                        </div>
-                        <div class="input-group">
-                            <input
-                                type="email"
-                                class="form-control"
-                                id="email"
-                                v-model="tax.value"
-                            />
-                        </div>
-                        <Feedback :errors="errors?.Email" />
-                    </div>
-                    <div class="col-sm-6 mb-3">
-                        <input
-                            class="form-check-input me-2"
-                            type="checkbox"
-                            id="not_use"
-                        />
-                        <label for="not_use" class=""
-                            >Ngưng sử dụng</label
-                        >
-                        <Feedback :errors="errors?.Email" />
-                    </div>
-                </div>
+              <label for="name" class="form-label required">Mã</label>
             </div>
-        </template>
-        <template #footer>
-            <button class="btn btn-success" @click="save()">Lưu lại</button>
-            <button
-                class="btn btn-secondary"
-                @click="
-                    () => {
-                        emits('close');
-                    }
-                "
-            >
-                Đóng
-            </button>
-        </template>
-    </modal>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                v-model="category.code"
+              />
+            </div>
+            <Feedback :errors="errors?.Code" />
+          </div>
+          <div class="col-sm-6 mb-3">
+            <div class="col-sm-12">
+              <label for="name" class="form-label required">Tên</label>
+            </div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                v-model="category.name"
+              />
+            </div>
+            <Feedback :errors="errors?.Name" />
+          </div>
+          <div class="col-sm-6 mb-3">
+            <div class="col-sm-12">
+              <label for="parentId" class="form-label required"
+                >Danh mục cha</label
+              >
+            </div>
+            <div class="input-group">
+              <select
+                class="form-select"
+                id="parentId"
+                v-model="category.parentId"
+              >
+              <option :value="null">Chọn danh mục cha</option>
+              <SelectTree v-for="(item, index) in categories" :entry="item" />
+            </select>
+            </div>
+            <Feedback :errors="errors?.parentId" />
+          </div>
+          <div class="col-sm-6 mb-3">
+            <div class="col-sm-12">
+              <label for="name" class="form-label"></label>
+            </div>
+            <div class="input-group mt-2">
+              <input
+                class="form-check-input me-2"
+                type="checkbox"
+                id="not_use"
+                v-model="category.notUse"
+              />
+              <label for="not_use" class="">Ngưng sử dụng</label>
+            </div>
+
+            <Feedback :errors="errors?.Email" />
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <button class="btn btn-success" @click="save()">Lưu lại</button>
+      <button
+        class="btn btn-secondary"
+        @click="
+          () => {
+            emits('close');
+          }
+        "
+      >
+        Đóng
+      </button>
+    </template>
+  </modal>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from "vue";
-import { useTaxStore } from "@/stores/tax";
+import { ref, reactive, computed, watch, onBeforeMount, type ComputedRef } from "vue";
+import { useCategoryStore } from "@/stores/product";
 import { successMessage } from "@/helpers/toast";
+import { textCode } from "@/helpers/helpers";
 const props = defineProps({
-    id: {
-        type: [Number, String as () => string | null],
-        required: false,
-        default: null,
-    },
+  id: {
+    type: [Number, String as () => string | null],
+    required: false,
+    default: null,
+  },
 });
 
 const emits = defineEmits(["close"]);
 
-const taxStore = useTaxStore();
+const categoryStore = useCategoryStore();
 
-const newTax = reactive({
-    id: null,
-    name: "",
-    value: "",
+const newCategory = reactive({
+  id: null,
+  name: "",
+  code: "",
+  parentId: null,
+  notUse: false,
 });
 
-const tax = computed(() =>
-    props.id && taxStore.$state.entry ? taxStore.$state.entry : newTax
+const category = computed(() =>
+  props.id && categoryStore.$state.entry
+    ? categoryStore.$state.entry
+    : newCategory
 );
+
+const categories: ComputedRef<any> = computed(() => {
+  return categoryStore.$state.listTree.data;
+});
 
 const errors = ref<any>(null);
 
-const showPassword = ref<Boolean>(false);
+watch(
+  () => category.value.code,
+  async (value) => {
+    if (value) {
+        category.value.code = textCode(value);
+    }
+  }
+);
 
 const save = async () => {
-    if (tax.value.id == null) {
-        await taxStore
-            .create(tax.value)
-            .then((res) => {
-                console.log(res);
-                successMessage(res.data?.message ?? "Thêm mới thành công!");
-                emits("close", res.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-                errors.value = err.response.data.errors;
-            });
-    } else {
-        await taxStore
-            .update(props.id, tax.value)
-            .then((res) => {
-                successMessage(res.data?.message ?? "Cập nhật thành công!");
-                emits("close", true);
-            })
-            .catch((err) => {
-                console.log(err);
-                errors.value = err.response.data.errors;
-            });
-    }
+  if (category.value.id == null) {
+    await categoryStore
+      .create(category.value)
+      .then((res) => {
+        console.log(res);
+        successMessage(res.data?.message ?? "Thêm mới thành công!");
+        emits("close", res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        errors.value = err.response.data.errors;
+      });
+  } else {
+    await categoryStore
+      .update(props.id, category.value)
+      .then((res) => {
+        successMessage(res.data?.message ?? "Cập nhật thành công!");
+        emits("close", true);
+      })
+      .catch((err) => {
+        console.log(err);
+        errors.value = err.response.data.errors;
+      });
+  }
 };
 onBeforeMount(() => {
-    if (props.id) {
-        taxStore.show(props.id);
-    }
+  if (props.id) {
+    categoryStore.show(props.id);
+  }
 });
 </script>
 <style lang=""></style>

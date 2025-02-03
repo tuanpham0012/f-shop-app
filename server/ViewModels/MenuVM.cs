@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ShopAppApi.Data;
-
-public partial class Menu
+public partial class MenuTree
 {
     public long Id { get; set; }
 
@@ -26,4 +21,6 @@ public partial class Menu
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+    
+    public List<MenuTree> Children { get; set; } = new();
 }

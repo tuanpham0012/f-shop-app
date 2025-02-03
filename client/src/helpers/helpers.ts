@@ -41,3 +41,10 @@ export const viewFile = (link:string) => {
     }
     return link
 }
+
+export function textCode(text: string) {
+    text = text.replace(/[^\w\s]/gi, "");
+    text = text.replace(/\s/g, "");
+    text = text.toUpperCase();
+    return text;
+  }

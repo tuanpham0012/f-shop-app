@@ -6,8 +6,8 @@ namespace ShopAppApi.Repositories.Products
     public interface IBrandRepository
     {
         Task<List<Brand>> GetAll(BrandRequest request);
-        Task<Brand> Create(StoreBrandRequest menu);
-        Task Update(long Id, UpdateBrandRequest menu);
+        Task<Brand> Create(StoreBrandRequest request);
+        Task Update(long Id, UpdateBrandRequest request);
         Task<Brand> Show(long Id);
         Task Delete(long Id);
     }

@@ -83,13 +83,19 @@ export const useProductStore = defineStore("product", {
 });
 
 export const useCategoryStore = defineStore("category", {
-    state: ():State => {
+    state: () => {
         return {
             entries: {
                 code: 200,
                 message: "",
                 data: [],
-                meta: null,
+                meta: null as any,
+            },
+            listTree: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null as any,
             },
             entry: null,
             errors: null,
@@ -106,6 +112,39 @@ export const useCategoryStore = defineStore("category", {
                 .catch((err) => {
                     console.log(err);
                 });
+        },
+        async getListTree(query: any) {
+            await _getList(`${apiUrl}/categories/get-tree`, query)
+                .then((res) => {
+                    console.log(res.data);
+                    this.listTree = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async create(data: any) {
+            return await _create(`${apiUrl}/categories`, data);
+        },
+        async show(id: any) {
+            this.entry = null
+            await _show(`${apiUrl}/categories/${id}`)
+                .then((res) => {
+                    this.entry = res.data.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+
+        async setEntryNull() {
+            this.entry = null
+        },
+        async update(id: any, data: any) {
+            return await _update(`${apiUrl}/categories/${id}`, data);
+        },
+        async delete(id: any) {
+            return await _destroy(`${apiUrl}/categories/${id}`);
         },
     },
 });
