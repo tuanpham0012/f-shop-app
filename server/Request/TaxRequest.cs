@@ -4,7 +4,7 @@ namespace ShopAppApi.Request
 {
     public class TaxRequest : BaseRequest
     {
-        public Boolean? Using { get; set; } = null!;
+        public Boolean? NotUse { get; set; } = null!;
     }
     public class StoreTaxRequest
     {

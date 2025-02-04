@@ -11,10 +11,10 @@ namespace ShopAppApi.Repositories.Products
         public async Task<List<Tax>> GetAll(TaxRequest request)
         {
             var entries = _context.Taxes.AsNoTracking().AsQueryable();
-            // if((bool)request.Using)
-            // {
-            //     // entries = entries.Where(x => x. == request.Using);
-            // }
+            if(request.NotUse != null)
+            {
+                entries = entries.Where(x => x.NotUse == request.NotUse);
+            }
 
             return await entries.ToListAsync();
         }

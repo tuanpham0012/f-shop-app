@@ -6,11 +6,11 @@ namespace ShopAppApi.Repositories.Products
 {
     public interface ICategoryRepository
     {
-        Task<List<CategoryVM>> GetAll();
+        Task<List<CategoryVM>> GetAll(CategoryRequest request);
         List<CategoryTreeVM> BuildTree(List<CategoryVM> categories);
-        Task<Brand> Create(StoreCategoryRequest request);
+        Task<Category> Create(StoreCategoryRequest request);
         Task Update(long Id, UpdateCategoryRequest request);
-        Task<Brand> Show(long Id);
+        Task<Category> Show(long Id);
         Task Delete(long Id);
     }
 }

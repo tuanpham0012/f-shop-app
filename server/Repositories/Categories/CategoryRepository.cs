@@ -11,7 +11,7 @@ namespace ShopAppApi.Repositories.Products
         public CategoryRepository(ShopAppContext context) {
             _context = context;
         }
-        public async Task<List<CategoryVM>> GetAll()
+        public async Task<List<CategoryVM>> GetAll(CategoryRequest request)
         {
             var entries = _context.Categories.AsNoTracking().Select( q => new CategoryVM
             {
@@ -24,6 +24,11 @@ namespace ShopAppApi.Repositories.Products
                 NotUse = q.NotUse,
                 ProductCount = _context.Products.Count(p => p.CategoryId == q.Id),
             });
+
+            if (request.NotUse != null)
+            {
+                entries = entries.Where(x => x.NotUse == request.NotUse);
+            }
 
             return await entries.ToListAsync();
         }
@@ -67,18 +72,23 @@ namespace ShopAppApi.Repositories.Products
             return category ?? throw new ArgumentException("Not found");
         }
 
-        public async Task<Brand> Create(StoreCategoryRequest request)
+        public async Task<Category> Create(StoreCategoryRequest request)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            var entry = new Brand
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            var countChildrent = await _context.Categories.Where(c => c.ParentId == request.ParentId).CountAsync();
+            int left = countChildrent++;
+
+            // Thêm node mới
+            var entry = new Category
             {
                 Name = request.Name,
                 Code = request.Code,
-                Image = await FileHelper.SaveFile(request.Image),
+                Lft = left,
+                Rgt = 0,
+                ParentId = request.ParentId,
                 NotUse = request.NotUse,
-                CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-
+                CreatedAt = DateTime.UtcNow,
             };
             _context.Add(entry);
             await _context.SaveChangesAsync();
@@ -89,15 +99,15 @@ namespace ShopAppApi.Repositories.Products
         public async Task Update(long id, UpdateCategoryRequest request)
         {
             using var transaction = _context.Database.BeginTransaction();
-            var brand = _context.Brands.FirstOrDefault(x => x.Id == id);
-            if (brand != null)
+            var category = _context.Categories.FirstOrDefault(x => x.Id == id);
+            if (category != null)
             {
-                brand.Name = request.Name;
-                brand.Code = request.Code;
-                
-                brand.NotUse = request.NotUse;
-                brand.CreatedAt = DateTime.UtcNow;
-                brand.UpdatedAt = DateTime.UtcNow;
+                category.Name = request.Name;
+                category.Code = request.Code;
+                category.Lft = request.Lft;
+                category.ParentId = request.ParentId;
+                category.NotUse = request.NotUse;
+                category.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -106,15 +116,14 @@ namespace ShopAppApi.Repositories.Products
         public async Task Delete(long Id)
         {
             using var transaction = _context.Database.BeginTransaction();
-            var brand = _context.Brands.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
-            if (brand != null)
+            var category = _context.Categories.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
+            if (category != null)
             {
-                if(brand.Products.Count > 0)
+                if(category.Products.Count > 0)
                 {
-                    throw new ArgumentException("Brand has products");
+                    throw new ArgumentException("Category has products");
                 }
-                FileHelper.DeleteFile(brand.Image);
-                _context.Brands.Remove(brand);
+                _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }

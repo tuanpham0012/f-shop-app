@@ -27,6 +27,7 @@ namespace ShopAppApi.Request
         public string Name { get; set; } = null!;
         [ModelExists("categories")]
         public int? ParentId { get; set; }
+        public int Lft { get; set; }
 
         public bool? NotUse { get; set; }
     }
