@@ -22,41 +22,41 @@
         </button>
       </form>
 
-      <ul class="nav nav-pills-mobile nav-border-anim" role="tablist">
-        <li class="nav-item active">
-          <a
-            class="nav-link"
-            id="mobile-cats-link"
-            data-toggle="tab"
-            href="#mobile-cats-tab"
-            role="tab"
-            aria-controls="mobile-cats-tab"
-            aria-selected="false"
-            >Categories</a
-          >
-        </li>
-      </ul>
 
       <div class="tab-content">
         <div
-          class="tab-pane fade show active"
+          class="tab-pane fade show active sidebar"
           id="mobile-cats-tab"
           role="tabpanel"
           aria-labelledby="mobile-cats-link"
         >
           <nav class="mobile-cats-nav">
             <ul class="mobile-cats-menu">
-              <li><a class="mobile-cats-lead" href="#">Daily offers</a></li>
-              <li><a class="mobile-cats-lead" href="#">Gift Ideas</a></li>
-              <li><a href="#">Beds</a></li>
-              <li><a href="#">Lighting</a></li>
-              <li><a href="#">Sofas & Sleeper sofas</a></li>
-              <li><a href="#">Storage</a></li>
-              <li><a href="#">Armchairs & Chaises</a></li>
-              <li><a href="#">Decoration </a></li>
-              <li><a href="#">Kitchen Cabinets</a></li>
-              <li><a href="#">Coffee & Tables</a></li>
-              <li><a href="#">Outdoor Furniture </a></li>
+              <li
+                v-for="item in menuItems"
+                :key="item.id"
+                :class="{ 'has-submenu': item.children }"
+              >
+                <a href="#" @click.prevent="toggleSubmenu(item)">
+                  <i :class="item.icon"></i> {{ item.label }}
+                  <i
+                    v-if="item.children"
+                    class="fas fa-chevron-down"
+                    style="float: right"
+                  ></i>
+                </a>
+                <ul
+                  v-if="item.children"
+                  class="submenu"
+                  :class="{ active: item.showSubmenu }"
+                >
+                  <li v-for="child in item.children" :key="child.id">
+                    <a href="#">
+                      <i :class="child.icon"></i> {{ child.label }}
+                    </a>
+                  </li>
+                </ul>
+              </li>
             </ul>
             <!-- End .mobile-cats-menu -->
           </nav>
@@ -86,7 +86,88 @@
   </div>
   <!-- End .mobile-menu-container -->
 </template>
-<script>
-export default {};
+<script lang="ts" setup>
+import { onBeforeMount, ref } from "vue";
+
+const menuItems = ref([
+      { id: 1, label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
+      {
+        id: 2,
+        label: 'Products',
+        icon: 'fas fa-box',
+        children: [
+          { id: 21, label: 'Add Product', icon: 'fas fa-plus' },
+          { id: 22, label: 'View Products', icon: 'fas fa-list' },
+          { id: 23, label: 'Manage Categories', icon: 'fas fa-folder' },
+        ],
+        showSubmenu: false,
+      },
+      { id: 3, label: 'Customers', icon: 'fas fa-users' },
+      {
+        id: 4,
+        label: 'Orders',
+        icon: 'fas fa-shopping-cart',
+        children: [
+          { id: 41, label: 'New Orders', icon: 'fas fa-file-invoice' },
+          { id: 42, label: 'Order History', icon: 'fas fa-history' },
+        ],
+        showSubmenu: false,
+      },
+      { id: 5, label: 'Settings', icon: 'fas fa-cog' },
+      { id: 6, label: 'Help', icon: 'fas fa-question-circle' },
+    ]);
+
+    const toggleSubmenu = (item:any) => {
+      item.showSubmenu = !item.showSubmenu;
+    };
+
+onBeforeMount(() => {
+});
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.sidebar {
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li a {
+  padding: 15px 25px;
+  text-decoration: none;
+  font-size: 16px;
+  display: block;
+}
+
+.sidebar li a:hover {
+  background-color: #98bcff80;
+}
+
+.sidebar .submenu {
+  display: none; /* Ẩn submenu mặc định */
+}
+
+.sidebar .submenu.active {
+  display: block;
+}
+
+.sidebar .submenu a {
+  padding-left: 40px;
+  font-size: 14px;
+}
+
+.sidebar i {
+  margin-right: 5px;
+}
+
+.has-submenu > a {
+  position: relative; /* Để định vị mũi tên chevron bên trong */
+}
+
+.content {
+  margin-left: 250px;
+  padding: 20px;
+}
+</style>

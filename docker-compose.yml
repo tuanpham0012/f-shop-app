@@ -47,6 +47,20 @@ services:
     restart: always
     networks:
       - qipf-network
+  user-client-app:
+      container_name: user-clien
+      build:
+        context: .
+        dockerfile: ./user-client/Dockerfile
+        args:
+          - VITE_VUE_APP_ENV=development
+      environment:
+        - VITE_VUE_APP_ENV=development
+      # ports:
+      #   - "3000:80"
+      restart: always
+      networks:
+        - qipf-network
 
   # influxdb:
   #   image: influxdb:latest

@@ -80,8 +80,6 @@
               <img
                 src="../assets/images/demos/demo-4/logo.png"
                 alt="Molla Logo"
-                width="105"
-                height="25"
               />
             </a>
           </div>
