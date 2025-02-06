@@ -1,4 +1,7 @@
 <template lang="">
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Apps &amp; Pages</span>
+    </li>
     <li
         class="menu-item"
         v-if="menu"
@@ -7,7 +10,7 @@
         <component
             :is="(menu.children.length > 0 || menu.url == null) ? 'div' : 'router-link'"
             :to="(menu.children.length > 0 || menu.url == null) ? '' : menu.url"
-            class="menu-link"
+            class="menu-link cursor-pointer"
             :class="{ 'menu-toggle': menu.children.length > 0 }"
         >
             <div

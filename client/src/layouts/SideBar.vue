@@ -103,10 +103,12 @@
                     >Sneat</span
                 >
             </a>
-
+            <!-- <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+                <i class="icon-base bx bx-chevron-left bx-sm align-middle"></i>
+            </a> -->
             <a
                 href="javascript:void(0);"
-                class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+                class="layout-menu-toggle menu-link text-large ms-auto"
             >
                 <i class="bx bx-chevron-left bx-sm align-middle"></i>
             </a>
