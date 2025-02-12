@@ -198,10 +198,10 @@
     <div class="header-bottom sticky-header">
       <div class="container">
         <div class="header-left">
-          <div class="dropdown category-dropdown d-inline">
+          <div class="dropdown category-dropdown d-inline align-bottom">
             <a
               href="#"
-              class="dropdown-toggle"
+              class="dropdown-toggle h-[100%]"
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
@@ -223,7 +223,7 @@
           <nav class="main-nav">
             <ul class="menu sf-arrows">
               <li class="megamenu-container">
-                <a href="index.html" class="sf-with-ul">Home</a>
+                <a href="index.html" class="">Home</a>
               </li>
               <li>
                 <a href="category.html" class="sf-with-ul">Shop</a>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
+using ShopAppApi.Helpers;
 using ShopAppApi.Request;
 
 namespace ShopAppApi.Repositories.Products
@@ -8,12 +9,13 @@ namespace ShopAppApi.Repositories.Products
     {
         private readonly ShopAppContext _context;
 
-        public CategoryRepository(ShopAppContext context) {
+        public CategoryRepository(ShopAppContext context)
+        {
             _context = context;
         }
         public async Task<List<CategoryVM>> GetAll(CategoryRequest request)
         {
-            var entries = _context.Categories.AsNoTracking().Select( q => new CategoryVM
+            var entries = _context.Categories.AsNoTracking().Select(q => new CategoryVM
             {
                 Id = q.Id,
                 Name = q.Name,
@@ -22,6 +24,9 @@ namespace ShopAppApi.Repositories.Products
                 Lft = q.Lft,
                 Rgt = q.Rgt,
                 NotUse = q.NotUse,
+                Image = q.Image,
+                IsPopular = q.IsPopular,
+                HidenMenu = q.HidenMenu,
                 ProductCount = _context.Products.Count(p => p.CategoryId == q.Id),
             });
 
@@ -44,6 +49,9 @@ namespace ShopAppApi.Repositories.Products
                 Rgt = c.Rgt,
                 ParentId = c.ParentId,
                 Children = [],
+                Image = c.Image,
+                IsPopular = c.IsPopular,
+                HidenMenu = c.HidenMenu,
                 ProductCount = c.ProductCount,
             });
 
@@ -68,7 +76,7 @@ namespace ShopAppApi.Repositories.Products
         }
         public async Task<Category> Show(long id)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id); 
+            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             return category ?? throw new ArgumentException("Not found");
         }
 
@@ -87,6 +95,9 @@ namespace ShopAppApi.Repositories.Products
                 Rgt = 0,
                 ParentId = request.ParentId,
                 NotUse = request.NotUse,
+                Image = await FileHelper.SaveFile(request.Image),
+                IsPopular = request.IsPopular,
+                HidenMenu = request.HidenMenu,
                 UpdatedAt = DateTime.UtcNow,
                 CreatedAt = DateTime.UtcNow,
             };
@@ -107,6 +118,13 @@ namespace ShopAppApi.Repositories.Products
                 category.Lft = request.Lft;
                 category.ParentId = request.ParentId;
                 category.NotUse = request.NotUse;
+                if(category.Image != request.Image)
+                {
+                    FileHelper.DeleteFile(category.Image);
+                    category.Image = await FileHelper.SaveFile(request.Image);
+                }
+                category.IsPopular = request.IsPopular;
+                category.HidenMenu = request.HidenMenu;
                 category.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -119,7 +137,7 @@ namespace ShopAppApi.Repositories.Products
             var category = _context.Categories.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
             if (category != null)
             {
-                if(category.Products.Count > 0)
+                if (category.Products.Count > 0)
                 {
                     throw new ArgumentException("Category has products");
                 }

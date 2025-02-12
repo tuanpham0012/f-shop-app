@@ -18,6 +18,9 @@ public partial class CategoryVM
     public int? ParentId { get; set; }
 
     public bool? NotUse { get; set; }
+    public string? Image { get; set; }
+    public bool? IsPopular { get; set; }
+    public bool? HidenMenu { get; set; }
 
     public int ProductCount { get; set; }
 }
@@ -37,6 +40,9 @@ public partial class CategoryTreeVM
     public int? ParentId { get; set; }
 
     public bool? NotUse { get; set; }
+    public string? Image { get; set; }
+    public bool? IsPopular { get; set; }
+    public bool? HidenMenu { get; set; }
 
     public int ProductCount { get; set; }
     public List<CategoryTreeVM> Children { get; set; } = new();

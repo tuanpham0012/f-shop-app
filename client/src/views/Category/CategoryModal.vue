@@ -57,7 +57,26 @@
             </div>
             <Feedback :errors="errors?.parentId" />
           </div>
-          <div class="col-sm-6 mb-3">
+          <div class="col-sm-6 mb-3 row">
+            <div class="col-8">
+              <label for="formFile" class="form-label">Hình ảnh</label>
+              <input
+                class="form-control"
+                type="file"
+                id="formFile"
+                @change="uploadImage"
+                accept="image/png, image/gif, image/jpeg"
+              />
+            </div>
+            <div class="col-4 d-flex">
+              <img
+                :src="category.image"
+                class="w-auto h-[100%] max-h-[65px] object-contain"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div class="col-sm-4 mb-3">
             <div class="col-sm-12">
               <label for="name" class="form-label"></label>
             </div>
@@ -69,6 +88,38 @@
                 v-model="category.notUse"
               />
               <label for="not_use" class="">Ngưng sử dụng</label>
+            </div>
+
+            <Feedback :errors="errors?.Email" />
+          </div>
+          <div class="col-sm-4 mb-3">
+            <div class="col-sm-12">
+              <label for="name" class="form-label"></label>
+            </div>
+            <div class="input-group mt-2">
+              <input
+                class="form-check-input me-2"
+                type="checkbox"
+                id="hidenMenu"
+                v-model="category.hidenMenu"
+              />
+              <label for="hidenMenu" class="">Ẩn khỏi menu</label>
+            </div>
+
+            <Feedback :errors="errors?.Email" />
+          </div>
+          <div class="col-sm-4 mb-3">
+            <div class="col-sm-12">
+              <label for="name" class="form-label"></label>
+            </div>
+            <div class="input-group mt-2">
+              <input
+                class="form-check-input me-2"
+                type="checkbox"
+                id="popular"
+                v-model="category.isPopular"
+              />
+              <label for="popular" class="">Danh mục phổ biến</label>
             </div>
 
             <Feedback :errors="errors?.Email" />
@@ -121,6 +172,9 @@ const newCategory = reactive({
   code: "",
   lft: 0,
   parentId: null,
+  image: "",
+  isPopular: false,
+  hidenMenu: false,
   notUse: false,
 });
 
@@ -135,6 +189,50 @@ const categories: ComputedRef<any> = computed(() => {
 });
 
 const errors = ref<any>(null);
+
+const uploadImage = (event: any) => {
+    // Reference to the DOM input element
+    const { files } = event.target;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                const img: any = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    const ctx: any = canvas.getContext("2d");
+
+                    const maxSize = 450;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (img.height > img.width) {
+                        height = maxSize;
+                        width = (img.width / img.height) * height;
+                    } else {
+                        width = maxSize;
+                        height = (img.height / img.width) * width;
+                    }
+                    // Set kích thước mong muốn
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    console.log(typeof canvas.toDataURL(file.type));
+
+                    category.value.image = canvas.toDataURL(file.type);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    const fileInput = document.getElementById(
+        "formFile"
+    ) as HTMLInputElement;
+    fileInput.value = "";
+};
 
 watch(
   () => category.value.code,

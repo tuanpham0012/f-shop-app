@@ -30,6 +30,7 @@ namespace ShopAppApi.Repositories.Menus
                 ParentId = menu.ParentId,
                 Url = menu.Url,
                 Hidden = menu.Hidden,
+                GroupMenu = menu.GroupMenu,
             };
 
             _context.Menus.Add(newMenu);
@@ -47,6 +48,7 @@ namespace ShopAppApi.Repositories.Menus
             _menu.Rgt = menu.Rgt;
             _menu.ParentId = menu.ParentId;
             _menu.Hidden = menu.Hidden;
+            _menu.GroupMenu = menu.GroupMenu;
             _menu.Url = menu.Url;
             _menu.Icon = menu.Icon;
             _menu.UpdatedAt = DateTime.UtcNow;

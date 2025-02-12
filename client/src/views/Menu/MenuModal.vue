@@ -27,15 +27,15 @@
 
                     <div class="col-sm-6 mb-3">
                         <div class="col-sm-12">
-                            <label for="email" class="form-label required"
+                            <label for="title" class="form-label required"
                                 >Tên danh mục</label
                             >
                         </div>
                         <div class="input-group">
                             <input
-                                type="email"
+                                type="text"
                                 class="form-control"
-                                id="email"
+                                id="title"
                                 v-model="menu.title"
                             />
                         </div>
@@ -67,15 +67,16 @@
 
                     <div class="col-sm-6 mb-3">
                         <div class="col-sm-12">
-                            <label for="email" class="form-label"
+                            <label for="url" class="form-label"
                                 >Đường dẫn</label
                             >
                         </div>
                         <div class="input-group">
                             <input
-                                type="email"
+                                type="text"
+                                :disabled="menu.groupMenu"
                                 class="form-control"
-                                id="email"
+                                id="url"
                                 v-model="menu.url"
                             />
                         </div>
@@ -92,6 +93,20 @@
                             />
                             <label class="form-check-label" for="defaultCheck1">
                                 Không hiển thị
+                            </label>
+                        </div>
+                        <Feedback :errors="errors?.hidden" />
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                v-model="menu.groupMenu"
+                                id="groupMenu"
+                            />
+                            <label class="form-check-label" for="groupMenu">
+                                Group Menu
                             </label>
                         </div>
                         <Feedback :errors="errors?.hidden" />
@@ -138,6 +153,7 @@ const newMenu = reactive({
     icon: "",
     parentId: 2,
     hidden: false,
+    groupMenu: false,
 });
 
 const menu = computed(() =>

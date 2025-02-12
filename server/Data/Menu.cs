@@ -23,6 +23,8 @@ public partial class Menu
 
     public bool? Hidden { get; set; }
 
+    public bool? GroupMenu { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }

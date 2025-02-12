@@ -15,25 +15,6 @@ const id = ref(null);
 const categories: ComputedRef<any> = computed(() => {
   return categoryStore.$state.listTree.data;
 });
-// const currenPage = computed(() => {
-//   return categoryStore.$state.listTree.meta?.currentPage ?? query.page;
-// });
-// const pageSize = computed(() => {
-//   return categoryStore.$state.listTree.meta?.pageSize ?? query.pageSize;
-// });
-// const totalPages = computed(() => {
-//   return categoryStore.$state.listTree.meta?.totalPages ?? 1;
-// });
-// const totalCount = computed(() => {
-//   return categoryStore.$state.listTree.meta?.totalCount ?? 1;
-// });
-// const changePage = async (value: any) => {
-//   console.log(value);
-
-//   query.pageSize = value.pageSize;
-//   query.page = value.currentPage;
-//   await getListData();
-// };
 const toggleModal = (refresh = false) => {
   showModal.value = !showModal.value;
   getListData();
@@ -95,9 +76,11 @@ onBeforeMount(async () => {
       <table class="table table-hover">
         <thead class="table-light">
           <tr>
+            <th class="text-center">Hình ảnh</th>
             <th>Tên</th>
-            <th>Số lượng sản phẩm</th>
+            <th>SL sản phẩm</th>
             <th>Trạng thái</th>
+            <th class="text-center">Danh mục phổ biến</th>
             <th>Actions</th>
           </tr>
         </thead>

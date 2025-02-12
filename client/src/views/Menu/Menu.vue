@@ -76,7 +76,7 @@ onBeforeMount(async () => {
                 <thead class="table-light">
                     <tr>
                         <th>Tên</th>
-                        <th>Icon</th>
+                        <th class="text-center">Icon</th>
                         <th>Path</th>
                         <th>Trạng thái</th>
                         <th class="text-center">Actions</th>

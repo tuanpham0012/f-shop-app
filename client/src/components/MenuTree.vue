@@ -1,7 +1,7 @@
 <template lang="">
-    <li class="menu-header small text-uppercase">
+    <!-- <li class="menu-header small text-uppercase">
       <span class="menu-header-text">Apps &amp; Pages</span>
-    </li>
+    </li> -->
     <li
         class="menu-item"
         v-if="menu"

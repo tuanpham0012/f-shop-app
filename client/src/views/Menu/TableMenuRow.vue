@@ -8,7 +8,7 @@
             </div>
             
         </td>
-        <td><div v-html="menu.icon"></div></td>
+        <td class="text-center"><div v-html="menu.icon"></div></td>
         <td>{{ menu.url }}</td>
         <td>{{ menu.hidden ? "Đã ẩn" : "Hiển thị" }}</td>
         <td class="text-center">

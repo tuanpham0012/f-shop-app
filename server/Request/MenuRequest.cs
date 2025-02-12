@@ -13,6 +13,8 @@ namespace ShopAppApi.Request
 
         public int? ParentId { get; set; }
 
+        public bool? GroupMenu { get; set; }
+
         public bool? Hidden { get; set; }
     }
 
@@ -32,5 +34,7 @@ namespace ShopAppApi.Request
         public int? ParentId { get; set; }
 
         public bool? Hidden { get; set; }
+
+        public bool? GroupMenu { get; set; }
     }
 }

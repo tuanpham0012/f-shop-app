@@ -17,7 +17,9 @@ namespace ShopAppApi.Request
         public string Name { get; set; } = null!;
         [ModelExists("categories")]
         public int? ParentId { get; set; }
-
+        public string? Image { get; set; }
+        public bool? IsPopular { get; set; }
+        public bool? HidenMenu { get; set; }
         public bool? NotUse { get; set; }
     }
 
@@ -28,7 +30,9 @@ namespace ShopAppApi.Request
         [ModelExists("categories")]
         public int? ParentId { get; set; }
         public int Lft { get; set; }
-
+        public string? Image { get; set; }
+        public bool? IsPopular { get; set; }
+        public bool? HidenMenu { get; set; }
         public bool? NotUse { get; set; }
     }
 }
