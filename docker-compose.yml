@@ -3,13 +3,14 @@ services:
     container_name: sqlserver
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "Anhem123@"
-      ACCEPT_EULA: "Y"
+      - SA_PASSWORD=Anhem123@
+      - ACCEPT_EULA=Y
+      - TZ=Asia/Ho_Chi_Minh
     ports:
       - "1434:1433"
     volumes:
       - c:/volumes/shop_app/mssql/data:/var/opt/mssql/data
-    restart: always
+    restart: unless-stopped
     hostname: sqlserver
     networks:
       - qipf-network
@@ -21,13 +22,14 @@ services:
       dockerfile: ./server/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - TZ=Asia/Ho_Chi_Minh
       #- ASPNETCORE_URLS=http://+:80
       - "ConnectionStrings__DockerData=Server=sqlserver;Database=shop_app;User Id=sa;Password=Anhem123@;TrustServerCertificate=true"
-    # ports:
-    #   - "8080:8080"
+    ports:
+      - "8000:8080"
     depends_on:
       - sqlserver
-    restart: always
+    restart: unless-stopped
     networks:
       - qipf-network
     # deploy:
@@ -42,9 +44,10 @@ services:
         - VITE_VUE_APP_ENV=development
     environment:
       - VITE_VUE_APP_ENV=development
-    # ports:
-    #   - "3000:80"
-    restart: always
+      - TZ=Asia/Ho_Chi_Minh
+    ports:
+      - "8001:80"
+    restart: unless-stopped
     networks:
       - qipf-network
   user-client-app:
@@ -56,9 +59,10 @@ services:
           - VITE_VUE_APP_ENV=development
       environment:
         - VITE_VUE_APP_ENV=development
-      # ports:
-      #   - "3000:80"
-      restart: always
+        - TZ=Asia/Ho_Chi_Minh
+      ports:
+        - "8002:80"
+      restart: unless-stopped
       networks:
         - qipf-network
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopAppApi.Data;
 using ShopAppApi.Repositories.Menus;
+using ShopAppApi.Repositories.TelegramBotRepository;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
 
@@ -8,9 +9,10 @@ namespace ShopAppApi.Controllers.Admin
 {
     [ApiController]
     [Route("menus")]
-    public class MenuController(IMenuRepository repository) : Controller
+    public class MenuController(IMenuRepository repository, ITelegramRepository telegramRepository) : Controller
     {
         private readonly IMenuRepository _repo = repository;
+        private readonly ITelegramRepository _telegramRepository = telegramRepository;
         private readonly Dictionary<string, int> menuType = new()
         {
             {"admin", 1}, {"user", 2}
@@ -24,6 +26,24 @@ namespace ShopAppApi.Controllers.Admin
             var tree = _repo.BuildTree(entries);
 
             return Ok(new ResponseCollection<MenuTree>(mnType > 0 ? tree.Where(x => x.Id == mnType).First().Children : tree));
+        }
+
+        [HttpGet("admin-menu")]
+        public async Task<IActionResult> GetAdminMenu()
+        {
+            var entries = await _repo.GetAll();
+            var tree = _repo.BuildTree(entries);
+
+            return Ok(new ResponseCollection<MenuTree>(tree.Where(x => x.Id == menuType["admin"]).First().Children));
+        }
+
+        [HttpGet("user-menu")]
+        public async Task<IActionResult> GetUserMenu()
+        {
+            var entries = await _repo.GetAll();
+            var tree = _repo.BuildTree(entries);
+
+            return Ok(new ResponseCollection<MenuTree>(tree.Where(x => x.Id == menuType["user"]).First().Children));
         }
 
         [HttpGet]
@@ -75,6 +95,14 @@ namespace ShopAppApi.Controllers.Admin
             {
                 return BadRequest(new ErrorResponse(422, ex.Message, ex.ToString()));
             }
+        }
+
+        [HttpPost("test-alert")]
+        public async Task<IActionResult> Alert(Dictionary<string,string> data)
+        {
+            Console.WriteLine(data);
+            await _telegramRepository.SendMessage(data["message"] ?? "Test message");
+            return Ok(data["message"] ?? "Test message");
         }
     }
 }

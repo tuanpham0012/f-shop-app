@@ -8,7 +8,7 @@ using ShopAppApi.Response;
 namespace ShopAppApi.Controllers.Admin
 {
     [ApiController]
-    [Route("brands")]
+    [Route("admin/brands")]
     public class BrandController(IBrandRepository repository) : Controller
     {
         private readonly IBrandRepository _repo = repository;

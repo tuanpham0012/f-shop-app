@@ -10,7 +10,7 @@ using System;
 namespace ShopAppApi.Controllers.Admin
 {
     [ApiController]
-    [Route("products")]
+    [Route("admin/products")]
     public class ProductController(IProductRepository _repo) : Controller
     {
 

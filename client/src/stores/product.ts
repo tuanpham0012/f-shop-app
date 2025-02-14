@@ -8,6 +8,8 @@ import {
 } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
 
+const adminUrl = apiUrl + "/admin";
+
 interface State {
     entries: any | [];
     entry: any | null;
@@ -31,7 +33,7 @@ export const useProductStore = defineStore("product", {
 
     actions: {
         async getList(query: any) {
-            await _getList(`${apiUrl}/products`, query)
+            await _getList(`${adminUrl}/products`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.entries = res.data
@@ -45,7 +47,7 @@ export const useProductStore = defineStore("product", {
                 });
         },
         // async getListSupplier(query: any) {
-        //     await _getList(`${apiUrl}/suppliers`, query)
+        //     await _getList(`${adminUrl}/suppliers`, query)
         //         .then((res) => {
         //             console.log(res.data);
         //             this.suppliers = res.data;
@@ -55,11 +57,11 @@ export const useProductStore = defineStore("product", {
         //         });
         // },
         async create(data: any) {
-            return await _create(`${apiUrl}/products`, data);
+            return await _create(`${adminUrl}/products`, data);
         },
         async show(id: any) {
             this.entry = null
-            await _show(`${apiUrl}/products/${id}`)
+            await _show(`${adminUrl}/products/${id}`)
                 .then((res) => {
                     this.entry = res.data.data;
                     if(this.entry)
@@ -74,7 +76,7 @@ export const useProductStore = defineStore("product", {
             this.entry = null
         },
         async update(id: any, data: any) {
-            return await _update(`${apiUrl}/products/${id}`, data);
+            return await _update(`${adminUrl}/products/${id}`, data);
         },
         async delete(id: any) {
             return await _destroy("http://localhost:5077/Customer/" + id);
@@ -104,7 +106,7 @@ export const useCategoryStore = defineStore("category", {
 
     actions: {
         async getList(query: any) {
-            await _getList(`${apiUrl}/categories`, query)
+            await _getList(`${adminUrl}/categories`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.entries = res.data;
@@ -114,7 +116,7 @@ export const useCategoryStore = defineStore("category", {
                 });
         },
         async getListTree(query: any) {
-            await _getList(`${apiUrl}/categories/get-tree`, query)
+            await _getList(`${adminUrl}/categories/get-tree`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.listTree = res.data;
@@ -124,11 +126,11 @@ export const useCategoryStore = defineStore("category", {
                 });
         },
         async create(data: any) {
-            return await _create(`${apiUrl}/categories`, data);
+            return await _create(`${adminUrl}/categories`, data);
         },
         async show(id: any) {
             this.entry = null
-            await _show(`${apiUrl}/categories/${id}`)
+            await _show(`${adminUrl}/categories/${id}`)
                 .then((res) => {
                     this.entry = res.data.data;
                 })
@@ -141,10 +143,10 @@ export const useCategoryStore = defineStore("category", {
             this.entry = null
         },
         async update(id: any, data: any) {
-            return await _update(`${apiUrl}/categories/${id}`, data);
+            return await _update(`${adminUrl}/categories/${id}`, data);
         },
         async delete(id: any) {
-            return await _destroy(`${apiUrl}/categories/${id}`);
+            return await _destroy(`${adminUrl}/categories/${id}`);
         },
     },
 });
@@ -165,7 +167,7 @@ export const useBrandStore = defineStore("brand", {
 
     actions: {
         async getList(query: any) {
-            await _getList(`${apiUrl}/brands`, query)
+            await _getList(`${adminUrl}/brands`, query)
                 .then((res) => {
                     console.log(res.data);
                     this.entries = res.data;
@@ -175,13 +177,13 @@ export const useBrandStore = defineStore("brand", {
                 });
         },
         async create(data: any) {
-            return await _create(`${apiUrl}/brands`, data);
+            return await _create(`${adminUrl}/brands`, data);
         },
         async update(id:any, data: any) {
-            return await _update(`${apiUrl}/brands/${id}`, data);
+            return await _update(`${adminUrl}/brands/${id}`, data);
         },
         async show(id: any) {
-            await _show(`${apiUrl}/brands/${id}`)
+            await _show(`${adminUrl}/brands/${id}`)
                 .then((res) => {
                     console.log(res.data);
                     this.entry = res.data.data;
@@ -191,7 +193,7 @@ export const useBrandStore = defineStore("brand", {
                 });
         },
         async delete(id:any){
-            return await _destroy(`${apiUrl}/brands/${id}`);
+            return await _destroy(`${adminUrl}/brands/${id}`);
         }
     },
 });

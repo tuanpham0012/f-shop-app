@@ -7,6 +7,7 @@ using ShopAppApi.Repositories.Menus;
 using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Repositories.RepoCustomer;
+using ShopAppApi.Repositories.TelegramBotRepository;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -32,6 +33,7 @@ builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<ITaxRepository, TaxRepository>();
+builder.Services.AddScoped<ITelegramRepository, TelegramRepository>();
 
 builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
 

@@ -6,7 +6,7 @@ using ShopAppApi.Response;
 namespace ShopAppApi.Controllers.Admin
 {
     [ApiController]
-    [Route("suppliers")]
+    [Route("admin/suppliers")]
     public class SupplierController(ISupplierRepository repository) : Controller
     {
         private readonly ISupplierRepository _repo = repository;
