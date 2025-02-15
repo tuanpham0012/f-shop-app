@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('code', 24)->unique();
+            $table->string('image')->nullable();
             $table->string('name');
             $table->nestedSet();
             $table->boolean('not_use')->default(false);
+            $table->boolean('is_popular')->default(false);
+            $table->boolean('hiden_menu')->default(false);
             $table->timestamps();
         });
     }

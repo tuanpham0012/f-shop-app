@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('position')->default(1);
             $table->nestedSet();
             $table->boolean('hidden')->default(0);
+            $table->boolean('group_menu')->default(false);
             $table->timestamps();
         });
     }
