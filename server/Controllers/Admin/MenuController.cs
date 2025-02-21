@@ -98,11 +98,11 @@ namespace ShopAppApi.Controllers.Admin
         }
 
         [HttpPost("test-alert")]
-        public async Task<IActionResult> Alert(Dictionary<string,string> data)
+        public async Task<IActionResult> Alert(TelegramMessage data)
         {
             Console.WriteLine(data);
-            await _telegramRepository.SendMessage(data["message"] ?? "Test message");
-            return Ok(data["message"] ?? "Test message");
+            await _telegramRepository.SendMessage(data._message ?? "send message");
+            return Ok(data);
         }
     }
 }

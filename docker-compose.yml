@@ -12,6 +12,12 @@ services:
       - c:/volumes/shop_app/mssql/data:/var/opt/mssql/data
     restart: unless-stopped
     hostname: sqlserver
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 500MB  # Giới hạn RAM ở 4GB
+    #     reservations:
+    #       memory: 500MB  # Đặt trước 2GB RAM (tùy chọn, nhưng nên có)
     networks:
       - qipf-network
 
