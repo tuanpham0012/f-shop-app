@@ -8,6 +8,7 @@ using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Repositories.RepoCustomer;
 using ShopAppApi.Repositories.TelegramBotRepository;
+using StackExchange.Redis;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -36,6 +37,13 @@ builder.Services.AddScoped<ITaxRepository, TaxRepository>();
 builder.Services.AddScoped<ITelegramRepository, TelegramRepository>();
 
 builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+    {
+        // Thay đổi chuỗi kết nối nếu cần
+        string connectionString = "localhost:8008";
+        return ConnectionMultiplexer.Connect(connectionString);
+    });
 
 builder.Services.AddHttpContextAccessor();
 

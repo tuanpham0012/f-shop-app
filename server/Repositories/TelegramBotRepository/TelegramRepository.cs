@@ -15,17 +15,16 @@ namespace ShopAppApi.Repositories.TelegramBotRepository
     public class TelegramRepository : ITelegramRepository
     {
         // https://api.telegram.org/bot{token}/getUpdates
-        private readonly string _token = "7882187432:AAENL8opQe2yhZYmFLUz8ixeFMQsPHhV018";
-        private readonly string _chatId = "1645705288";
+        private readonly string _token = "";
+        private readonly string _chatId = "";
         private TelegramBotClient _client;
 
-        private IConfiguration _configuration1;
         public TelegramRepository(IConfiguration configuration)
         {
-            _configuration1 = configuration;
+            _token = configuration["TelegtamConfig:BotToken"] ?? throw new("TelegtamConfig:BotToken is null.");
+            _chatId = configuration["TelegtamConfig:ChatId"] ?? throw new("TelegtamConfig:ChatId is null."); 
+
             _client = new TelegramBotClient(_token);
-            _token = _configuration1["TelegramBot:BotToken"];
-            _chatId = _configuration1["TelegramBot:ChatId"];
         }
 
         public async Task SendMessage(string message)

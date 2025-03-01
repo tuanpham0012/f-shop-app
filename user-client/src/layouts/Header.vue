@@ -218,195 +218,16 @@
           </div>
         </div>
         <!-- End .header-left -->
-
         <div class="header-center">
-          <nav class="main-nav">
-            <ul class="menu sf-arrows">
-              <li class="megamenu-container">
-                <a href="index.html" class="">Home</a>
-              </li>
-              <li>
-                <a href="category.html" class="sf-with-ul">Shop</a>
-              </li>
-              <li>
-                <a href="product.html" class="sf-with-ul">Product</a>
-              </li>
-              <li>
-                <a href="#" class="sf-with-ul">Pages</a>
-
-                <ul>
-                  <li>
-                    <a href="about.html" class="sf-with-ul">About</a>
-                    <ul>
-                      <li>
-                        <a href="about.html">About 01</a>
-                      </li>
-                      <li>
-                        <a href="about-2.html">About 02</a>
-                      </li>
-                      <li>
-                        <a href="about.html" class="sf-with-ul">About 01</a>
-                        <ul>
-                          <li>
-                            <a href="about.html">About 01</a>
-                          </li>
-                          <li>
-                            <a href="about-2.html">About 02</a>
-                          </li>
-                          <li>
-                            <a href="about.html">About 01</a>
-                          </li>
+                    <nav class="main-nav">
+                        <ul class="menu sf-arrows">
+                            <MenuTree v-for="(item,index) in menu" :key="index" :menu="item" :depth="1" />
                         </ul>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="contact.html" class="sf-with-ul">Contact</a>
-
-                    <ul>
-                      <li>
-                        <a href="contact.html">Contact 01</a>
-                      </li>
-                      <li>
-                        <a href="contact-2.html">Contact 02</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a href="login.html">Login</a></li>
-                  <li><a href="faq.html">FAQs</a></li>
-                  <li><a href="404.html">Error 404</a></li>
-                  <li>
-                    <a href="coming-soon.html">Coming Soon</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="blog.html" class="sf-with-ul">Blog</a>
-
-                <ul>
-                  <li><a href="blog.html">Classic</a></li>
-                  <li>
-                    <a href="blog-listing.html">Listing</a>
-                  </li>
-                  <li>
-                    <a href="#">Grid</a>
-                    <ul>
-                      <li>
-                        <a href="blog-grid-2cols.html">Grid 2 columns</a>
-                      </li>
-                      <li>
-                        <a href="blog-grid-3cols.html">Grid 3 columns</a>
-                      </li>
-                      <li>
-                        <a href="blog-grid-4cols.html">Grid 4 columns</a>
-                      </li>
-                      <li>
-                        <a href="blog-grid-sidebar.html">Grid sidebar</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">Masonry</a>
-                    <ul>
-                      <li>
-                        <a href="blog-masonry-2cols.html">Masonry 2 columns</a>
-                      </li>
-                      <li>
-                        <a href="blog-masonry-3cols.html">Masonry 3 columns</a>
-                      </li>
-                      <li>
-                        <a href="blog-masonry-4cols.html">Masonry 4 columns</a>
-                      </li>
-                      <li>
-                        <a href="blog-masonry-sidebar.html">Masonry sidebar</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">Mask</a>
-                    <ul>
-                      <li>
-                        <a href="blog-mask-grid.html">Blog mask grid</a>
-                      </li>
-                      <li>
-                        <a href="blog-mask-masonry.html">Blog mask masonry</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a href="#">Single Post</a>
-                    <ul>
-                      <li>
-                        <a href="single.html">Default with sidebar</a>
-                      </li>
-                      <li>
-                        <a href="single-fullwidth.html">Fullwidth no sidebar</a>
-                      </li>
-                      <li>
-                        <a href="single-fullwidth-sidebar.html"
-                          >Fullwidth with sidebar</a
-                        >
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="elements-list.html" class="sf-with-ul">Elements</a>
-
-                <ul>
-                  <li>
-                    <a href="elements-products.html">Products</a>
-                  </li>
-                  <li>
-                    <a href="elements-typography.html">Typography</a>
-                  </li>
-                  <li>
-                    <a href="elements-titles.html">Titles</a>
-                  </li>
-                  <li>
-                    <a href="elements-banners.html">Banners</a>
-                  </li>
-                  <li>
-                    <a href="elements-product-category.html"
-                      >Product Category</a
-                    >
-                  </li>
-                  <li>
-                    <a href="elements-video-banners.html">Video Banners</a>
-                  </li>
-                  <li>
-                    <a href="elements-buttons.html">Buttons</a>
-                  </li>
-                  <li>
-                    <a href="elements-accordions.html">Accordions</a>
-                  </li>
-                  <li>
-                    <a href="elements-tabs.html">Tabs</a>
-                  </li>
-                  <li>
-                    <a href="elements-testimonials.html">Testimonials</a>
-                  </li>
-                  <li>
-                    <a href="elements-blog-posts.html">Blog Posts</a>
-                  </li>
-                  <li>
-                    <a href="elements-portfolio.html">Portfolio</a>
-                  </li>
-                  <li>
-                    <a href="elements-cta.html">Call to Action</a>
-                  </li>
-                  <li>
-                    <a href="elements-icon-boxes.html">Icon Boxes</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <!-- End .menu -->
-          </nav>
-          <!-- End .main-nav -->
-        </div>
-        <!-- End .header-center -->
+                        <!-- End .menu -->
+                    </nav>
+                    <!-- End .main-nav -->
+                </div>
+                <!-- End .header-center -->
 
         <div class="header-right">
           <!-- <i class="la la-lightbulb-o"></i>
@@ -421,12 +242,16 @@
 </template>
 <script setup>
 import { onBeforeMount, computed } from "vue";
-import { useCategoryStore } from "@/stores/product";
+import { useCategoryStore } from "@/stores/category";
+import { useMenuStore } from "@/stores/menu";
 import CategoryTree from "./CategoryTree.vue";
+import MenuTree from "./MenuTree.vue";
 
 const categoryStore = useCategoryStore();
+const menuStore = useMenuStore();
 
 const categories = computed(() => categoryStore.$state.listTree.data);
+const menu = computed(() => menuStore.$state.menu.data);
 
 onBeforeMount(async () => {
   window.onscroll = function () {
@@ -440,7 +265,8 @@ onBeforeMount(async () => {
     }
   };
 
-  await categoryStore.getListTree({ notUse: false });
+  await categoryStore.getListCategory({ notUse: false });
+  await menuStore.getMenu({ notUse: false });
 });
 </script>
 <style lang="scss" scoped>

@@ -121,6 +121,7 @@
                 v-for="(menu, index) in menus"
                 :key="index"
                 :menu="menu"
+                :depth="index + 1"
             />
         </ul>
     </aside>

@@ -1,17 +1,16 @@
 <template lang="">
-    <!-- <li class="menu-header small text-uppercase">
-      <span class="menu-header-text">Apps &amp; Pages</span>
-    </li> -->
+    
     <li
         class="menu-item"
-        v-if="menu"
         :class="{ 'open ss active': checkRouteActive(menu) }"
+
     >
         <component
             :is="(menu.children.length > 0 || menu.url == null) ? 'div' : 'router-link'"
             :to="(menu.children.length > 0 || menu.url == null) ? '' : menu.url"
             class="menu-link cursor-pointer"
             :class="{ 'menu-toggle': menu.children.length > 0 }"
+            v-if="!menu.groupMenu"
         >
             <div
                 class="w-[20px] h-[20px] me-2"
@@ -20,11 +19,15 @@
             ></div>
             <div>{{ menu.title }}</div>
         </component>
-        <ul class="menu-sub" v-if="menu.children.length > 0">
+        <li class="menu-header small text-uppercase" v-else>
+            <span class="menu-header-text">{{ menu.title }}</span>
+        </li>
+        <ul class="menu-sub " v-if="menu.children.length > 0">
             <MenuTree
                 v-for="(item, index) in menu.children"
                 :key="index"
                 :menu="item"
+                :depth="depth + 1"
             >
             </MenuTree>
         </ul>
@@ -42,6 +45,10 @@ const props = defineProps({
                 children: [],
             };
         },
+    },
+    depth: {
+        type: Number,
+        default: 0,
     },
 });
 

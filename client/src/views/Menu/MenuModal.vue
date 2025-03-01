@@ -106,7 +106,7 @@
                                 id="groupMenu"
                             />
                             <label class="form-check-label" for="groupMenu">
-                                Group Menu
+                                Nhóm Danh Mục
                             </label>
                         </div>
                         <Feedback :errors="errors?.hidden" />
@@ -130,7 +130,7 @@
     </modal>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from "vue";
+import { ref, reactive, computed, onBeforeMount, watch } from "vue";
 import { useMenuStore } from "@/stores/menu";
 import { successMessage } from "@/helpers/toast";
 import TreeSelect from "./TreeSelect.vue";
@@ -152,6 +152,7 @@ const newMenu = reactive({
     url: "",
     icon: "",
     parentId: 2,
+    position: 1,
     hidden: false,
     groupMenu: false,
 });
@@ -163,6 +164,13 @@ const menu = computed(() =>
 const menus = computed(() => menuStore.$state.entries.data);
 
 const errors = ref<any>(null);
+
+watch( () => menu.value.groupMenu , (newValue) => {
+    if(newValue) {
+        menu.value.url = "";
+        menu.value.position = 0;
+    }
+})
 
 const save = async () => {
     if (menu.value.id == null) {

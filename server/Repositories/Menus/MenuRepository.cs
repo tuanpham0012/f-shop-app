@@ -74,6 +74,7 @@ namespace ShopAppApi.Repositories.Menus
                 Lft = c.Lft,
                 Rgt = c.Rgt,
                 ParentId = c.ParentId,
+                GroupMenu = c.GroupMenu,
                 Children = []
             });
 

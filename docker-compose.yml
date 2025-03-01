@@ -20,7 +20,16 @@ services:
     #       memory: 500MB  # Đặt trước 2GB RAM (tùy chọn, nhưng nên có)
     networks:
       - qipf-network
-
+  redis:
+    container_name: redis
+    restart: always
+    image: redis:latest
+    ports:
+      - "8003:6379"
+    volumes:
+      - c:/volumes/shop_app/redis/redis_data:/data
+    networks:
+      - qipf-network
   web-api:
     # container_name: web-api
     build:
