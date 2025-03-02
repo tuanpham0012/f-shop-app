@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
+using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 
 namespace ShopAppApi.Repositories.Menus
@@ -7,6 +8,8 @@ namespace ShopAppApi.Repositories.Menus
     public class MenuRepository(ShopAppContext context) : IMenuRepository
     {
         private readonly ShopAppContext _context = context;
+
+        private readonly IRedisCache _cache;
 
         public async Task Create(StoreMenuRequest menu)
         {
@@ -102,6 +105,19 @@ namespace ShopAppApi.Repositories.Menus
         {
             var menu = await _context.Menus.SingleOrDefaultAsync(c => c.Id == Id);
             return menu ?? throw new ArgumentException("Menu not found");
+        }
+
+        public async Task<List<MenuTree>> GetAdminMenu()
+        {
+            var entries = await GetAll();
+            var tree = BuildTree(entries).Where(x => x.Id == 1).First().Children;
+            return await _cache.GetOrCreateAsync("admin-menu", async () => tree);
+        }
+        public async Task<List<MenuTree>> GetUserMenu()
+        {
+            var entries = await GetAll();
+            var tree = BuildTree(entries).Where(x => x.Id == 2).First().Children;
+            return await _cache.GetOrCreateAsync("user-menu", async () => tree);
         }
     }
 }

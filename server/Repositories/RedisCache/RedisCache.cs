@@ -1,18 +1,29 @@
 
-using StackExchange.Redis;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace ShopAppApi.Repositories.RedisCache
 {
     public class RedisCache : IRedisCache
     {
-        private readonly IConnectionMultiplexer _redis;
+        private readonly IDistributedCache _cache;
 
-        private readonly IDatabase _database;
+        private static JsonSerializerOptions serializerOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = null,
+        WriteIndented = true,
+        AllowTrailingCommas = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
-        public RedisCache(IConnectionMultiplexer redis)
+        private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);
+
+        public RedisCache(IDistributedCache cache)
         {
-            _redis = redis;
-            _database = redis.GetDatabase();
+            _cache = cache;
         }
 
 
@@ -21,47 +32,56 @@ namespace ShopAppApi.Repositories.RedisCache
             throw new NotImplementedException();
         }
 
-        public TItem? GetByKey<TItem>(string key)
+        public async Task<TItem?> GetByKeyAsync<TItem>(string key)
         {
-            throw new NotImplementedException();
+            var cachedItem = await _cache.GetStringAsync(key);
+            return JsonConvert.DeserializeObject<TItem>(cachedItem);
         }
 
-        public TItem? GetOrCreate<TItem>(string key, Func<TItem> factory)
+        public async Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory)
         {
-            throw new NotImplementedException();
+            var cachedItem = await _cache.GetStringAsync(key);
+            if (cachedItem != null)
+            {
+                Console.WriteLine("✅ Item retrieved from cache!");
+                return JsonConvert.DeserializeObject<TItem>(cachedItem);
+            }
+
+            var item = await factory();
+            await _cache.SetStringAsync(
+                key,
+                JsonConvert.SerializeObject(item),
+            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = _cacheExpiry }
+            );
+            Console.WriteLine("🔄 Item added to cache.");
+            return item;
         }
 
-        public TItem? GetOrCreate<TItem>(string key, Func<TItem> factory, int time)
+        public async Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, int time)
         {
-            var result = _database.Has(key);
-        }
+            var cachedItem = await _cache.GetStringAsync(key);
+            if (cachedItem != null)
+            {
+                Console.WriteLine("✅ Item retrieved from cache!");
+                return JsonConvert.DeserializeObject<TItem>(cachedItem);
+            }
 
-        public Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, int time)
-        {
-            throw new NotImplementedException();
+            var item = await factory();
+            await _cache.SetStringAsync(
+                key,
+                JsonConvert.SerializeObject(item),
+            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(time) }
+            );
+            Console.WriteLine("🔄 Item added to cache.");
+            return item;
         }
 
         public void Remove(string key)
         {
-            throw new NotImplementedException();
+            _cache.Remove(key);
         }
 
         public void RemoveByPrefix(string pattern)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TItem SetValue<TItem>(string key, TItem value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TItem SetValue<TItem>(string key, TItem value, int time)
         {
             throw new NotImplementedException();
         }

@@ -31,19 +31,17 @@ namespace ShopAppApi.Controllers.Admin
         [HttpGet("admin-menu")]
         public async Task<IActionResult> GetAdminMenu()
         {
-            var entries = await _repo.GetAll();
-            var tree = _repo.BuildTree(entries);
+            var entries = await _repo.GetAdminMenu();
 
-            return Ok(new ResponseCollection<MenuTree>(tree.Where(x => x.Id == menuType["admin"]).First().Children));
+            return Ok(new ResponseCollection<MenuTree>(entries));
         }
 
         [HttpGet("user-menu")]
         public async Task<IActionResult> GetUserMenu()
         {
-            var entries = await _repo.GetAll();
-            var tree = _repo.BuildTree(entries);
+            var entries = await _repo.GetUserMenu();
 
-            return Ok(new ResponseCollection<MenuTree>(tree.Where(x => x.Id == menuType["user"]).First().Children));
+            return Ok(new ResponseCollection<MenuTree>(entries));
         }
 
         [HttpGet]
