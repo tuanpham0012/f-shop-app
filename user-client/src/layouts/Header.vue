@@ -1,42 +1,52 @@
 <template>
-  <header class="header header-intro-clearance header-4">
+  <header class="header">
     <div class="header-top" v-if="false">
       <div class="container">
         <div class="header-left">
-          <a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a>
+          <div class="header-dropdown">
+            <a href="#">Usd</a>
+            <div class="header-menu">
+              <ul>
+                <li><a href="#">Eur</a></li>
+                <li><a href="#">Usd</a></li>
+              </ul>
+            </div>
+            <!-- End .header-menu -->
+          </div>
+          <!-- End .header-dropdown -->
+
+          <div class="header-dropdown">
+            <a href="#">Eng</a>
+            <div class="header-menu">
+              <ul>
+                <li><a href="#">English</a></li>
+                <li><a href="#">French</a></li>
+                <li><a href="#">Spanish</a></li>
+              </ul>
+            </div>
+            <!-- End .header-menu -->
+          </div>
+          <!-- End .header-dropdown -->
         </div>
         <!-- End .header-left -->
+
         <div class="header-right">
           <ul class="top-menu">
             <li>
               <a href="#">Links</a>
               <ul>
                 <li>
-                  <div class="header-dropdown">
-                    <a href="#">USD</a>
-                    <div class="header-menu">
-                      <ul>
-                        <li><a href="#">Eur</a></li>
-                        <li><a href="#">Usd</a></li>
-                      </ul>
-                    </div>
-                    <!-- End .header-menu -->
-                  </div>
+                  <a href="tel:#"
+                    ><i class="icon-phone"></i>Call: +0123 456 789</a
+                  >
                 </li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
                 <li>
-                  <div class="header-dropdown">
-                    <a href="#">English</a>
-                    <div class="header-menu">
-                      <ul>
-                        <li><a href="#">English</a></li>
-                        <li><a href="#">French</a></li>
-                        <li><a href="#">Spanish</a></li>
-                      </ul>
-                    </div>
-                    <!-- End .header-menu -->
-                  </div>
+                  <a href="#signin-modal" data-toggle="modal"
+                    ><i class="icon-user"></i>Login</a
+                  >
                 </li>
-                <!-- {{-- <li><a href="#signin-modal" data-toggle="modal">Sign in / Sign up</a></li> --}} -->
               </ul>
             </li>
           </ul>
@@ -48,65 +58,55 @@
     </div>
     <!-- End .header-top -->
 
-    <div class="header-middle" id="header-middle">
-      <div class="container justify-content-center">
-        <div class="header-left me-5">
-          <!-- <div
-            class="dropdown category-dropdown d-inline w-100 d-none d-lg-block"
-          >
-            <a
-              href="#"
-              class="dropdown-toggle fw-550"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Danh mục <i class="icon-angle-down"></i>
-            </a>
-            <div class="dropdown-menu">
-              <nav class="side-nav">
-                <ul class="menu-vertical sf-arrows">
-                  <CategoryTree v-for="item in categories" :entry="item" />
-                </ul>
-              </nav>
-            </div>
-          </div> -->
+    <div class="header-middle sticky-header">
+      <div class="container">
+        <div class="header-left">
           <button class="mobile-menu-toggler">
             <span class="sr-only">Toggle mobile menu</span>
             <i class="icon-bars"></i>
           </button>
-          <div class="w-[150px] flex-0">
-            <a href="/" class="logo">
-              <img
-                src="../assets/images/demos/demo-4/logo.png"
-                alt="Molla Logo"
+
+          <a
+            href="https://www.portotheme.com/html/molla/index1.html"
+            class="logo"
+          >
+            <img
+              src="../assets/images/demos/demo-21/logo.png"
+              alt="Molla Logo"
+              width="100"
+              height="25"
+            />
+          </a>
+
+          <nav class="main-nav">
+            <ul class="menu sf-arrows">
+              <MenuTree
+                v-for="(item, index) in menu"
+                :key="index"
+                :menu="item"
+                :depth="1"
               />
-            </a>
-          </div>
+            </ul>
+            <!-- End .menu -->
+          </nav>
+          <!-- End .main-nav -->
         </div>
         <!-- End .header-left -->
 
-        <!-- End .header-left -->
-
-        <div class="header-center">
-          <div
-            class="header-search header-search-extended header-search-visible d-none d-lg-block"
-          >
-            <a href="#" class="search-toggle" role="button"
+        <div class="header-right">
+          <div class="header-search">
+            <a href="#" class="search-toggle" role="button" title="Search"
               ><i class="icon-search"></i
             ></a>
             <form action="#" method="get">
-              <div class="header-search-wrapper search-wrapper-wide w-500px">
-                <label for="key-word" class="sr-only">Tìm kiếm</label>
-                <button class="btn btn-primary" type="submit">
-                  <i class="icon-search"></i>
-                </button>
+              <div class="header-search-wrapper">
+                <label for="q" class="sr-only">Search</label>
                 <input
                   type="search"
                   class="form-control"
-                  name="key-word"
-                  id="key-word"
-                  placeholder="Tìm kiếm sản phẩm..."
+                  name="q"
+                  id="q"
+                  placeholder="Search in..."
                   required
                 />
               </div>
@@ -114,9 +114,14 @@
             </form>
           </div>
           <!-- End .header-search -->
-        </div>
+          <div class="wishlist">
+            <a href="wishlist.html" title="Wishlist">
+              <i class="icon-heart-o"></i>
+              <span class="wishlist-count">3</span>
+            </a>
+          </div>
+          <!-- End .compare-dropdown -->
 
-        <div class="header-right">
           <div class="dropdown cart-dropdown">
             <a
               href="#"
@@ -127,116 +132,96 @@
               aria-expanded="false"
               data-display="static"
             >
-              <div class="icon">
-                <i class="icon-shopping-cart"></i>
-                <span class="cart-count">2</span>
-              </div>
+              <i class="icon-shopping-cart"></i>
+              <span class="cart-count">2</span>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-right w-400px p-0">
-              <p class="p-3 pb-3 fs-4 fw-500 text-gray">Giỏ hàng</p>
+            <div class="dropdown-menu dropdown-menu-right">
               <div class="dropdown-cart-products">
                 <div class="product">
-                  <div class="product-cart-details max-w-300px">
-                    <h4 class="product-title fs-4">
+                  <div class="product-cart-details">
+                    <h4 class="product-title">
                       <a href="product.html"
                         >Beige knitted elastic runner shoes</a
                       >
                     </h4>
 
-                    <span class="cart-product-info fs-5 text-danger">
-                      <span class="cart-product-qty fs-5 text-danger">1</span>
-                      x 70000đ
+                    <span class="cart-product-info">
+                      <span class="cart-product-qty">1</span>
+                      x $84.00
                     </span>
                   </div>
+                  <!-- End .product-cart-details -->
 
                   <figure class="product-image-container">
-                    <div class="product-image w-50px h-50px">
+                    <a href="product.html" class="product-image">
                       <img
                         src="../assets/images/products/cart/product-1.jpg"
                         alt="product"
                       />
-                    </div>
+                    </a>
                   </figure>
+                  <a href="#" class="btn-remove" title="Remove Product"
+                    ><i class="icon-close"></i
+                  ></a>
+                </div>
+                <!-- End .product -->
+
+                <div class="product">
+                  <div class="product-cart-details">
+                    <h4 class="product-title">
+                      <a href="product.html"
+                        >Blue utility pinafore denim dress</a
+                      >
+                    </h4>
+
+                    <span class="cart-product-info">
+                      <span class="cart-product-qty">1</span>
+                      x $76.00
+                    </span>
+                  </div>
+                  <!-- End .product-cart-details -->
+
+                  <figure class="product-image-container">
+                    <a href="product.html" class="product-image">
+                      <img
+                        src="../assets/images/products/cart/product-2.jpg"
+                        alt="product"
+                      />
+                    </a>
+                  </figure>
+                  <a href="#" class="btn-remove" title="Remove Product"
+                    ><i class="icon-close"></i
+                  ></a>
                 </div>
                 <!-- End .product -->
               </div>
               <!-- End .cart-product -->
 
-              <div class="dropdown-cart-total p-4">
+              <div class="dropdown-cart-total">
                 <span>Total</span>
 
                 <span class="cart-total-price">$160.00</span>
               </div>
               <!-- End .dropdown-cart-total -->
 
-              <div class="dropdown-cart-action p-4">
-                <a href="cart.html" class="btn btn-primary">Xem giỏ hàng</a>
+              <div class="dropdown-cart-action">
+                <a href="cart.html" class="btn btn-primary">View Cart</a>
                 <a href="checkout.html" class="btn btn-outline-primary-2"
-                  ><span>Thanh toán</span><i class="icon-long-arrow-right"></i
+                  ><span>Checkout</span><i class="icon-long-arrow-right"></i
                 ></a>
               </div>
-
               <!-- End .dropdown-cart-total -->
             </div>
             <!-- End .dropdown-menu -->
           </div>
           <!-- End .cart-dropdown -->
-
-          <div class="mx-4">
-            <i class="fa-regular fa-user fs-2"></i>
-          </div>
-          <!-- End .user-dropdown -->
-          <!-- End .compare-dropdown -->
         </div>
         <!-- End .header-right -->
       </div>
       <!-- End .container -->
     </div>
     <!-- End .header-middle -->
-
-    <div class="header-bottom sticky-header">
-      <div class="container">
-        <div class="header-left">
-          <div class="dropdown category-dropdown d-inline align-bottom">
-            <a
-              href="#"
-              class="dropdown-toggle h-[100%]"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Danh mục <i class="icon-angle-down"></i>
-            </a>
-            <div class="dropdown-menu">
-              <nav class="side-nav">
-                <ul class="menu-vertical sf-arrows">
-                  <CategoryTree v-for="item in categories" :entry="item" />
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <!-- End .header-left -->
-        <div class="header-center">
-                    <nav class="main-nav">
-                        <ul class="menu sf-arrows">
-                            <MenuTree v-for="(item,index) in menu" :key="index" :menu="item" :depth="1" />
-                        </ul>
-                        <!-- End .menu -->
-                    </nav>
-                    <!-- End .main-nav -->
-                </div>
-                <!-- End .header-center -->
-
-        <div class="header-right">
-          <!-- <i class="la la-lightbulb-o"></i>
-          <p>Clearance<span class="highlight">&nbsp;Up to 30% Off</span></p> -->
-        </div>
-      </div>
-      <!-- End .container -->
-    </div>
-    <!-- End .header-bottom -->
   </header>
   <!-- End .header -->
 </template>
@@ -255,14 +240,14 @@ const menu = computed(() => menuStore.$state.menu.data);
 
 onBeforeMount(async () => {
   window.onscroll = function () {
-    if (
-      document.body.scrollTop > 80 ||
-      document.documentElement.scrollTop > 80
-    ) {
-      document.getElementById("header-middle").classList.add("nav-strict");
-    } else {
-      document.getElementById("header-middle").classList.remove("nav-strict");
-    }
+    // if (
+    //   document.body.scrollTop > 80 ||
+    //   document.documentElement.scrollTop > 80
+    // ) {
+    //   document.getElementById("header-middle").classList.add("nav-strict");
+    // } else {
+    //   document.getElementById("header-middle").classList.remove("nav-strict");
+    // }
   };
 
   await categoryStore.getListCategory({ notUse: false });

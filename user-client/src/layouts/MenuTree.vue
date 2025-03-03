@@ -11,7 +11,7 @@
         'sf-with-ul-children': depth > 1,
       }"
     >
-      <span>{{ menu.title }} </span></a
+      <span class="d-flex gap-2"><div v-html="menu.icon"></div> {{ menu.title }} </span></a
     >
     <ul v-if="menu.children && menu.children.length > 0">
       <MenuTree
@@ -52,12 +52,14 @@ const props = defineProps({
 </script>
 <style lang="scss" scoped>
 li {
+  cursor: pointer;
   > a {
     color: #000000;
+    text-decoration: none !important;
     &.sf-with-ul-children {
+      font-size: 1.4rem ;
+      font-weight: 450;
       > span {
-        width: 100%;
-        display: block;
         transition: transform 0.4s ease;
         &:hover {
           transform: translateX(8px);

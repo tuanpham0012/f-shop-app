@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using ShopAppApi.Data;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 
 namespace ShopAppApi.Repositories.Menus
 {
-    public class MenuRepository(ShopAppContext context) : IMenuRepository
+    public class MenuRepository(ShopAppContext context, IRedisCache cache) : IMenuRepository
     {
         private readonly ShopAppContext _context = context;
 
-        private readonly IRedisCache _cache;
+        private readonly IRedisCache _cache = cache;
 
         public async Task Create(StoreMenuRequest menu)
         {
@@ -109,15 +111,44 @@ namespace ShopAppApi.Repositories.Menus
 
         public async Task<List<MenuTree>> GetAdminMenu()
         {
-            var entries = await GetAll();
-            var tree = BuildTree(entries).Where(x => x.Id == 1).First().Children;
-            return await _cache.GetOrCreateAsync("admin-menu", async () => tree);
+            try
+            {
+                var result = await _cache.GetOrCreateAsync(
+                    "menu-admin",
+                    async () => {
+                        var entries = await GetAll();
+                        var tree = BuildTree(entries);
+                        return tree.Where(x => x.Id == 1).FirstOrDefault()?.Children ?? new List<MenuTree>();
+                            }
+                        );
+                    return result ?? [];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
         }
         public async Task<List<MenuTree>> GetUserMenu()
         {
-            var entries = await GetAll();
-            var tree = BuildTree(entries).Where(x => x.Id == 2).First().Children;
-            return await _cache.GetOrCreateAsync("user-menu", async () => tree);
+            try
+            {
+                var result = await _cache.GetOrCreateAsync(
+                    "menu-user",
+                    async () => {
+                        var entries = await GetAll();
+                        var tree = BuildTree(entries);
+                        return tree.Where(x => x.Id == 2).FirstOrDefault()?.Children ?? new List<MenuTree>();
+                            }
+                        );
+                    return result ?? [];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.InfluxDB" Version="8.0.1" />
     <PackageReference Include="Coravel" Version="6.0.0" />
     <PackageReference Include="InfluxDB.Client.Core" Version="4.18.0" />

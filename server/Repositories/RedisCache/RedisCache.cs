@@ -1,9 +1,13 @@
 
-using System.Text;
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Ardalis.GuardClauses;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace ShopAppApi.Repositories.RedisCache
 {
@@ -12,12 +16,12 @@ namespace ShopAppApi.Repositories.RedisCache
         private readonly IDistributedCache _cache;
 
         private static JsonSerializerOptions serializerOptions = new JsonSerializerOptions
-    {
-        PropertyNamingPolicy = null,
-        WriteIndented = true,
-        AllowTrailingCommas = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
+        {
+            PropertyNamingPolicy = null,
+            WriteIndented = true,
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
 
         private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);
 
@@ -32,45 +36,34 @@ namespace ShopAppApi.Repositories.RedisCache
             throw new NotImplementedException();
         }
 
-        public async Task<TItem?> GetByKeyAsync<TItem>(string key)
+        public async Task<T?> GetByKeyAsync<T>(string key)
         {
             var cachedItem = await _cache.GetStringAsync(key);
-            return JsonConvert.DeserializeObject<TItem>(cachedItem);
+            return cachedItem != null ? JsonConvert.DeserializeObject<T>(cachedItem) : default(T);
         }
 
-        public async Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory)
+        public bool TryGetValue<T>(string key, out T? value)
         {
-            var cachedItem = await _cache.GetStringAsync(key);
-            if (cachedItem != null)
+            var val = _cache.GetString(key);
+            value = default;
+            if (val == null) return false;
+            value = JsonConvert.DeserializeObject<T>(val);
+            return true;
+        }
+
+        public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, int? time = null)
+        {
+
+            if (this.TryGetValue(key, out T? value) && value is not null)
             {
-                Console.WriteLine("✅ Item retrieved from cache!");
-                return JsonConvert.DeserializeObject<TItem>(cachedItem);
+                return value;
             }
 
             var item = await factory();
             await _cache.SetStringAsync(
                 key,
                 JsonConvert.SerializeObject(item),
-            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = _cacheExpiry }
-            );
-            Console.WriteLine("🔄 Item added to cache.");
-            return item;
-        }
-
-        public async Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, int time)
-        {
-            var cachedItem = await _cache.GetStringAsync(key);
-            if (cachedItem != null)
-            {
-                Console.WriteLine("✅ Item retrieved from cache!");
-                return JsonConvert.DeserializeObject<TItem>(cachedItem);
-            }
-
-            var item = await factory();
-            await _cache.SetStringAsync(
-                key,
-                JsonConvert.SerializeObject(item),
-            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(time) }
+            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = time != null ? TimeSpan.FromMinutes((double)time) : _cacheExpiry }
             );
             Console.WriteLine("🔄 Item added to cache.");
             return item;

@@ -22,7 +22,6 @@
         </button>
       </form>
 
-
       <div class="tab-content">
         <div
           class="tab-pane fade show active sidebar"
@@ -35,20 +34,20 @@
               <li
                 v-for="item in menuItems"
                 :key="item.id"
-                :class="{ 'has-submenu': item.children }"
+                :class="{ 'has-submenu': item.children, 'active': item.showSubmenu }"
               >
                 <a href="#" @click.prevent="toggleSubmenu(item)">
                   <i :class="item.icon"></i> {{ item.label }}
                   <i
                     v-if="item.children"
-                    class="fas fa-chevron-down"
+                    class="fa-solid fa-chevron-right"
                     style="float: right"
                   ></i>
                 </a>
                 <ul
                   v-if="item.children"
                   class="submenu"
-                  :class="{ active: item.showSubmenu }"
+                  
                 >
                   <li v-for="child in item.children" :key="child.id">
                     <a href="#">
@@ -90,43 +89,40 @@
 import { onBeforeMount, ref } from "vue";
 
 const menuItems = ref([
-      { id: 1, label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
-      {
-        id: 2,
-        label: 'Products',
-        icon: 'fas fa-box',
-        children: [
-          { id: 21, label: 'Add Product', icon: 'fas fa-plus' },
-          { id: 22, label: 'View Products', icon: 'fas fa-list' },
-          { id: 23, label: 'Manage Categories', icon: 'fas fa-folder' },
-        ],
-        showSubmenu: false,
-      },
-      { id: 3, label: 'Customers', icon: 'fas fa-users' },
-      {
-        id: 4,
-        label: 'Orders',
-        icon: 'fas fa-shopping-cart',
-        children: [
-          { id: 41, label: 'New Orders', icon: 'fas fa-file-invoice' },
-          { id: 42, label: 'Order History', icon: 'fas fa-history' },
-        ],
-        showSubmenu: false,
-      },
-      { id: 5, label: 'Settings', icon: 'fas fa-cog' },
-      { id: 6, label: 'Help', icon: 'fas fa-question-circle' },
-    ]);
+  { id: 1, label: "Dashboard", icon: "fas fa-tachometer-alt" },
+  {
+    id: 2,
+    label: "Products",
+    icon: "fas fa-box",
+    children: [
+      { id: 21, label: "Add Product", icon: "fas fa-plus" },
+      { id: 22, label: "View Products", icon: "fas fa-list" },
+      { id: 23, label: "Manage Categories", icon: "fas fa-folder" },
+    ],
+    showSubmenu: false,
+  },
+  { id: 3, label: "Customers", icon: "fas fa-users" },
+  {
+    id: 4,
+    label: "Orders",
+    icon: "fas fa-shopping-cart",
+    children: [
+      { id: 41, label: "New Orders", icon: "fas fa-file-invoice" },
+      { id: 42, label: "Order History", icon: "fas fa-history" },
+    ],
+    showSubmenu: false,
+  },
+  { id: 5, label: "Settings", icon: "fas fa-cog" },
+  { id: 6, label: "Help", icon: "fas fa-question-circle" },
+]);
 
-    const toggleSubmenu = (item:any) => {
-      item.showSubmenu = !item.showSubmenu;
-    };
+const toggleSubmenu = (item: any) => {
+  item.showSubmenu = !item.showSubmenu;
+};
 
-onBeforeMount(() => {
-});
+onBeforeMount(() => {});
 </script>
 <style lang="scss" scoped>
-.sidebar {
-}
 
 .sidebar ul {
   list-style: none;
@@ -149,8 +145,14 @@ onBeforeMount(() => {
   display: none; /* Ẩn submenu mặc định */
 }
 
-.sidebar .submenu.active {
-  display: block;
+.sidebar .active {
+  >.submenu{
+    display: block;
+  }
+  .fa-chevron-right {
+      transform: rotate(90deg);
+      transition-duration: .4s;
+  }
 }
 
 .sidebar .submenu a {
@@ -169,5 +171,25 @@ onBeforeMount(() => {
 .content {
   margin-left: 250px;
   padding: 20px;
+}
+.has-submenu {
+  ul {
+    animation: slidein 0.7s;
+  }
+}
+
+@keyframes slidein {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

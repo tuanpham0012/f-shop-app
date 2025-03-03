@@ -11,31 +11,12 @@ namespace ShopAppApi.Repositories.RedisCache
     //     Khóa
     //
     // Type parameters:
-    //   TItem:
+    //   T:
     //     Kiểu đối tượng cần nhận
     //
     // Returns:
-    //     TItem object
-    Task<TItem?> GetByKeyAsync<TItem>(string key);
-
-    //
-    // Summary:
-    //     Lấy đôi từ khóa cache, hàm bất đồng bộ
-    //
-    // Parameters:
-    //   key:
-    //     Khóa cache
-    //
-    //   factory:
-    //     Hàm lấy đối tượng nếu cache null
-    //
-    // Type parameters:
-    //   TItem:
-    //     Loại đối tượng
-    //
-    // Returns:
-    //     TItem object
-    Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory);
+    //     T object
+    Task<T?> GetByKeyAsync<T>(string key);
 
     //
     // Summary:
@@ -52,12 +33,12 @@ namespace ShopAppApi.Repositories.RedisCache
     //     Thời gian cache tính bằng giây
     //
     // Type parameters:
-    //   TItem:
+    //   T:
     //     Loại đối tượng
     //
     // Returns:
-    //     TItem object
-    Task<TItem?> GetOrCreateAsync<TItem>(string key, Func<Task<TItem>> factory, int time);
+    //     T object
+    Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, int? time = null);
 
     //
     // Summary:
@@ -80,5 +61,8 @@ namespace ShopAppApi.Repositories.RedisCache
     // Summary:
     //     Xóa hết dữ liệu cache
     void Clear();
+
+    bool TryGetValue<T>(string key, out T? value);
+    
     }
 }
