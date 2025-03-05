@@ -1,14 +1,15 @@
 <template lang="">
-  <swiper
+  <Swiper
     :slides-per-view="slidesPerView"
     :space-between="spaceBetween"
     :navigation="itemCount > slidesPerView"
     :modules="modules"
     :class="ids"
     class="px-7"
+    :style="{ '--slide-item': itemCount > slidesPerView ? 'flex-start' : 'center' }"
   >
     <slot></slot>
-  </swiper>
+  </Swiper>
 </template>
 <script lang="ts" setup>
 import { ref, defineProps } from "vue";
@@ -43,6 +44,7 @@ const props = defineProps({
 
 </script>
 <style lang="scss">
+
 .swiper-custom-navigation {
   position: absolute;
   top: calc(50%);
@@ -51,6 +53,14 @@ const props = defineProps({
   justify-content: space-between;
   transform: translateY(-50%);
   z-index: 1; /* Ensure buttons are above the slides */
+}
+
+.swiper-button-prev{
+  left: var(--swiper-navigation-sides-offset, 0px);
+}
+
+.swiper-button-next{
+  right: var(--swiper-navigation-sides-offset, 0px);
 }
 
 .swiper-button-prev,
@@ -84,6 +94,6 @@ const props = defineProps({
 
 .swiper-wrapper {
   align-items: center;
-  justify-content: flex-start;
+  justify-content: var(--slide-item);
 }
 </style>
