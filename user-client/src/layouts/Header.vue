@@ -250,7 +250,7 @@ onBeforeMount(async () => {
     // }
   };
 
-  await categoryStore.getListCategory({ notUse: false });
+  // await categoryStore.getListCategory({ notUse: false });
   await menuStore.getMenu({ notUse: false });
 });
 </script>

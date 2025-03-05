@@ -180,7 +180,7 @@ namespace ShopAppApi.Repositories.Products
 
             var oldImages = _product.Images != null ? JsonSerializer.Deserialize<List<string>>(_product.Images) : [];
 
-            var imgDeleted = oldImages.Except(product.Images);
+            var imgDeleted = oldImages?.Except(product.Images) ?? Enumerable.Empty<string>();
 
             foreach (var img in imgDeleted)
             {

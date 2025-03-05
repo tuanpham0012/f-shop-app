@@ -1,21 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
+using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 
 namespace ShopAppApi.Repositories.Products
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository(ShopAppContext context, IRedisCache cache) : ICategoryRepository
     {
-        private readonly ShopAppContext _context;
-
-        public CategoryRepository(ShopAppContext context)
-        {
-            _context = context;
-        }
         public async Task<List<CategoryVM>> GetAll(CategoryRequest request)
         {
-            var entries = _context.Categories.AsNoTracking().Select(q => new CategoryVM
+            var entries = context.Categories.AsNoTracking().Select(q => new CategoryVM
             {
                 Id = q.Id,
                 Name = q.Name,
@@ -27,7 +22,7 @@ namespace ShopAppApi.Repositories.Products
                 Image = q.Image,
                 IsPopular = q.IsPopular,
                 HidenMenu = q.HidenMenu,
-                ProductCount = _context.Products.Count(p => p.CategoryId == q.Id),
+                ProductCount = context.Products.Count(p => p.CategoryId == q.Id),
             });
 
             if (request.NotUse != null)
@@ -76,14 +71,14 @@ namespace ShopAppApi.Repositories.Products
         }
         public async Task<Category> Show(long id)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             return category ?? throw new ArgumentException("Not found");
         }
 
         public async Task<Category> Create(StoreCategoryRequest request)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            var countChildrent = await _context.Categories.Where(c => c.ParentId == request.ParentId).CountAsync();
+            using var transaction = await context.Database.BeginTransactionAsync();
+            var countChildrent = await context.Categories.Where(c => c.ParentId == request.ParentId).CountAsync();
             int left = countChildrent++;
 
             // Thêm node mới
@@ -101,16 +96,16 @@ namespace ShopAppApi.Repositories.Products
                 UpdatedAt = DateTime.UtcNow,
                 CreatedAt = DateTime.UtcNow,
             };
-            _context.Add(entry);
-            await _context.SaveChangesAsync();
+            context.Add(entry);
+            await context.SaveChangesAsync();
             await transaction.CommitAsync();
             return entry;
         }
 
         public async Task Update(long id, UpdateCategoryRequest request)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            var category = _context.Categories.FirstOrDefault(x => x.Id == id);
+            using var transaction = context.Database.BeginTransaction();
+            var category = context.Categories.FirstOrDefault(x => x.Id == id);
             if (category != null)
             {
                 category.Name = request.Name;
@@ -126,25 +121,35 @@ namespace ShopAppApi.Repositories.Products
                 category.IsPopular = request.IsPopular;
                 category.HidenMenu = request.HidenMenu;
                 category.UpdatedAt = DateTime.UtcNow;
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
         }
 
         public async Task Delete(long Id)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            var category = _context.Categories.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
+            using var transaction = context.Database.BeginTransaction();
+            var category = context.Categories.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
             if (category != null)
             {
                 if (category.Products.Count > 0)
                 {
                     throw new ArgumentException("Category has products");
                 }
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
+                context.Categories.Remove(category);
+                await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
+        }
+
+        public async Task<List<Category>> GetPopularCategory()
+        {
+            var cacheKey = Constants.CategoryPopularCache;
+            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
+            {
+                return await context.Categories.AsNoTracking().Where(c => c.IsPopular == true && c.NotUse == false).ToListAsync();
+            });
+            return cacheData ?? new List<Category>();
         }
     }
 }

@@ -8,7 +8,7 @@ import {
 } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
 
-const url = apiUrl + "/admin";
+const url = apiUrl
 
 export const useCategoryStore = defineStore("category", {
     state: () => {
@@ -25,21 +25,27 @@ export const useCategoryStore = defineStore("category", {
                 data: [],
                 meta: null as any,
             },
-            entry: null,
+            popularCategory: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null as any,
+            },
             errors: null,
         };
     },
 
     actions: {
-        async getListCategory(query: any) {
-            await _getList(`${url}/categories/get-tree`, query)
+
+        async getListPopularCategory() {
+            await _getList(`${url}/categories/popular-category`, null)
                 .then((res) => {
                     console.log(res.data);
-                    this.listTree = res.data;
+                    this.popularCategory = res.data;
                 })
                 .catch((err) => {
                     console.log(err);
                 });
-        },
+        }
     },
 });

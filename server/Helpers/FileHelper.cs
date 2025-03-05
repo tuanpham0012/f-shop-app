@@ -36,7 +36,7 @@ namespace ShopAppApi.Helpers
             throw new ArgumentException("Định dạng file không hợp lệ!");
         }
 
-        public static async Task<string?> SaveFile(string? fileBase64)
+        public static async Task<string> SaveFile(string? fileBase64)
         {
 
             if (String.IsNullOrEmpty(fileBase64) || !Regex.IsMatch(fileBase64, @"^data:image\/[a-zA-Z]+;base64,"))

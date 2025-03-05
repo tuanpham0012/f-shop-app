@@ -55,10 +55,8 @@ li {
   cursor: pointer;
   > a {
     color: #000000;
-    text-decoration: none !important;
     &.sf-with-ul-children {
       font-size: 1.4rem ;
-      font-weight: 450;
       > span {
         transition: transform 0.4s ease;
         &:hover {

@@ -1,34 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
+using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 
 namespace ShopAppApi.Repositories.Products
 {
-    public class BrandRepository : IBrandRepository
+    public class BrandRepository(ShopAppContext context, IRedisCache cache) : IBrandRepository
     {
-        private readonly ShopAppContext _context;
-
-        public BrandRepository(ShopAppContext context) { _context = context;  }
         public async Task<List<Brand>> GetAll(BrandRequest request)
         {
-            var query = _context.Brands.AsNoTracking().AsQueryable();
-            if (request.NotUse != null)
+            string cacheKey = $"{Constants.BrandCache}-request-{request.NotUse.ToString()}";
+            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
-                query = query.Where(x => x.NotUse == request.NotUse);
-            }
-            return await query.ToListAsync();
+                var query = context.Brands.AsNoTracking().AsQueryable();
+                if (request.NotUse != null)
+                {
+                    query = query.Where(x => x.NotUse == request.NotUse);
+                }
+                return await query.ToListAsync();
+            });
+            return cacheData ?? [];
         }
 
         public async Task<Brand> Show(long id)
         {
-            var brand = await _context.Brands.FirstOrDefaultAsync(x => x.Id == id); 
+            var brand = await context.Brands.FirstOrDefaultAsync(x => x.Id == id); 
             return brand ?? throw new ArgumentException("Not found");
         }
 
         public async Task<Brand> Create(StoreBrandRequest request)
         {
-            using var transaction = _context.Database.BeginTransaction();
+            using var transaction = context.Database.BeginTransaction();
             var entry = new Brand
             {
                 Name = request.Name,
@@ -39,16 +42,16 @@ namespace ShopAppApi.Repositories.Products
                 UpdatedAt = DateTime.UtcNow,
 
             };
-            _context.Add(entry);
-            await _context.SaveChangesAsync();
+            context.Add(entry);
+            await context.SaveChangesAsync();
             await transaction.CommitAsync();
             return entry;
         }
 
         public async Task Update(long id, UpdateBrandRequest request)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            var brand = _context.Brands.FirstOrDefault(x => x.Id == id);
+            using var transaction = context.Database.BeginTransaction();
+            var brand = context.Brands.FirstOrDefault(x => x.Id == id);
             if (brand != null)
             {
                 brand.Name = request.Name;
@@ -61,15 +64,15 @@ namespace ShopAppApi.Repositories.Products
                 brand.NotUse = request.NotUse;
                 brand.CreatedAt = DateTime.UtcNow;
                 brand.UpdatedAt = DateTime.UtcNow;
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
         }
 
         public async Task Delete(long Id)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            var brand = _context.Brands.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
+            using var transaction = context.Database.BeginTransaction();
+            var brand = context.Brands.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
             if (brand != null)
             {
                 if(brand.Products.Count > 0)
@@ -77,8 +80,8 @@ namespace ShopAppApi.Repositories.Products
                     throw new ArgumentException("Brand has products");
                 }
                 FileHelper.DeleteFile(brand.Image);
-                _context.Brands.Remove(brand);
-                await _context.SaveChangesAsync();
+                context.Brands.Remove(brand);
+                await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
         }

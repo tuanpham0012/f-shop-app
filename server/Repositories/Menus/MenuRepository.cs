@@ -111,10 +111,11 @@ namespace ShopAppApi.Repositories.Menus
 
         public async Task<List<MenuTree>> GetAdminMenu()
         {
+            string cacheKey = Constants.AdminMenuCache;
             try
             {
                 var result = await _cache.GetOrCreateAsync(
-                    "menu-admin",
+                    cacheKey,
                     async () => {
                         var entries = await GetAll();
                         var tree = BuildTree(entries);
@@ -132,10 +133,11 @@ namespace ShopAppApi.Repositories.Menus
         }
         public async Task<List<MenuTree>> GetUserMenu()
         {
+            string cacheKey = Constants.UserMenuCache;
             try
             {
                 var result = await _cache.GetOrCreateAsync(
-                    "menu-user",
+                    cacheKey,
                     async () => {
                         var entries = await GetAll();
                         var tree = BuildTree(entries);

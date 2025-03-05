@@ -12,5 +12,7 @@ namespace ShopAppApi.Repositories.Products
         Task Update(long Id, UpdateCategoryRequest request);
         Task<Category> Show(long Id);
         Task Delete(long Id);
+
+        Task<List<Category>> GetPopularCategory();
     }
 }

@@ -33,9 +33,9 @@ export const isNumber = (evt:any) => {
     return true;
 };
 
-export const viewFile = (link:string) => {
+export const viewFile = (link:string, def:any = null) => {
     if(!link)
-        return 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
+        return def ?? 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
     if(link && link.length < 250){
         return `${apiUrl}/files/download/${link}`
     }

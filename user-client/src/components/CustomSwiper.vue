@@ -1,0 +1,89 @@
+<template lang="">
+  <swiper
+    :slides-per-view="slidesPerView"
+    :space-between="spaceBetween"
+    :navigation="itemCount > slidesPerView"
+    :modules="modules"
+    :class="ids"
+    class="px-7"
+  >
+    <slot></slot>
+  </swiper>
+</template>
+<script lang="ts" setup>
+import { ref, defineProps } from "vue";
+import { Swiper } from "swiper/vue";
+import "swiper/swiper-bundle.css";
+import "swiper/css";
+import "swiper/scss/navigation";
+import { Navigation } from "swiper/modules";
+
+const modules = ref([Navigation]);
+
+const props = defineProps({
+  itemCount: {
+    type: Number,
+    default: 1,
+  },
+  slidesPerView: {
+    type: [Number, String],
+    default: 1,
+  },
+  spaceBetween: {
+    type: [Number, String],
+    default: 50,
+  },
+  ids: {
+    type: String,
+    default: "swiper",
+  },
+});
+
+
+
+</script>
+<style lang="scss">
+.swiper-custom-navigation {
+  position: absolute;
+  top: calc(50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  z-index: 1; /* Ensure buttons are above the slides */
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  background: none;
+  width: 38px;
+  border-radius: 100%;
+  height: 38px;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  color: #333; /* Default color */
+  font-size: 24px;
+  transition: color 0.3s ease;
+  outline: none;
+}
+
+/* Change color on hover */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+    background: #ebedf0c0;
+  color: #007bff;
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+  font-family: "swiper-icons";
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.swiper-wrapper {
+  align-items: center;
+  justify-content: flex-start;
+}
+</style>
