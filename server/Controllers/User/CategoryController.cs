@@ -15,5 +15,19 @@ namespace ShopAppApi.Controllers.User
             var entries = await repository.GetPopularCategory();
             return Ok(new ResponseCollection<Category>(entries));
         }
+
+        [HttpGet("new-product-category")]
+        public async Task<IActionResult> GetCategoryHasNewProduct()
+        {
+            var entries = await repository.GetCategoryHasNewProduct();
+            return Ok(new ResponseCollection<Category>(entries));
+        }
+
+        [HttpGet("featured-product-category")]
+        public async Task<IActionResult> GetCategoryHasFeaturedProduct()
+        {
+            var entries = await repository.GetCategoryHasFeaturedProduct();
+            return Ok(new ResponseCollection<Category>(entries));
+        }
     }
 }

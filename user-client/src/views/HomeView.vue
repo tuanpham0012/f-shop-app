@@ -1,20 +1,55 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, onMounted, ref } from "vue";
+import { computed, onBeforeMount, reactive, watch } from "vue";
 import { useCategoryStore } from "@/stores/category";
 import { useBrandStore } from "@/stores/brand";
+import { useProductStore } from "@/stores/product";
 import { viewFile } from "@/helpers/helpers";
+import { currencyFormatTenant } from '@/services/utils'
 
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
+const productStore = useProductStore();
+
+const newProductQuery = reactive({
+  pageSize: 12,
+  page: 1,
+  categoryId: null,
+});
+
+const featuredProductQuery = reactive({
+  pageSize: 12,
+  page: 1,
+  categoryId: null,
+});
 
 const brands = computed<any>(() => brandStore.$state.brands.data);
 const popularCategories = computed<any>(
   () => categoryStore.$state.popularCategory.data
 );
+const newProducts = computed<any>(() => {
+  return {
+    products: productStore.$state.newProducts.data,
+    categories: categoryStore.$state.newProductCategory.data,
+  };
+});
 
+const featuredProducts = computed<any>(() => {
+  return {
+    products: productStore.$state.featuredProducts.data,
+    categories: categoryStore.$state.featuredProductCategory.data,
+  };
+});
+
+watch( () => newProductQuery.categoryId, async () => {
+  await productStore.getListNewProduct(newProductQuery);
+});
 onBeforeMount(async () => {
   await categoryStore.getListPopularCategory();
   await brandStore.getList();
+  await productStore.getListNewProduct(newProductQuery);
+  await categoryStore.getListCategoryHasNewProduct();
+  await productStore.getListFeaturedProduct(featuredProductQuery);
+  await categoryStore.getListCategoryHasFeaturedProduct();
 });
 </script>
 
@@ -100,7 +135,11 @@ onBeforeMount(async () => {
   <div class="container mb-2">
     <h2 class="text-center text-[2.6rem] font-medium">Thương hiệu</h2>
     <div class="cat-blocks-container">
-      <swiper-component :slidesPerView="6" :ids="'brand'" :itemCount="brands.length">
+      <swiper-component
+        :slidesPerView="6"
+        :ids="'brand'"
+        :itemCount="brands.length"
+      >
         <swiper-slide v-for="(item, index) in brands" :key="index">
           <a href="category.html" class="cat-block">
             <figure>
@@ -115,7 +154,6 @@ onBeforeMount(async () => {
         </swiper-slide>
       </swiper-component>
     </div>
-
   </div>
   <!-- End .container -->
 
@@ -126,7 +164,11 @@ onBeforeMount(async () => {
     <!-- End .title text-center -->
 
     <div class="cat-blocks-container">
-      <swiper-component :slidesPerView="6" :id="'categoriessss'" :itemCount="popularCategories.length">
+      <swiper-component
+        :slidesPerView="6"
+        :id="'categoriessss'"
+        :itemCount="popularCategories.length"
+      >
         <swiper-slide v-for="(item, index) in popularCategories" :key="index">
           <a href="category.html" class="cat-block">
             <figure>
@@ -144,211 +186,9 @@ onBeforeMount(async () => {
       </swiper-component>
     </div>
   </div>
-
-  <div class="container bestsellers">
-    <hr class="mb-3" />
-    <div class="heading">
-      <h2 class="title text-center">BEST SELLERS</h2>
-      <p class="content text-center mb-4">
-        The Trends Boutique: The latest fashion trends from top brands!
-      </p>
-    </div>
-
-    <!-- End .owl-carousel -->
-  </div>
-
-  <div class="choose-style">
-    <div class="container row">
-      <div class="banner-intro col-lg-5">
-        <h3 class="title">Get Your<br />Inspiration<br />In The Street.</h3>
-
-        <p class="darkWhite">IN THIS LOOK</p>
-        <h4 class="content darkWhite">• Stowell Hood Fleece</h4>
-        <h4 class="content darkWhite">• Force Tight</h4>
-        <h4 class="content darkWhite">• Blitzing 3.0 Cap</h4>
-        <p class="price darkWhite">$55.00 - $1,298.00</p>
-
-        <a href="category.html" class="btn btn-demoprimary">
-          <span>BUY ALL </span>
-          <i class="icon-long-arrow-right"></i>
-        </a>
-      </div>
-      <div class="carousel col-lg-7">
-        <div class="heading">
-          <h2 class="title">Choose Your Style</h2>
-          <p class="content">
-            Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
-            turpis
-          </p>
-        </div>
-        <div class="row">
-          <div class="col-lg-4 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/chooseStyle/product-1.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Tops</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Stowell Hood Fleece</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$55.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-lg-4 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/chooseStyle/product-2.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-
-                <div
-                  class="product-countdown"
-                  data-until="+9h"
-                  data-format="HMS"
-                  data-relative="true"
-                  data-labels-short="true"
-                ></div>
-                <!-- End .product-countdown -->
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Bags</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Force Tight</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$135.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 4 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-lg-4 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/chooseStyle/product-3.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Accessories</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Blitzing 3.0 Cap</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$29.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 0 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="container category-banner">
     <div class="row">
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 position-relative">
         <a href="category.html">
           <img src="../assets/images/demos/demo-21/banner/footware.jpg" />
         </a>
@@ -357,7 +197,7 @@ onBeforeMount(async () => {
           <a href="category.html" class="action">SHOP NOW</a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 position-relative">
         <a href="category.html">
           <img src="../assets/images/demos/demo-21/banner/accessories.jpg" />
         </a>
@@ -366,7 +206,7 @@ onBeforeMount(async () => {
           <a href="category.html" class="action">SHOP NOW</a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 position-relative">
         <a href="category.html">
           <img src="../assets/images/demos/demo-21/banner/mens.jpg" />
         </a>
@@ -375,7 +215,7 @@ onBeforeMount(async () => {
           <a href="category.html" class="action">SHOP NOW</a>
         </div>
       </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 position-relative">
         <a href="category.html">
           <img src="../assets/images/demos/demo-21/banner/womens.jpg" />
         </a>
@@ -387,1214 +227,156 @@ onBeforeMount(async () => {
     </div>
   </div>
 
-  <div class="container new-arrivals">
+  <div class="container">
     <hr class="mb-5 mt-8" />
 
     <div class="heading heading-center mb-3">
-      <h2 class="title">NEW ARRIVALS</h2>
+      <h2 class="text-center text-[2.6rem] font-medium mb-4">Sản phẩm mới</h2>
       <!-- End .title -->
 
-      <ul class="nav nav-pills justify-content-center" role="tablist">
-        <li class="nav-item">
-          <a
-            class="nav-link active"
-            id="arrivals-all-link"
-            data-toggle="tab"
-            href="#arrivals-all-tab"
-            role="tab"
-            aria-controls="arrivals-all-tab"
-            aria-selected="true"
-            >All</a
-          >
-        </li>
-        <li class="nav-item">
+      <ul class="nav nav-pills justify-content-center mb-1" role="tablist">
+        <li class="nav-item cursor-pointer"  @click="newProductQuery.categoryId = null">
           <a
             class="nav-link"
-            id="arrivals-women-link"
-            data-toggle="tab"
-            href="#arrivals-women-tab"
-            role="tab"
-            aria-controls="arrivals-women-tab"
-            aria-selected="false"
-            >Women</a
+            :class="{ active: newProductQuery.categoryId == null }"
+            >Tất cả</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item cursor-pointer" v-for="(item, index) in newProducts.categories" :key="index"  @click="newProductQuery.categoryId = item.id">
           <a
             class="nav-link"
-            id="arrivals-men-link"
-            data-toggle="tab"
-            href="#arrivals-men-tab"
-            role="tab"
-            aria-controls="arrivals-men-tab"
-            aria-selected="false"
-            >Men</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            id="arrivals-shoes-link"
-            data-toggle="tab"
-            href="#arrivals-shoes-tab"
-            role="tab"
-            aria-controls="arrivals-shoes-tab"
-            aria-selected="false"
-            >Shoes</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            id="arrivals-acc-link"
-            data-toggle="tab"
-            href="#arrivals-acc-tab"
-            role="tab"
-            aria-controls="arrivals-acc-tab"
-            aria-selected="false"
-            >Accessories</a
+            :class="{ active: newProductQuery.categoryId == item.id }"
+            >{{item.name}}</a
           >
         </li>
       </ul>
     </div>
     <!-- End .heading -->
 
-    <div class="tab-content tab-content-carousel">
+    <div class="tab-content tab-content-carousel p-2 mb-3">
       <div
-        class="tab-pane p-0 fade show active"
+        class="p-0"
         id="arrivals-all-tab"
         role="tabpanel"
         aria-labelledby="arrivals-all-link"
       >
-        <div class="row">
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
+        <div class="row gap-y-3">
+          <div class="col-6 col-lg-2 col-sm-4 px-2 box-border" v-for="(item, index) in newProducts.products" :key="index">
+            <div class="product mt-0 py-1 box-border h-[100%]">
+              <figure class="product-media d-flex items-center bg-gray-200 positon-relative aspect-square mb-1">
                 <a href="product.html">
                   <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-1.jpg"
+                    :src="viewFile(item.images[0], 'src/assets/images/demos/demo-21/newArrivals/product-1.jpg')"
                     alt="Product image"
-                    class="product-image"
+                    class="product-image object-contain"
                   />
                 </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">UA Spawn Low</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$77.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 60%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-nav product-nav-dots">
-                  <a href="#" class="active" style="background: #34529d"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                  <a href="#" style="background: #333333"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                </div>
-                <!-- End .product-nav -->
-
                 <div class="product-action">
                   <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
+                    ><span>Thêm vào giỏ hàng</span></a
                   >
                 </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <span class="product-label label-sale">Sale</span>
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-2.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
               </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
+              <div class="product-body p-0 px-3">
                 <div class="product-cat">
-                  <a href="#">Jackets & Vests</a>
+                  <a class="text-xl" href="#">{{item.category?.name}}</a>
                 </div>
-                <!-- End .product-cat -->
                 <h3 class="product-title">
-                  <a href="product.html">The North Face Fanorak 2.0</a>
+                  <a href="product.html">{{ item.name }}</a>
                 </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="new-price">$76.99</span>
-                  <span class="old-price">Was $109.99</span>
+                <div class="product-price justify-start">
+                  <span class="cur-price text-red-500">{{ currencyFormatTenant(item.price) + 'đ' }}</span>
                 </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
               </div>
-              <!-- End .product-body -->
             </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <span class="product-label label-sale">Sale</span>
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-3.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Bags</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Osprey Talia</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="new-price">$67.50</span>
-                  <span class="old-price">Was $150.00</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-4.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Ignite Limitless Leather</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$52.66</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 100%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-5.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Accessories</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Small Sleeping Bag</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$299.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-6.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Tops</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Alphaskin Sport Bra</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$34.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 60%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-nav product-nav-dots">
-                  <a href="#" class="active" style="background: #d64042"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                  <a href="#" style="background: #333333"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                </div>
-                <!-- End .product-nav -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-7.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Jackets & Vests</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Watertight Jacket</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$76.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <span class="product-label label-sale">Sale</span>
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-8.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Y-3 by Yohji Yamamoto</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="new-price">$239.99</span>
-                  <span class="old-price">Was $400.00</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 100%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-9.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Bags</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Marmot Empire Daypack</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$59.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-10.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">On Cloudflyer</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$127.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 100%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
           </div>
         </div>
       </div>
-      <!-- .End .tab-pane -->
-      <div
-        class="tab-pane p-0 fade"
-        id="arrivals-women-tab"
-        role="tabpanel"
-        aria-labelledby="arrivals-women-link"
-      >
-        <div class="row">
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <span class="product-label label-sale">Sale</span>
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-2.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Jackets & Vests</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">The North Face Fanorak 2.0</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="new-price">$76.99</span>
-                  <span class="old-price">Was $109.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-6.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Tops</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Alphaskin Sport Bra</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$34.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 60%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-nav product-nav-dots">
-                  <a href="#" class="active" style="background: #d64042"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                  <a href="#" style="background: #333333"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                </div>
-                <!-- End .product-nav -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-        </div>
-      </div>
-      <!-- .End .tab-pane -->
-
-      <div
-        class="tab-pane p-0 fade"
-        id="arrivals-men-tab"
-        role="tabpanel"
-        aria-labelledby="arrivals-men-link"
-      >
-        <div class="row">
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-7.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Jackets & Vests</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Watertight Jacket</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$76.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-        </div>
-      </div>
-      <!-- .End .tab-pane -->
-
-      <div
-        class="tab-pane p-0 fade"
-        id="arrivals-shoes-tab"
-        role="tabpanel"
-        aria-labelledby="arrivals-shoes-link"
-      >
-        <div class="row">
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-1.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">UA Spawn Low</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$77.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 60%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-nav product-nav-dots">
-                  <a href="#" class="active" style="background: #34529d"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                  <a href="#" style="background: #333333"
-                    ><span class="sr-only">Color name</span></a
-                  >
-                </div>
-                <!-- End .product-nav -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-4.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Ignite Limitless Leather</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$52.66</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 100%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <span class="product-label label-sale">Sale</span>
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-8.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Y-3 by Yohji Yamamoto</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="new-price">$239.99</span>
-                  <span class="old-price">Was $400.00</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 100%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-10.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Shoes</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">On Cloudflyer</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$127.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 100%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-        </div>
-      </div>
-      <!-- .End .tab-pane -->
-
-      <div
-        class="tab-pane p-0 fade"
-        id="arrivals-acc-tab"
-        role="tabpanel"
-        aria-labelledby="arrivals-acc-link"
-      >
-        <div class="row">
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <span class="product-label label-sale">Sale</span>
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-3.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Bags</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Osprey Talia</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="new-price">$67.50</span>
-                  <span class="old-price">Was $150.00</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-5.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Accessories</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Small Sleeping Bag</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$299.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-          <div class="col-xl-5col col-lg-3 col-md-4 col-6">
-            <div class="product demo21">
-              <figure class="product-media">
-                <a href="product.html">
-                  <img
-                    src="../assets/images/demos/demo-21/newArrivals/product-9.jpg"
-                    alt="Product image"
-                    class="product-image"
-                  />
-                </a>
-              </figure>
-              <!-- End .product-media -->
-
-              <div class="product-body text-center">
-                <div class="product-cat">
-                  <a href="#">Bags</a>
-                </div>
-                <!-- End .product-cat -->
-                <h3 class="product-title">
-                  <a href="product.html">Marmot Empire Daypack</a>
-                </h3>
-                <!-- End .product-title -->
-                <div class="product-price">
-                  <span class="cur-price">$59.99</span>
-                </div>
-                <!-- End .product-price -->
-                <div class="ratings-container">
-                  <div class="ratings">
-                    <div class="ratings-val" style="width: 80%"></div>
-                    <!-- End .ratings-val -->
-                  </div>
-                  <!-- End .ratings -->
-                  <span class="ratings-text">( 2 Reviews )</span>
-                </div>
-                <!-- End .rating-container -->
-
-                <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>ADD TO CART</span></a
-                  >
-                </div>
-                <!-- End .product-action -->
-
-                <a href="#" class="btn-addtolist"
-                  ><span>&nbsp;Add to Wishlist</span></a
-                >
-              </div>
-              <!-- End .product-body -->
-            </div>
-            <!-- End .product -->
-          </div>
-        </div>
-      </div>
-      <!-- .End .tab-pane -->
     </div>
     <!-- End .tab-content -->
     <div class="text-center">
       <a href="category.html" class="btn btn-viewMore">
-        <span>VIEW MORE PRODUCTS</span>
+        <span>Xem thêm</span>
         <i class="icon-long-arrow-right"></i>
       </a>
     </div>
   </div>
   <!-- End .container -->
+  <div class="container">
+    <hr class="mb-5 mt-8" />
+
+    <div class="heading heading-center mb-3">
+      <h2 class="text-center text-[2.6rem] font-medium mb-4">Sản phẩm nổi bật</h2>
+      <!-- End .title -->
+
+      <ul class="nav nav-pills justify-content-center mb-1" role="tablist">
+        <li class="nav-item cursor-pointer"  @click="featuredProducts.categoryId = null">
+          <a
+            class="nav-link"
+            v-if="featuredProducts.categories.length > 1"
+            :class="{ active: newProductQuery.categoryId == null }"
+            >Tất cả</a
+          >
+        </li>
+        <li class="nav-item cursor-pointer" v-for="(item, index) in featuredProducts.categories" :key="index"  @click="newProductQuery.categoryId = item.id">
+          <a
+            class="nav-link"
+            :class="{ active: newProductQuery.categoryId == item.id }"
+            >{{item.name}}</a
+          >
+        </li>
+      </ul>
+    </div>
+    <!-- End .heading -->
+
+    <div class="tab-content tab-content-carousel p-2 mb-3">
+      <div
+        class="p-0"
+        id="arrivals-all-tab"
+        role="tabpanel"
+        aria-labelledby="arrivals-all-link"
+      >
+        <div class="row gap-y-3">
+          <div class="col-6 col-lg-2 col-sm-4 px-2 box-border" v-for="(item, index) in featuredProducts.products" :key="index">
+            <div class="product mt-0 py-1 box-border h-[100%]">
+              <figure class="product-media d-flex items-center bg-gray-200 positon-relative aspect-square mb-1">
+                <a href="product.html">
+                  <img
+                    :src="viewFile(item.images[0], 'src/assets/images/demos/demo-21/newArrivals/product-1.jpg')"
+                    alt="Product image"
+                    class="product-image object-contain"
+                  />
+                </a>
+                <div class="product-action">
+                  <a href="#" class="btn-product btn-cart" title="Add to cart"
+                    ><span>Thêm vào giỏ hàng</span></a
+                  >
+                </div>
+              </figure>
+              <div class="product-body p-0 px-3">
+                <div class="product-cat">
+                  <a class="text-xl" href="#">{{item.category?.name}}</a>
+                </div>
+                <h3 class="product-title">
+                  <a href="product.html">{{ item.name }}</a>
+                </h3>
+                <div class="product-price justify-start">
+                  <span class="cur-price text-red-500">{{ currencyFormatTenant(item.price) + 'đ' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End .tab-content -->
+    <div class="text-center">
+      <a href="category.html" class="btn btn-viewMore">
+        <span>Xem thêm</span>
+        <i class="icon-long-arrow-right"></i>
+      </a>
+    </div>
+  </div>
 
   <div class="container newsletter">
     <div
@@ -1866,5 +648,4 @@ onBeforeMount(async () => {
   margin-top: 2.5rem;
   margin-bottom: 0;
 }
-
 </style>

@@ -31,6 +31,18 @@ export const useCategoryStore = defineStore("category", {
                 data: [],
                 meta: null as any,
             },
+            newProductCategory: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null as any,
+            },
+            featuredProductCategory: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null as any,
+            },
             errors: null,
         };
     },
@@ -42,6 +54,26 @@ export const useCategoryStore = defineStore("category", {
                 .then((res) => {
                     console.log(res.data);
                     this.popularCategory = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getListCategoryHasNewProduct() {
+            await _getList(`${url}/categories/new-product-category`, null)
+                .then((res) => {
+                    console.log(res.data);
+                    this.newProductCategory = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getListCategoryHasFeaturedProduct() {
+            await _getList(`${url}/categories/featured-product-category`, null)
+                .then((res) => {
+                    console.log(res.data);
+                    this.featuredProductCategory = res.data;
                 })
                 .catch((err) => {
                     console.log(err);

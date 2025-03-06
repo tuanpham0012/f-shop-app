@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800");
+/* @import url("https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800"); */
 
 .menu .megamenu.demo {
     height: 68vh
@@ -553,11 +553,11 @@
     color: #fff;
     box-shadow: 0 0px 0 0 white
 }
-
+/* 
 .product-action {
     position: initial;
     transform: unset
-}
+} */
 
 .product:hover .product-action,
 .product:focus .product-action {
@@ -694,7 +694,6 @@
     color: #ebebeb;
     font-weight: 400;
     font-size: 1.2rem;
-    font-family: 'Poppins';
     letter-spacing: 0em;
     margin-top: 1.8rem;
     margin-bottom: .8rem

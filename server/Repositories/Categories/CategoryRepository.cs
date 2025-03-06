@@ -151,5 +151,25 @@ namespace ShopAppApi.Repositories.Products
             });
             return cacheData ?? new List<Category>();
         }
+
+        public async Task<List<Category>> GetCategoryHasNewProduct()
+        {
+            var cacheKey = Constants.CategoryNewProductCache;
+            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
+            {
+                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsNew == true )).ToListAsync();
+            });
+            return cacheData ?? new List<Category>();
+        }
+
+        public async Task<List<Category>> GetCategoryHasFeaturedProduct()
+        {
+            var cacheKey = Constants.CategoryFeaturedProductCache;
+            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
+            {
+                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsFeatured == true )).ToListAsync();
+            });
+            return cacheData ?? new List<Category>();
+        }
     }
 }

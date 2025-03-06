@@ -141,7 +141,7 @@ namespace ShopAppApi.Repositories.Products
                 }
             }
 
-            if (!String.IsNullOrEmpty(request.Search))
+            if (!string.IsNullOrWhiteSpace(request.Search))
             {
                 query = query.Where(q => q.Name.Contains(request.Search));
             }
@@ -153,6 +153,16 @@ namespace ShopAppApi.Repositories.Products
             if (request.BrandId != null)
             {
                 query = query.Where(q => q.BrandId == request.BrandId);
+            }
+
+            if (request.IsNew != null)
+            {
+                query = query.Where(q => q.IsNew == request.IsNew);
+            }
+
+            if (request.IsFeatured != null)
+            {
+                query = query.Where(q => q.IsFeatured == request.IsFeatured);
             }
 
             switch (request.OrderBy)

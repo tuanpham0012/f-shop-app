@@ -14,5 +14,8 @@ namespace ShopAppApi.Repositories.Products
         Task Delete(long Id);
 
         Task<List<Category>> GetPopularCategory();
+
+        Task<List<Category>> GetCategoryHasNewProduct();
+        Task<List<Category>> GetCategoryHasFeaturedProduct();
     }
 }

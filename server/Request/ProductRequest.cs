@@ -11,6 +11,8 @@ namespace ShopAppApi.Request
         public long? CategoryId { get; set; } = null!;
         public long? BrandId { get; set; } = null!;
         public int? OrderBy { get; set; } = null!;
+        public bool? IsNew { get; set; } = null!;
+        public bool? IsFeatured { get; set; } = null!;
 
     }
 
@@ -29,7 +31,7 @@ namespace ShopAppApi.Request
         public string? Barcode { get; set; }
         public string UnitBuy { get; set; } = string.Empty;
         public string UnitSell { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         public bool? HasVariants { get; set; }
         public bool? IsNew { get; set; }
         public bool? IsFeatured { get; set; }
@@ -103,7 +105,7 @@ namespace ShopAppApi.Request
         public string Barcode { get; set; } = string.Empty;
         public string UnitBuy { get; set; } = string.Empty;
         public string UnitSell { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         public bool? HasVariants { get; set; }
         public bool? IsNew { get; set; }
         public bool? IsFeatured { get; set; }
