@@ -4,17 +4,11 @@ import { useCategoryStore } from "@/stores/category";
 import { useBrandStore } from "@/stores/brand";
 import { useProductStore } from "@/stores/product";
 import { viewFile } from "@/helpers/helpers";
-import { currencyFormatTenant } from '@/services/utils'
+import { currencyFormatTenant } from "@/services/utils";
 
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
 const productStore = useProductStore();
-
-const newProductQuery = reactive({
-  pageSize: 12,
-  page: 1,
-  categoryId: null,
-});
 
 const featuredProductQuery = reactive({
   pageSize: 12,
@@ -26,12 +20,10 @@ const brands = computed<any>(() => brandStore.$state.brands.data);
 const popularCategories = computed<any>(
   () => categoryStore.$state.popularCategory.data
 );
-const newProducts = computed<any>(() => {
-  return {
-    products: productStore.$state.newProducts.data,
-    categories: categoryStore.$state.newProductCategory.data,
-  };
-});
+
+const topCategories = computed<any>(
+  () => categoryStore.$state.topCategory.data
+);
 
 const featuredProducts = computed<any>(() => {
   return {
@@ -40,16 +32,18 @@ const featuredProducts = computed<any>(() => {
   };
 });
 
-watch( () => newProductQuery.categoryId, async () => {
-  await productStore.getListNewProduct(newProductQuery);
-});
+watch(
+  () => featuredProductQuery.categoryId,
+  async () => {
+    await productStore.getListFeaturedProduct(featuredProductQuery);
+  }
+);
 onBeforeMount(async () => {
   await categoryStore.getListPopularCategory();
   await brandStore.getList();
-  await productStore.getListNewProduct(newProductQuery);
-  await categoryStore.getListCategoryHasNewProduct();
   await productStore.getListFeaturedProduct(featuredProductQuery);
   await categoryStore.getListCategoryHasFeaturedProduct();
+  await categoryStore.getListTopCategoryWithProduct();
 });
 </script>
 
@@ -186,6 +180,7 @@ onBeforeMount(async () => {
       </swiper-component>
     </div>
   </div>
+
   <div class="container category-banner">
     <div class="row">
       <div class="col-lg-3 col-md-6 col-sm-6 position-relative">
@@ -231,22 +226,32 @@ onBeforeMount(async () => {
     <hr class="mb-5 mt-8" />
 
     <div class="heading heading-center mb-3">
-      <h2 class="text-center text-[2.6rem] font-medium mb-4">Sản phẩm mới</h2>
+      <h2 class="text-center text-[2.6rem] font-medium mb-4">
+        Sản phẩm nổi bật
+      </h2>
       <!-- End .title -->
 
       <ul class="nav nav-pills justify-content-center mb-1" role="tablist">
-        <li class="nav-item cursor-pointer"  @click="newProductQuery.categoryId = null">
+        <li
+          class="nav-item cursor-pointer"
+          @click="featuredProductQuery.categoryId = null"
+        >
           <a
             class="nav-link"
-            :class="{ active: newProductQuery.categoryId == null }"
+            :class="{ active: featuredProductQuery.categoryId == null }"
             >Tất cả</a
           >
         </li>
-        <li class="nav-item cursor-pointer" v-for="(item, index) in newProducts.categories" :key="index"  @click="newProductQuery.categoryId = item.id">
+        <li
+          class="nav-item cursor-pointer"
+          v-for="(item, index) in featuredProducts.categories"
+          :key="index"
+          @click="featuredProductQuery.categoryId = item.id"
+        >
           <a
             class="nav-link"
-            :class="{ active: newProductQuery.categoryId == item.id }"
-            >{{item.name}}</a
+            :class="{ active: featuredProductQuery.categoryId == item.id }"
+            >{{ item.name }}</a
           >
         </li>
       </ul>
@@ -261,12 +266,34 @@ onBeforeMount(async () => {
         aria-labelledby="arrivals-all-link"
       >
         <div class="row gap-y-3">
-          <div class="col-6 col-lg-2 col-sm-4 px-2 box-border" v-for="(item, index) in newProducts.products" :key="index">
+          <div
+            class="col-6 col-lg-2 col-sm-4 px-2 box-border"
+            v-for="(item, index) in featuredProducts.products"
+            :key="index"
+          >
             <div class="product mt-0 py-1 box-border h-[100%]">
-              <figure class="product-media d-flex items-center bg-gray-200 positon-relative aspect-square mb-1">
+              <figure
+                class="product-media d-flex items-center bg-gray-100 positon-relative aspect-square mb-1"
+              >
+                <span
+                  class="product-label label-circle label-new"
+                  v-if="item.isNew"
+                  >New</span
+                >
+                <span
+                  class="product-label label-circle label-top"
+                  v-if="item.isFeatured"
+                  >Top</span
+                >
+                <!-- <span class="product-label label-circle label-sale">Sale</span> -->
                 <a href="product.html">
                   <img
-                    :src="viewFile(item.images[0], 'src/assets/images/demos/demo-21/newArrivals/product-1.jpg')"
+                    :src="
+                      viewFile(
+                        item.images[0],
+                        'src/assets/images/demos/demo-21/newArrivals/product-1.jpg'
+                      )
+                    "
                     alt="Product image"
                     class="product-image object-contain"
                   />
@@ -279,13 +306,15 @@ onBeforeMount(async () => {
               </figure>
               <div class="product-body p-0 px-3">
                 <div class="product-cat">
-                  <a class="text-xl" href="#">{{item.category?.name}}</a>
+                  <a class="text-xl" href="#">{{ item.category?.name }}</a>
                 </div>
                 <h3 class="product-title">
                   <a href="product.html">{{ item.name }}</a>
                 </h3>
                 <div class="product-price justify-start">
-                  <span class="cur-price text-red-500">{{ currencyFormatTenant(item.price) + 'đ' }}</span>
+                  <span class="cur-price text-red-500">{{
+                    currencyFormatTenant(item.price) + "đ"
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -301,48 +330,54 @@ onBeforeMount(async () => {
       </a>
     </div>
   </div>
-  <!-- End .container -->
-  <div class="container">
-    <hr class="mb-5 mt-8" />
 
-    <div class="heading heading-center mb-3">
-      <h2 class="text-center text-[2.6rem] font-medium mb-4">Sản phẩm nổi bật</h2>
-      <!-- End .title -->
+  <div class="container mb-3" v-for="(category, i) in topCategories" :key="i">
+    <div class="heading heading-flex mb-2">
+      <div class="heading-center">
+        <h2 class="text-center text-[2.8rem] font-medium mb-4">
+        {{ category.name }}
+        </h2>
+        <!-- End .title -->
+      </div>
+      <!-- End .heading-left -->
 
-      <ul class="nav nav-pills justify-content-center mb-1" role="tablist">
-        <li class="nav-item cursor-pointer"  @click="featuredProducts.categoryId = null">
-          <a
-            class="nav-link"
-            v-if="featuredProducts.categories.length > 1"
-            :class="{ active: newProductQuery.categoryId == null }"
-            >Tất cả</a
-          >
-        </li>
-        <li class="nav-item cursor-pointer" v-for="(item, index) in featuredProducts.categories" :key="index"  @click="newProductQuery.categoryId = item.id">
-          <a
-            class="nav-link"
-            :class="{ active: newProductQuery.categoryId == item.id }"
-            >{{item.name}}</a
-          >
-        </li>
-      </ul>
+      <div class="heading-right">
+        <a href="category.html" class="title-link"
+          >Xem thêm <i class="icon-long-arrow-right"></i
+        ></a>
+      </div>
+      <!-- End .heading-right -->
     </div>
     <!-- End .heading -->
 
-    <div class="tab-content tab-content-carousel p-2 mb-3">
-      <div
-        class="p-0"
-        id="arrivals-all-tab"
-        role="tabpanel"
-        aria-labelledby="arrivals-all-link"
-      >
-        <div class="row gap-y-3">
-          <div class="col-6 col-lg-2 col-sm-4 px-2 box-border" v-for="(item, index) in featuredProducts.products" :key="index">
+    <swiper-component
+      :slidesPerView="6"
+      :ids="'brand'"
+      :itemCount="category.products.length"
+    >
+    <swiper-slide v-for="(item, j) in category.products" :key="j">
             <div class="product mt-0 py-1 box-border h-[100%]">
-              <figure class="product-media d-flex items-center bg-gray-200 positon-relative aspect-square mb-1">
+              <figure
+                class="product-media d-flex items-center bg-gray-100 positon-relative aspect-square mb-1"
+              >
+                <span
+                  class="product-label label-circle label-new"
+                  v-if="item.isNew"
+                  >New</span
+                >
+                <span
+                  class="product-label label-circle label-top"
+                  v-if="item.isFeatured"
+                  >Top</span
+                >
+                <!-- <span class="product-label label-circle label-sale">Sale</span> -->
                 <a href="product.html">
                   <img
-                    :src="viewFile(item.images[0], 'src/assets/images/demos/demo-21/newArrivals/product-1.jpg')"
+                    :src="
+                      viewFile(
+                        '', 'src/assets/images/demos/demo-21/newArrivals/product-1.jpg'
+                      )
+                    "
                     alt="Product image"
                     class="product-image object-contain"
                   />
@@ -355,34 +390,29 @@ onBeforeMount(async () => {
               </figure>
               <div class="product-body p-0 px-3">
                 <div class="product-cat">
-                  <a class="text-xl" href="#">{{item.category?.name}}</a>
+                  <a class="text-xl" href="#">{{ item.category?.name }}</a>
                 </div>
                 <h3 class="product-title">
                   <a href="product.html">{{ item.name }}</a>
                 </h3>
                 <div class="product-price justify-start">
-                  <span class="cur-price text-red-500">{{ currencyFormatTenant(item.price) + 'đ' }}</span>
+                  <span class="cur-price text-red-500">{{
+                    currencyFormatTenant(item.price) + "đ"
+                  }}</span>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End .tab-content -->
-    <div class="text-center">
-      <a href="category.html" class="btn btn-viewMore">
-        <span>Xem thêm</span>
-        <i class="icon-long-arrow-right"></i>
-      </a>
-    </div>
+    </swiper-slide>
+  
+  
+  </swiper-component>
   </div>
 
   <div class="container newsletter">
     <div
       class="background"
       style="
-        background-image: url(../assets/images/demos/demo-21/newsLetter/banner.jpg);
+        background-image: url('src/assets/images/demos/demo-21/newsLetter/banner.jpg');
       "
     >
       <div class="subscribe">
@@ -412,7 +442,7 @@ onBeforeMount(async () => {
     </div>
   </div>
 
-  <div class="container service mt-4">
+  <div class="container service mt-4 mb-4">
     <div class="col-sm-6 col-lg-3 col-noPadding">
       <div class="icon-box icon-box-side">
         <span class="icon-box-icon text-dark">
@@ -480,84 +510,6 @@ onBeforeMount(async () => {
       <!-- End .icon-box -->
     </div>
     <!-- End .col-sm-6 col-lg-4 -->
-  </div>
-
-  <div class="container instagram-store text-center">
-    <hr />
-    <div class="heading">
-      <h2 class="title">INSTAGRAM STORE</h2>
-      <!-- End .title -->
-    </div>
-    <div class="row">
-      <div class="col-sm-3 banner-sm-div">
-        <div class="banner-sm col-12 instagram-feed">
-          <img
-            src="../assets/images/demos/demo-21/instagramStore/banner-1.jpg"
-          />
-          <div class="instagram-feed-content">
-            <a href="#"><i class="icon-heart-o"></i>280</a>
-            <a href="#"><i class="icon-comments"></i>22</a>
-          </div>
-        </div>
-        <div class="banner-sm col-12 instagram-feed">
-          <img
-            src="../assets/images/demos/demo-21/instagramStore/banner-2.jpg"
-          />
-          <div class="instagram-feed-content">
-            <a href="#"><i class="icon-heart-o"></i>280</a>
-            <a href="#"><i class="icon-comments"></i>22</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-3 banner-lg instagram-feed">
-        <img src="../assets/images/demos/demo-21/instagramStore/banner-3.jpg" />
-        <div class="instagram-feed-content">
-          <a href="#"><i class="icon-heart-o"></i>280</a>
-          <a href="#"><i class="icon-comments"></i>22</a>
-        </div>
-      </div>
-      <div class="col-sm-3 banner-sm-div">
-        <div class="banner-sm col-6 instagram-feed">
-          <img
-            src="../assets/images/demos/demo-21/instagramStore/banner-4.jpg"
-          />
-          <div class="instagram-feed-content">
-            <a href="#"><i class="icon-heart-o"></i>280</a>
-            <a href="#"><i class="icon-comments"></i>22</a>
-          </div>
-        </div>
-        <div class="banner-sm col-6 instagram-feed">
-          <img
-            src="../assets/images/demos/demo-21/instagramStore/banner-6.jpg"
-          />
-          <div class="instagram-feed-content">
-            <a href="#"><i class="icon-heart-o"></i>280</a>
-            <a href="#"><i class="icon-comments"></i>22</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-3 banner-sm-div">
-        <div class="banner-sm col-6 instagram-feed">
-          <img
-            src="../assets/images/demos/demo-21/instagramStore/banner-5.jpg"
-          />
-          <div class="instagram-feed-content">
-            <a href="#"><i class="icon-heart-o"></i>280</a>
-            <a href="#"><i class="icon-comments"></i>22</a>
-          </div>
-        </div>
-        <div class="banner-sm col-6 instagram-feed">
-          <img
-            src="../assets/images/demos/demo-21/instagramStore/banner-7.jpg"
-          />
-          <div class="instagram-feed-content">
-            <a href="#"><i class="icon-heart-o"></i>280</a>
-            <a href="#"><i class="icon-comments"></i>22</a>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

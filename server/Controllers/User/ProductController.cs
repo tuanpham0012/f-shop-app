@@ -13,7 +13,7 @@ namespace ShopAppApi.Controllers.User
         [HttpGet("new-product")]
         public async Task<IActionResult> GetNewProduct([FromQuery]ProductRequest request)
         {
-            request.IsNew = true;
+            
             var product = await productRepository.GetAll(request, ["Category"]);
             return Ok(new ResponsePaginatedCollection<Product>(product));
         }
@@ -21,8 +21,14 @@ namespace ShopAppApi.Controllers.User
         [HttpGet("featured-product")]
         public async Task<IActionResult> GetFeaturedProduct([FromQuery]ProductRequest request)
         {
-            request.IsFeatured = true;
-            var product = await productRepository.GetAll(request, ["Category"]);
+            var product = await productRepository.GetFeaturedProduct(request, ["Category"]);
+            return Ok(new ResponsePaginatedCollection<Product>(product));
+        }
+
+        [HttpGet("{CategoryCode}")]
+        public async Task<IActionResult> GetProductByCategory(string CategoryCode, [FromQuery]ProductRequest request)
+        {
+            var product = await productRepository.GetProductByCategory(CategoryCode, request, ["Category"]);
             return Ok(new ResponsePaginatedCollection<Product>(product));
         }
     }

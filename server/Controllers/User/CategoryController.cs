@@ -16,10 +16,10 @@ namespace ShopAppApi.Controllers.User
             return Ok(new ResponseCollection<Category>(entries));
         }
 
-        [HttpGet("new-product-category")]
-        public async Task<IActionResult> GetCategoryHasNewProduct()
+        [HttpGet("top-category")]
+        public async Task<IActionResult> GetTopCategoryWithProduct()
         {
-            var entries = await repository.GetCategoryHasNewProduct();
+            var entries = await repository.GetTopCategoryWithProduct();
             return Ok(new ResponseCollection<Category>(entries));
         }
 

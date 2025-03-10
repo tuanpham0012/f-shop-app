@@ -1,5 +1,6 @@
 ﻿using ShopAppApi.Data;
 using ShopAppApi.Request;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Products
 {
@@ -10,5 +11,8 @@ namespace ShopAppApi.Repositories.Products
         Task Update(long Id, UpdateBrandRequest request);
         Task<Brand> Show(long Id);
         Task Delete(long Id);
+
+        Task<List<BrandVM>> GetBrandByCategory(string CategoryCode);
+
     }
 }

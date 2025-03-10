@@ -3,6 +3,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.User
 {
@@ -17,5 +18,13 @@ namespace ShopAppApi.Controllers.User
             var entries = await repository.GetAll(request);
             return Ok(new ResponseCollection<Brand>(entries));
         }
+
+        [HttpGet("brand-by-category")]
+        public async Task<IActionResult> GetBrandByCategory(string CategoryCode)
+        {
+            var entries = await repository.GetBrandByCategory(CategoryCode);
+            return Ok(new ResponseCollection<BrandVM>(entries));
+        }
+        
     }
 }

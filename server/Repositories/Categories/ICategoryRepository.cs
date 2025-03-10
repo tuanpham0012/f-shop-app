@@ -15,7 +15,7 @@ namespace ShopAppApi.Repositories.Products
 
         Task<List<Category>> GetPopularCategory();
 
-        Task<List<Category>> GetCategoryHasNewProduct();
+        Task<List<Category>> GetTopCategoryWithProduct();
         Task<List<Category>> GetCategoryHasFeaturedProduct();
     }
 }

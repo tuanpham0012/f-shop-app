@@ -129,7 +129,7 @@ namespace ShopAppApi.Repositories.Products
             return query.AsNoTracking().SingleOrDefault(x => x.Id == Id);
         }
 
-        public async Task<PaginatedList<Product>> GetAll(ProductRequest request, List<String>? includes = null!)
+        public async Task<PaginatedList<Product>> GetAll(ProductRequest request, List<string>? includes = null!)
         {
             var query = _context.Products.AsQueryable();
 
@@ -459,6 +459,86 @@ namespace ShopAppApi.Repositories.Products
             _context.Skus.RemoveRange(skus);
             await _context.SaveChangesAsync();
 
+        }
+
+        public async Task<PaginatedList<Product>> GetFeaturedProduct(ProductRequest request, List<string>? includes = null!)
+        {
+            var query = _context.Products.AsQueryable().Where(q => q.IsFeatured == true || q.IsNew == true);
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Search))
+            {
+                query = query.Where(q => q.Name.Contains(request.Search));
+            }
+
+            if (request.CategoryId != null)
+            {
+                query = query.Where(q => q.CategoryId == request.CategoryId);
+            }
+            if (request.BrandId != null)
+            {
+                query = query.Where(q => q.BrandId == request.BrandId);
+            }
+
+            switch (request.OrderBy)
+            {
+                case 1:
+                    query = query.OrderBy(x => x.Price);
+                    break;
+                case 2:
+                    query = query.OrderByDescending(x => x.Price);
+                    break;
+                default:
+                    query = query.OrderByDescending(x => x.Id);
+                    break;
+            }
+
+            return await PaginatedList<Product>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
+        }
+
+        public async Task<PaginatedList<Product>> GetProductByCategory(string categoryCode, ProductRequest request, List<string>? Includes = null!)
+        {
+            var category = _context.Categories.AsNoTracking().FirstOrDefault(x => x.Code == categoryCode);
+            if (category == null || category.NotUse == true)
+            {
+                throw new ArgumentException("Category does not exists!");
+            }
+            var query = _context.Products.AsQueryable().Where(q => q.CategoryId == category.Id);
+
+            if (Includes != null)
+            {
+                foreach (var include in Includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            if (request.BrandId != null)
+            {
+                query = query.Where(q => q.BrandId == request.BrandId);
+            }
+
+            switch (request.OrderBy)
+            {
+                case 1:
+                    query = query.OrderBy(x => x.Price);
+                    break;
+                case 2:
+                    query = query.OrderByDescending(x => x.Price);
+                    break;
+                default:
+                    query = query.OrderByDescending(x => x.Id);
+                    break;
+            }
+
+            return await PaginatedList<Product>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
         }
     }
 }

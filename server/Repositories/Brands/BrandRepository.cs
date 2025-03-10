@@ -3,6 +3,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Helpers;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Products
 {
@@ -84,6 +85,21 @@ namespace ShopAppApi.Repositories.Products
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
+        }
+
+        public async Task<List<BrandVM>> GetBrandByCategory(string CategoryCode)
+        {
+            var brands = await context.Brands.Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM{
+                Id = x.Id,
+                Code = x.Code,
+                Name = x.Name,
+                Image = x.Image,
+                NotUse = x.NotUse,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt,
+                ProductCount = x.Products.Count
+            }).ToListAsync();
+            return brands ?? [];
         }
     }
 }

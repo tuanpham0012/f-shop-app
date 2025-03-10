@@ -16,6 +16,12 @@ export const useBrandStore = defineStore("brand", {
                 message: "",
                 data: [],
                 meta: null,
+            },
+            brandByCategory: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null,
             }
         };
     },
@@ -26,6 +32,16 @@ export const useBrandStore = defineStore("brand", {
                 .then((res) => {
                     console.log(res.data);
                     this.brands = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getListBrandByCategory(query: any) {
+            await _getList(`${apiUrl}/brands/brand-by-category`, query)
+                .then((res) => {
+                    console.log(res.data);
+                    this.brandByCategory = res.data;
                 })
                 .catch((err) => {
                     console.log(err);

@@ -125,23 +125,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="container my-3">
-                    <h4>Chi tiết sản phẩm</h4>
-                    <div class="description" v-html="product.description"></div>
-                    </div>
                 <div class="container">
-                    <h4>Danh sách biến thể</h4>
                     <table class="table">
                         <thead class="table-light">
                             <tr>
                                 <th>STT</th>
                                 <th>Thuộc tính</th>
                                 <th>Giá bán</th>
-                                <!-- <th>Số lượng</th> -->
+                                <th>Số lượng</th>
                                 <th>Mã hàng</th>
                             </tr>
                         </thead>
-                        <tbody class="">
+                        <tbody class="table-border-bottom-0">
                             <tr
                                 v-for="(item, index) in product.skus"
                                 :key="index"
@@ -162,9 +157,9 @@
                                 >
                                     {{ displayPrice(item.price) + " đ" }}
                                 </td>
-                                <!-- <td class="w-[150px]">
+                                <td class="w-[150px]">
                                     {{ item.stock }}
-                                </td> -->
+                                </td>
 
                                 <td>
                                     {{ item.barCode }}
@@ -260,14 +255,10 @@ const onlyInLeft = (left: any, right: any, compareFunction: any) =>
             )
     );
 
-const product = computed(() => productStore.$state.entry);
+const product = computed<any>(() => null);
 
 onBeforeMount(async () => {
-    await productStore.show(props.id);
+    // await productStore.show(props.id);
 });
 </script>
-<style lang="scss" scoped>
-.description > * {
-    all: unset !important
-}
-</style>
+<style lang="scss" scoped></style>

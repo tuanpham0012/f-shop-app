@@ -31,7 +31,7 @@ export const useCategoryStore = defineStore("category", {
                 data: [],
                 meta: null as any,
             },
-            newProductCategory: {
+            topCategory: {
                 code: 200,
                 message: "",
                 data: [],
@@ -59,11 +59,11 @@ export const useCategoryStore = defineStore("category", {
                     console.log(err);
                 });
         },
-        async getListCategoryHasNewProduct() {
-            await _getList(`${url}/categories/new-product-category`, null)
+        async getListTopCategoryWithProduct() {
+            await _getList(`${url}/categories/top-category`, null)
                 .then((res) => {
                     console.log(res.data);
-                    this.newProductCategory = res.data;
+                    this.topCategory = res.data;
                 })
                 .catch((err) => {
                     console.log(err);

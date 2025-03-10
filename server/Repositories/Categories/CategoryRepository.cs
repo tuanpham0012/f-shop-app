@@ -113,7 +113,7 @@ namespace ShopAppApi.Repositories.Products
                 category.Lft = request.Lft;
                 category.ParentId = request.ParentId;
                 category.NotUse = request.NotUse;
-                if(category.Image != request.Image)
+                if (category.Image != request.Image)
                 {
                     FileHelper.DeleteFile(category.Image);
                     category.Image = await FileHelper.SaveFile(request.Image);
@@ -152,12 +152,25 @@ namespace ShopAppApi.Repositories.Products
             return cacheData ?? new List<Category>();
         }
 
-        public async Task<List<Category>> GetCategoryHasNewProduct()
+        public async Task<List<Category>> GetTopCategoryWithProduct()
         {
             var cacheKey = Constants.CategoryNewProductCache;
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
-                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsNew == true )).ToListAsync();
+                return await context.Categories.AsNoTracking().Include("Products").Where(c => c.IsPopular == true && c.NotUse == false).Select( q => new Category
+                {
+                    Id = q.Id,
+                    Name = q.Name,
+                    Code = q.Code,
+                    ParentId = q.ParentId,
+                    Lft = q.Lft,
+                    Rgt = q.Rgt,
+                    NotUse = q.NotUse,
+                    Image = q.Image,
+                    IsPopular = q.IsPopular,
+                    HidenMenu = q.HidenMenu,
+                    Products = q.Products.OrderByDescending(x => x.Id).Take(20).ToList(),
+                }).Take(3).ToListAsync();
             });
             return cacheData ?? new List<Category>();
         }
@@ -167,7 +180,7 @@ namespace ShopAppApi.Repositories.Products
             var cacheKey = Constants.CategoryFeaturedProductCache;
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
-                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsFeatured == true )).ToListAsync();
+                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsFeatured == true || p.IsNew == true)).ToListAsync();
             });
             return cacheData ?? new List<Category>();
         }
