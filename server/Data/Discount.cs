@@ -13,6 +13,8 @@ public partial class Discount
 
     public byte Type { get; set; }
 
+    public double DiscountPercent { get; set; }
+
     public double DiscountValue { get; set; }
 
     public DateOnly? StartDate { get; set; }

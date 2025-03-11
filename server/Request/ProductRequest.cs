@@ -25,7 +25,7 @@ namespace ShopAppApi.Request
         [Required(ErrorMessage = "Tên sản phẩm không được để trống")]
         public string? Name { get; set; }
         public double Price { get; set; }
-        public string[] Images { get; set; } = [];
+        public string? ImageThumb { get; set; }
         [Required(ErrorMessage = "Mã vạch không được để trống")]
         [ModelUnique("products", "barcode", "Mã vạch {value} đã tồn tại.")]
         public string? Barcode { get; set; }
@@ -48,6 +48,7 @@ namespace ShopAppApi.Request
         public long? TaxId { get; set; }
         public virtual ICollection<OptionsRequest> Options { get; set; } = [];
         public virtual ICollection<SkusRequest> Skus { get; set; } = [];
+        public virtual ICollection<ProductImageRequest> Images { get; set; } = [];
     }
 
     public class OptionsRequest
@@ -101,7 +102,7 @@ namespace ShopAppApi.Request
         public string Name { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public double Price { get; set; }
-        public string[] Images { get; set; } = [];
+        public string? ImageThumb { get; set; }
         public string Barcode { get; set; } = string.Empty;
         public string UnitBuy { get; set; } = string.Empty;
         public string UnitSell { get; set; } = string.Empty;
@@ -119,6 +120,19 @@ namespace ShopAppApi.Request
         public long? TaxId { get; set; }
         public virtual ICollection<OptionsRequest> Options { get; set; } = [];
         public virtual ICollection<SkusRequest> Skus { get; set; } = [];
+        public virtual ICollection<ProductImageRequest> Images { get; set; } = [];
         public bool? NewSkus { get; set; }
     }
+
+    public partial class ProductImageRequest
+{
+    public long? Id { get; set; }
+    
+    public string Path { get; set; } = null!;
+
+    public byte Type { get; set; }
+
+    public bool? Deleted { get; set; }
+}
+
 }

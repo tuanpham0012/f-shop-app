@@ -2,7 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShopAppApi.Data;
+using ShopAppApi.Helpers;
+using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Middlewares;
+using ShopAppApi.Repositories.Categories;
 using ShopAppApi.Repositories.Menus;
 using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
@@ -36,6 +39,7 @@ builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<ITaxRepository, TaxRepository>();
 builder.Services.AddScoped<ITelegramRepository, TelegramRepository>();
 builder.Services.AddScoped<IRedisCache, RedisCache>();
+builder.Services.AddScoped<IFileHelper, FileHelper>();
 
 builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
 

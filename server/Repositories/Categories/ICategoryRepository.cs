@@ -2,7 +2,7 @@
 using ShopAppApi.Request;
 using ShopAppApi.Response;
 
-namespace ShopAppApi.Repositories.Products
+namespace ShopAppApi.Repositories.Categories
 {
     public interface ICategoryRepository
     {

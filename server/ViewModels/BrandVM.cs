@@ -9,6 +9,7 @@ namespace ShopAppApi.ViewModels
         public string Name { get; set; } = null!;
 
         public string? Image { get; set; }
+        public string? ImagePreview { get; set; }
 
         public bool? NotUse { get; set; }
 

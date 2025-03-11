@@ -8,7 +8,7 @@ namespace ShopAppApi.Controllers.User
 {
     [ApiController]
     [Route("products")]
-    public class ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository) : Controller
+    public class ProductController(IProductRepository productRepository) : Controller
     {
         [HttpGet("new-product")]
         public async Task<IActionResult> GetNewProduct([FromQuery]ProductRequest request)

@@ -302,7 +302,7 @@
                 :key="index"
               >
                 <img
-                  :src="viewFile(item)"
+                  :src="viewFile(item.path)"
                   class="w-[120px] h-[120px] object-cover rounded-2xl"
                 />
                 <div class="middle rounded-2xl">
@@ -1003,8 +1003,8 @@ const productImage = (
             return;
           }
           console.log(typeof canvas.toDataURL(file.type));
-
-          product.value.images.push(canvas.toDataURL(file.type));
+          
+          product.value.images.push({ id: 0, path: canvas.toDataURL(file.type), deleted: false, type: 0, driver: "" });
         };
         img.src = e.target.result;
       };

@@ -1,13 +1,16 @@
 using System.Configuration;
 using System.Text.RegularExpressions;
 using RestSharp;
+using ShopAppApi.Helpers.Interfaces;
 
 namespace ShopAppApi.Helpers
 {
-    public static class FileHelper
+    public class FileHelper(IConfiguration configuration) : IFileHelper
     {
-        private static readonly string SaveFolder = "Files";
-        private static readonly Dictionary<byte[], string> FileSignatures = new Dictionary<byte[], string>
+        private readonly string driver = configuration["FileStorage:Driver"] ?? "local";
+        private readonly string defaultImage = configuration["FileStorage:DefaultImage"];
+        private readonly string SaveFolder = "Files";
+        private readonly Dictionary<byte[], string> FileSignatures = new Dictionary<byte[], string>
     {
         { new byte[] { 0xFF, 0xD8, 0xFF }, "jpg" },  // JPEG
         { new byte[] { 0x89, 0x50, 0x4E, 0x47 }, "png" },  // PNG
@@ -18,12 +21,12 @@ namespace ShopAppApi.Helpers
         { new byte[] { 0x50, 0x4B, 0x03, 0x04 }, "zip" }  // ZIP (bao gồm cả DOCX, XLSX, PPTX) "FileStorage.SaveFolder"
     };
 
-        public static DirectoryInfo GetFileFolder()
+        public DirectoryInfo GetFileFolder()
         {
             return new DirectoryInfo(Directory.GetCurrentDirectory() + "/" + SaveFolder);
         }
 
-        public static string GetFileFormat(byte[] fileBytes)
+        public string GetFileFormat(byte[] fileBytes)
         {
             foreach (var signature in FileSignatures)
             {
@@ -36,7 +39,7 @@ namespace ShopAppApi.Helpers
             throw new ArgumentException("Định dạng file không hợp lệ!");
         }
 
-        public static async Task<string> SaveFile(string? fileBase64)
+        public async Task<string?> SaveFile(string? fileBase64)
         {
 
             if (String.IsNullOrEmpty(fileBase64) || !Regex.IsMatch(fileBase64, @"^data:image\/[a-zA-Z]+;base64,"))
@@ -50,7 +53,7 @@ namespace ShopAppApi.Helpers
             return await SaveFile(fileBytes);
         }
 
-        public static async Task<string?> SaveFile(byte[] fileBytes)
+        public async Task<string?> SaveFile(byte[] fileBytes)
         {
             DirectoryInfo info = GetFileFolder();
             if (!info.Exists)
@@ -70,14 +73,14 @@ namespace ShopAppApi.Helpers
             return fileName;
         }
 
-        public static void DeleteFile(string? fileName)
+        public void DeleteFile(string? fileName)
         {
             if (String.IsNullOrEmpty(fileName)) return;
             var path = Path.Combine(GetFileFolder().FullName, fileName);
             if (File.Exists(path)) File.Delete(path);
         }
 
-        public static byte[]? Download(string fileName)
+        public byte[]? Download(string fileName)
         {
             string filePath = Path.Combine(GetFileFolder().FullName, fileName);
             if (!System.IO.File.Exists(filePath))
@@ -86,6 +89,21 @@ namespace ShopAppApi.Helpers
             }
             byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
             return fileBytes;
+        }
+
+        public string getLink(string? FileName, HttpContext httpContext)
+        {
+            if(string.IsNullOrEmpty(FileName))
+            {
+                return $"{httpContext.Request.Host.Value}/files/download/{defaultImage}";
+            }
+            switch (driver)
+            {
+                case "local":
+                    return $"{httpContext.Request.Host.Value}/files/download/{FileName}";
+                default:
+                    return $"{httpContext.Request.Host.Value}/files/download/{FileName}";
+            }
         }
     }
 }

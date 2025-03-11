@@ -22,6 +22,7 @@ namespace ShopAppApi.Controllers.User
         [HttpGet("brand-by-category")]
         public async Task<IActionResult> GetBrandByCategory(string CategoryCode)
         {
+            Console.WriteLine(HttpContext.Request.Host.Value);
             var entries = await repository.GetBrandByCategory(CategoryCode);
             return Ok(new ResponseCollection<BrandVM>(entries));
         }

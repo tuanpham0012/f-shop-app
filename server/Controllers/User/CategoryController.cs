@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ShopAppApi.Data;
-using ShopAppApi.Repositories.Products;
+using ShopAppApi.Repositories.Categories;
 using ShopAppApi.Response;
 
 namespace ShopAppApi.Controllers.User

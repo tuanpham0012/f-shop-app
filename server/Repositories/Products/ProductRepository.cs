@@ -1,36 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Any;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
-using ShopAppApi.Helpers;
-using ShopAppApi.Models;
+using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
 using Slugify;
-using System.Collections;
-using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ShopAppApi.Repositories.Products
 {
-    public class ProductRepository(ShopAppContext context) : IProductRepository
+    public class ProductRepository(ShopAppContext context, IFileHelper fileHelper, IConfiguration configuration) : IProductRepository
     {
         private readonly ShopAppContext _context = context;
+        private readonly string driver = configuration.GetSection("FileStorage:Driver").Value!;
         public async Task Create(StoreProductRequest product)
         {
             using var transaction = _context.Database.BeginTransaction();
-
-            foreach (var item in product.Images.Select((value, i) => (value, i)))
-            {
-                if (item.value != null)
-                {
-                    product.Images[item.i] = await FileHelper.SaveFile(item.value);
-                }
-            }
 
             var entry = new Product
             {
@@ -47,7 +31,7 @@ namespace ShopAppApi.Repositories.Products
                 TaxId = product.TaxId ?? throw new ArgumentNullException(nameof(product.TaxId)),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Images = JsonSerializer.Serialize(product.Images),
+                ImageThumb = await fileHelper.SaveFile(product.ImageThumb),
                 IsNew = product.IsNew,
                 NumberWarning = product.NumberWarning,
                 HasVariants = product.HasVariants,
@@ -55,6 +39,22 @@ namespace ShopAppApi.Repositories.Products
             };
             _context.Add(entry);
             await _context.SaveChangesAsync();
+
+            // lưu hình ảnh
+            foreach (var image in product.Images)
+            {
+                var productImage = new ProductImage
+                {
+                    ProductId = entry.Id,
+                    Path = await fileHelper.SaveFile(image.Path),
+                    Type = image.Type,
+                    Driver = driver,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                };
+                await _context.SaveChangesAsync();
+            }
+
             double minPrice = Double.MaxValue;
             foreach (var option in product.Options)
             {
@@ -186,21 +186,14 @@ namespace ShopAppApi.Repositories.Products
             using var transaction = _context.Database.BeginTransaction();
 
             var _product = await _context.Products.SingleOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Product does not exists!");
-            string[] arrImg = [];
 
-            var oldImages = _product.Images != null ? JsonSerializer.Deserialize<List<string>>(_product.Images) : [];
+            //string[] arrImg = [];
 
-            var imgDeleted = oldImages?.Except(product.Images) ?? Enumerable.Empty<string>();
 
-            foreach (var img in imgDeleted)
-            {
-                FileHelper.DeleteFile(img);
-            }
-
-            foreach (var item in product.Images.Select((value, i) => (value, i)))
-            {
-                product.Images[item.i] = await FileHelper.SaveFile(item.value);
-            }
+            // foreach (var item in product.Images.Select((value, i) => (value, i)))
+            // {
+            //     product.Images[item.i] = await fileHelper.SaveFile(item.value);
+            // }
 
             _product.Name = product.Name ?? _product.Name;
             _product.Code = product.Code ?? _product.Code;
@@ -214,7 +207,7 @@ namespace ShopAppApi.Repositories.Products
             _product.BrandId = product.BrandId ?? _product.BrandId;
             _product.TaxId = product.TaxId ?? _product.TaxId;
             _product.UpdatedAt = DateTime.UtcNow;
-            _product.Images = JsonSerializer.Serialize(product.Images);
+            _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb);
             _product.IsNew = product.IsNew;
             _product.NumberWarning = product.NumberWarning;
             _product.HasVariants = product.HasVariants;
@@ -365,7 +358,7 @@ namespace ShopAppApi.Repositories.Products
 
         public async Task<OptionValue> CreateOrUpdateOptionValue(OptionValuesRequest optionValue)
         {
-            var img = await FileHelper.SaveFile(optionValue.Image);
+            var img = await fileHelper.SaveFile(optionValue.Image);
             var _optionValue = new OptionValue
             {
                 OptionId = (long)optionValue.OptionId,
@@ -446,7 +439,7 @@ namespace ShopAppApi.Repositories.Products
             var optionValue = await _context.OptionValues.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Id);
             if (optionValue != null)
             {
-                FileHelper.DeleteFile(optionValue.Image);
+                fileHelper.DeleteFile(optionValue.Image);
                 _context.OptionValues.Remove(optionValue);
                 await _context.SaveChangesAsync();
             }

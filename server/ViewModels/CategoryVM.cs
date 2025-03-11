@@ -19,6 +19,8 @@ public partial class CategoryVM
 
     public bool? NotUse { get; set; }
     public string? Image { get; set; }
+    public string? ImagePreview { get; set; }
+
     public bool? IsPopular { get; set; }
     public bool? HidenMenu { get; set; }
 
@@ -41,6 +43,8 @@ public partial class CategoryTreeVM
 
     public bool? NotUse { get; set; }
     public string? Image { get; set; }
+    public string? ImagePreview { get; set; }
+
     public bool? IsPopular { get; set; }
     public bool? HidenMenu { get; set; }
 

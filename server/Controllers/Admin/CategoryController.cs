@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopAppApi.Data;
-using ShopAppApi.Repositories.Products;
+using ShopAppApi.Repositories.Categories;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
 

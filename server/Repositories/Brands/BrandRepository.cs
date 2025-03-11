@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
+using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Products
 {
-    public class BrandRepository(ShopAppContext context, IRedisCache cache) : IBrandRepository
+    public class BrandRepository(ShopAppContext context, IRedisCache cache, IFileHelper fileHelper) : IBrandRepository
     {
         public async Task<List<Brand>> GetAll(BrandRequest request)
         {
@@ -37,7 +38,7 @@ namespace ShopAppApi.Repositories.Products
             {
                 Name = request.Name,
                 Code = request.Code,
-                Image = await FileHelper.SaveFile(request.Image),
+                Image = await fileHelper.SaveFile(request.Image),
                 NotUse = request.NotUse,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -59,8 +60,8 @@ namespace ShopAppApi.Repositories.Products
                 brand.Code = request.Code;
                 if(brand.Image != request.Image)
                 {
-                    FileHelper.DeleteFile(brand.Image);
-                    brand.Image = await FileHelper.SaveFile(request.Image);
+                    fileHelper.DeleteFile(brand.Image);
+                    brand.Image = await fileHelper.SaveFile(request.Image);
                 }
                 brand.NotUse = request.NotUse;
                 brand.CreatedAt = DateTime.UtcNow;
@@ -80,7 +81,7 @@ namespace ShopAppApi.Repositories.Products
                 {
                     throw new ArgumentException("Brand has products");
                 }
-                FileHelper.DeleteFile(brand.Image);
+                fileHelper.DeleteFile(brand.Image);
                 context.Brands.Remove(brand);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -89,11 +90,12 @@ namespace ShopAppApi.Repositories.Products
 
         public async Task<List<BrandVM>> GetBrandByCategory(string CategoryCode)
         {
+            HttpContext httpContext = new HttpContextAccessor().HttpContext;
             var brands = await context.Brands.Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM{
                 Id = x.Id,
                 Code = x.Code,
                 Name = x.Name,
-                Image = x.Image,
+                Image = fileHelper.getLink(x.Image, httpContext),
                 NotUse = x.NotUse,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,

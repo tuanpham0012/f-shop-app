@@ -17,7 +17,7 @@ public partial class Product
 
     public byte NumberWarning { get; set; }
 
-    public string? Images { get; set; }
+    public string? ImageThumb { get; set; }
 
     public string UnitSell { get; set; } = null!;
 
@@ -36,6 +36,8 @@ public partial class Product
     public bool? IsNew { get; set; }
 
     public bool? IsFeatured { get; set; }
+
+    public bool? IsSale { get; set; }
 
     public long BrandId { get; set; }
 
@@ -62,6 +64,8 @@ public partial class Product
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
+
+    public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
 
     public virtual ICollection<ProductStatistic> ProductStatistics { get; set; } = new List<ProductStatistic>();
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
+using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 
-namespace ShopAppApi.Repositories.Products
+namespace ShopAppApi.Repositories.Categories
 {
-    public class CategoryRepository(ShopAppContext context, IRedisCache cache) : ICategoryRepository
+    public class CategoryRepository(ShopAppContext context, IRedisCache cache, IFileHelper fileHelper) : ICategoryRepository
     {
         public async Task<List<CategoryVM>> GetAll(CategoryRequest request)
         {
@@ -90,7 +91,7 @@ namespace ShopAppApi.Repositories.Products
                 Rgt = 0,
                 ParentId = request.ParentId,
                 NotUse = request.NotUse,
-                Image = await FileHelper.SaveFile(request.Image),
+                Image = await fileHelper.SaveFile(request.Image),
                 IsPopular = request.IsPopular,
                 HidenMenu = request.HidenMenu,
                 UpdatedAt = DateTime.UtcNow,
@@ -115,8 +116,8 @@ namespace ShopAppApi.Repositories.Products
                 category.NotUse = request.NotUse;
                 if (category.Image != request.Image)
                 {
-                    FileHelper.DeleteFile(category.Image);
-                    category.Image = await FileHelper.SaveFile(request.Image);
+                    fileHelper.DeleteFile(category.Image);
+                    category.Image = await fileHelper.SaveFile(request.Image);
                 }
                 category.IsPopular = request.IsPopular;
                 category.HidenMenu = request.HidenMenu;
