@@ -13,9 +13,9 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 40; $i++) {
             $products = [];
-            for ($j = 0; $j < 20; $j++) {
+            for ($j = 0; $j < 40; $j++) {
                 $name = fake()->name;
                 $products[] = [
                     'code' => Str::random(10),
@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
                     'unit_buy' => fake()->lastName,
                     'alias' => Str::slug($name, '-'),
                     'category_id' => rand(1, 7),
-                    'brand_id' => rand(1, 2),
+                    'brand_id' => rand(1, 8),
                     'tax_id' => 1,
                 ];
             }

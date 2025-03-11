@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->double('price',12,4)->default(0);
             $table->unsignedTinyInteger('number_warning')->default(0);
-            $table->json('images')->nullable();
+            $table->string('image_thumb')->nullable();
             $table->string('unit_sell', 150);
             $table->string('unit_buy', 150);
             $table->text('description')->nullable();
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('has_variants')->default(false);
             $table->boolean('is_new')->default(false);
             $table->boolean('is_featured')->default(false);
+            $table->boolean('is_sale')->default(false);
             $table->foreignId('brand_id')->constrained();
             $table->foreignId('category_id')->constrained();
             $table->foreignId('tax_id')->constrained();

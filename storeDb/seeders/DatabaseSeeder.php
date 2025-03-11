@@ -28,12 +28,76 @@ class DatabaseSeeder extends Seeder
         ]);
         \DB::table("brands")->insert([
             [
-                "name"=> "Test 1",
+                "name"=> "Apple",
+                "code" =>"Apple"
+            ],
+            [
+                "name"=> "SamSung",
+                "code" =>"SamSung"
+            ],
+            [
+                "name"=> "Xiaomi",
+                "code" =>"Xiaomi"
+            ],
+            [
+                "name"=> "ViVo",
+                "code" =>"ViVo"
+            ],
+            [
+                "name"=> "Oppo",
+                "code" =>"Oppo"
+            ],
+            [
+                "name"=> "LG",
+                "code" =>"lg"
+            ],
+            [
+                "name"=> "Motorola",
                 "code" =>"DD"
             ],
             [
-                "name"=> "Test 2",
-                "code" =>"DD2"
+                "name"=> "Nokia",
+                "code" =>"Nokia"
+            ],
+            [
+                "name"=> "Realme",
+                "code" =>"Realme"
+            ],
+            [
+                "name"=> "Huawei",
+                "code" =>"Huawei"
+            ],
+            [
+                "name"=> "OnePlus",
+                "code" =>"OnePlus"
+            ],
+            [
+                "name"=> "Sony",
+                "code" =>"Sony"
+            ],
+            [
+                "name"=> "HTC",
+                "code" =>"htc"
+            ],
+            [
+                "name"=> "Lenovo",
+                "code" =>"Lenovo"
+            ],
+            [
+                "name"=> "Dell",
+                "code" =>"Dell"
+            ],
+            [
+                "name"=> "MSI",
+                "code" =>"msi"
+            ],
+            [
+                "name"=> "Asus",
+                "code" =>"Asus"
+            ],
+            [
+                "name"=> "HP",
+                "code" =>"hp"
             ],
         ]);
         $this->call([MenuSeeder::class, CategorySeeder::class, SupplierSeeder::class, ProductSeeder::class, CustomerSeeder::class]);

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained();
             $table->foreignId('sku_id')->constrained();
             $table->tinyInteger('type')->default(0)->comment('0 - giảm giá phần trăm, 1 - giảm tiền');
+            $table->double('discount_percent', 12, 4)->default(0);
             $table->double('discount_value', 12, 4)->default(0);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
