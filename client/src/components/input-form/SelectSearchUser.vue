@@ -1,6 +1,6 @@
 <template>
     <div v-click-outside="() => toggleShow(false)">
-        <div class="box">
+        <div class="box" ref="containerElm">
             <div
                 class="select-box"
                 :class="{ active: showList, disabled: props.disabled }"
@@ -13,8 +13,8 @@
                 >
                     <div class="d-flex align-items-center gap-1 nowrap" v-if="dataSelect">
                         <img
-                            v-if="props.src"
-                            class="w-[40px] h-[40px] img-radius"
+                            v-if="props.src && props.preImage"
+                            class="w-[65px] h-[auto] max-h-[65px] img-radius object-cover me-2"
                             :src="dataSelect[props.src]"
                             loading="lazy"
                         />
@@ -55,7 +55,7 @@
                 <div
                     class="options-container"
                     v-if="showList"
-                    :style="{ top: top + 'px', left: left + 'px' }"
+                    :style="{ top: top + 'px', left: left + 'px', width: maxWidth + 'px' }"
                 >
                     <div class="search-box">
                         <input
@@ -74,7 +74,7 @@
                             {{ props.placeholder }}
                         </div>
                         <div
-                            class="option d-flex align-items-center gap-1 nowrap"
+                            class="option"
                             v-for="(item, index) in listData"
                             :id="
                                 dataSelect &&
@@ -94,7 +94,7 @@
                         >
                             <img
                                 v-if="props.src"
-                                class="w-[40px] h-[40px] img-radius"
+                                class="w-[65px] h-[auto] max-h-[65px] img-radius object-fill me-2"
                                 :src="item[props.src]"
                                 loading="lazy"
                             />
@@ -123,7 +123,7 @@
     </div>
 </template>
 <script setup>
-import { ref, watch, computed, onMounted, onBeforeMount, reactive } from "vue";
+import { ref, watch, computed, onMounted  } from "vue";
 import debounce from "lodash.debounce";
 import { removeVietnameseTones } from "@/services/utils";
 import { storeToRefs } from "pinia";
@@ -148,6 +148,10 @@ const props = defineProps({
     src: {
         type: String,
         default: null,
+    },
+    preImage: {
+        type: Boolean,
+        default: true
     },
     listData: {
         type: Array,
@@ -204,6 +208,9 @@ const emits = defineEmits([
     "update:modelValue",
     "changDataSelect",
 ]);
+
+const containerElm = ref(null)
+const maxWidth = ref(0)
 
 // const dataSelect = ref(props.listData.find(x => x[props.keyValue] == props.modelValue));
 
@@ -299,6 +306,12 @@ const position = () => {
     }
 };
 
+const getWidth = () => {
+      if (containerElm.value) {
+        maxWidth.value = containerElm.value.offsetWidth; // Lấy chiều rộng
+      }
+    };
+
 defineExpose({
     toggleShow,
 });
@@ -310,9 +323,14 @@ onMounted(() => {
         new ResizeObserver(position).observe(divs[i]);
     }
     position();
+    getWidth()
 });
 </script>
 <style lang="scss" scoped>
+p {
+    padding: 0;
+    margin: 0;
+}
 .select-box {
     position: relative;
     width: auto;
@@ -323,8 +341,7 @@ onMounted(() => {
         top: 700px;
         left: 100px;
         background: rgb(250, 249, 249);
-        width: max-content;
-        max-width: 325px;
+        min-width: min-content;
         opacity: 1;
         border-radius: 4px;
         overflow: hidden;
@@ -385,6 +402,13 @@ onMounted(() => {
 }
 
 .option {
+    height: 65px;
+    display: flex;
+    align-items: center;
+    gap: 2;
+    flex-wrap: nowrap;
+    padding: 2px 0 2px 0;
+    box-sizing: content-box;
     &.active {
         background: #4782ff;
         border-radius: 3px;
@@ -403,7 +427,7 @@ onMounted(() => {
 }
 
 .select-box .option:hover {
-    background: #687cc4;
+    background: hsl(229, 100%, 80%);
     border-radius: 3px;
     color: #ffffff;
     .alias {

@@ -78,7 +78,7 @@
             type="text"
             class="form-control"
             @keypress="filter($event)"
-            v-model="currentPage"
+            :value="currentPage"
           />
         </div>
       </div>
@@ -119,29 +119,25 @@ const currentPage = ref(props.currentPage);
 const emits = defineEmits(["change-page"]);
 
 const changePage = (page) => {
+  console.log("changePage");
+  
   if (page < 1) {
     return;
   }
   if (page > props.totalPages) {
     return;
   }
-  currentPage.value = page;
+  // currentPage.value = page;
   emits("change-page", {
-    currentPage: currentPage.value,
+    currentPage: page,
     totalPages: props.totalPages,
     pageSize: pageSize.value,
     totalCount: props.totalCount,
   });
 };
 
-watch(pageSize, (newValue, oldValue) => {
-  currentPage.value = 1;
-  emits("change-page", {
-    currentPage: currentPage.value,
-    totalPages: props.totalPages,
-    pageSize: pageSize.value,
-    totalCount: props.totalCount,
-  });
+watch(pageSize.value, (newValue, oldValue) => {
+  changePage(1)
 });
 
 watch(
@@ -157,7 +153,8 @@ watch(
     if (newValue >= props.totalPages) {
       currentPage.value = props.totalPages;
     }
-    changePage(currentPage.value);
+    // if(oldValue != newValue)
+    //   changePage(currentPage.value);
   },400)
 );
 

@@ -57,7 +57,7 @@ onBeforeMount(async () => {
   <!-- End .intro-slider-container -->
 
   <div class="container banner-container">
-    <div class="col-lg-4 col-md-8 col-sm-10 col-12 col-pd1">
+    <div class="col-lg-4 col-md-8 col-sm-10 col-12 col-pd1 position-relative">
       <a href="category.html">
         <img src="../assets/images/demos/demo-21/banner/banner-1.jpg" />
       </a>
@@ -80,7 +80,7 @@ onBeforeMount(async () => {
       </div>
       <!-- End .row -->
     </div>
-    <div class="col-lg-4 col-md-8 col-sm-10 col-12 col-pd1">
+    <div class="col-lg-4 col-md-8 col-sm-10 col-12 col-pd1 position-relative">
       <a href="category.html">
         <img src="../assets/images/demos/demo-21/banner/banner-2.jpg" />
       </a>
@@ -103,7 +103,7 @@ onBeforeMount(async () => {
       </div>
       <!-- End .row -->
     </div>
-    <div class="col-lg-4 col-md-8 col-sm-10 col-12 col-pd1">
+    <div class="col-lg-4 col-md-8 col-sm-10 col-12 col-pd1 position-relative">
       <a href="category.html">
         <img src="../assets/images/demos/demo-21/banner/banner-3.jpg" />
       </a>
@@ -126,8 +126,8 @@ onBeforeMount(async () => {
     </div>
   </div>
 
-  <div class="container mb-2">
-    <h2 class="text-center text-[2.6rem] font-medium">Thương hiệu</h2>
+  <div class="container mb-3" v-if="brands.length > 0">
+    <h2 class="text-center text-[2.6rem] font-medium mb-2">Thương hiệu</h2>
     <div class="cat-blocks-container">
       <swiper-component
         :slidesPerView="6"
@@ -151,7 +151,7 @@ onBeforeMount(async () => {
   </div>
   <!-- End .container -->
 
-  <div class="container my-3">
+  <div class="container my-3" v-if="popularCategories.length > 0">
     <h2 class="text-center text-[2.6rem] font-medium mb-4">
       Danh mục phổ biến
     </h2>

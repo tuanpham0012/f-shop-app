@@ -4,6 +4,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.Admin
 {
@@ -17,7 +18,7 @@ namespace ShopAppApi.Controllers.Admin
         public async Task<IActionResult> Index([FromQuery]BrandRequest request)
         {
             var entries = await _repo.GetAll(request);
-            return Ok(new ResponseCollection<Brand>(entries));
+            return Ok(new ResponseCollection<BrandVM>(entries));
         }
 
         [HttpPost]

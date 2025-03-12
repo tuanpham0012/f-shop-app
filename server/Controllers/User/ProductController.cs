@@ -3,6 +3,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.User
 {
@@ -15,7 +16,7 @@ namespace ShopAppApi.Controllers.User
         {
             
             var product = await productRepository.GetAll(request, ["Category"]);
-            return Ok(new ResponsePaginatedCollection<Product>(product));
+            return Ok();
         }
 
         [HttpGet("featured-product")]

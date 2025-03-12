@@ -10,7 +10,7 @@ namespace ShopAppApi.Repositories.Products
 {
     public class BrandRepository(ShopAppContext context, IRedisCache cache, IFileHelper fileHelper) : IBrandRepository
     {
-        public async Task<List<Brand>> GetAll(BrandRequest request)
+        public async Task<List<BrandVM>> GetAll(BrandRequest request)
         {
             string cacheKey = $"{Constants.BrandCache}-request-{request.NotUse.ToString()}";
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
@@ -20,14 +20,22 @@ namespace ShopAppApi.Repositories.Products
                 {
                     query = query.Where(x => x.NotUse == request.NotUse);
                 }
-                return await query.ToListAsync();
+                return await query.Select(x => new BrandVM
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Image = x.Image,
+                    NotUse = x.NotUse,
+                    ProductCount = x.Products.Count
+                }).ToListAsync();
             });
             return cacheData ?? [];
         }
 
         public async Task<Brand> Show(long id)
         {
-            var brand = await context.Brands.FirstOrDefaultAsync(x => x.Id == id); 
+            var brand = await context.Brands.FirstOrDefaultAsync(x => x.Id == id);
             return brand ?? throw new ArgumentException("Not found");
         }
 
@@ -58,7 +66,7 @@ namespace ShopAppApi.Repositories.Products
             {
                 brand.Name = request.Name;
                 brand.Code = request.Code;
-                if(brand.Image != request.Image)
+                if (brand.Image != request.Image)
                 {
                     fileHelper.DeleteFile(brand.Image);
                     brand.Image = await fileHelper.SaveFile(request.Image);
@@ -77,7 +85,7 @@ namespace ShopAppApi.Repositories.Products
             var brand = context.Brands.Include("Products").FirstOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Not found");
             if (brand != null)
             {
-                if(brand.Products.Count > 0)
+                if (brand.Products.Count > 0)
                 {
                     throw new ArgumentException("Brand has products");
                 }
@@ -91,14 +99,13 @@ namespace ShopAppApi.Repositories.Products
         public async Task<List<BrandVM>> GetBrandByCategory(string CategoryCode)
         {
             HttpContext httpContext = new HttpContextAccessor().HttpContext;
-            var brands = await context.Brands.Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM{
+            var brands = await context.Brands.AsQueryable().AsNoTracking().Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM
+            {
                 Id = x.Id,
                 Code = x.Code,
                 Name = x.Name,
                 Image = fileHelper.getLink(x.Image, httpContext),
                 NotUse = x.NotUse,
-                CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt,
                 ProductCount = x.Products.Count
             }).ToListAsync();
             return brands ?? [];

@@ -210,9 +210,6 @@ export function currencyFormatTenant(num: any, allowNo = false) {
   if (num === 0 && allowNo) {
     return 0;
   }
-  if (num == 0) {
-    return "";
-  }
   const check = checkIsFloat(num);
   if (check.status) {
     if (!check.active) {

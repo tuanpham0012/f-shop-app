@@ -3,6 +3,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 using Slugify;
 using System.Text.Json;
 
@@ -129,18 +130,100 @@ namespace ShopAppApi.Repositories.Products
             return query.AsNoTracking().SingleOrDefault(x => x.Id == Id);
         }
 
-        public async Task<PaginatedList<Product>> GetAll(ProductRequest request, List<string>? includes = null!)
+        public async Task<PaginatedList<ProductVM>> GetAll(ProductRequest request, List<string>? includes = null!)
         {
-            var query = _context.Products.AsQueryable();
-
-            if (includes != null)
+            IQueryable<ProductVM> query = _context.Products.AsQueryable().Select(p => new ProductVM
             {
-                foreach (var include in includes)
+                Id = p.Id,
+                Name = p.Name,
+                Barcode = p.Barcode,
+                Code = p.Code,
+                Price = p.Price,
+                NumberWarning = p.NumberWarning,
+                ImageThumb = p.ImageThumb,
+                UnitSell = p.UnitSell,
+                UnitBuy = p.UnitBuy,
+                Description = p.Description,
+                Alias = p.Alias,
+                CanEdit = p.CanEdit,
+                CanDelete = p.CanDelete,
+                HasVariants = p.HasVariants,
+                IsNew = p.IsNew,
+                IsFeatured = p.IsFeatured,
+                IsSale = p.IsSale,
+                BrandId = p.BrandId,
+                CategoryId = p.CategoryId,
+                TaxId = p.TaxId,
+                Brand = new BrandVM
                 {
-                    query = query.Include(include);
+                    Id = p.Brand.Id,
+                    Name = p.Brand.Name,
+                    Code = p.Brand.Code
+                },
+                Category = new CategoryVM
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name,
+                    Code = p.Category.Code,
+                },
+                Options = p.Options.Select(o => new OptionVM
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    ProductId = o.ProductId,
+                    Name = o.Name,
+                    Visual = o.Visual,
+                    Order = o.Order,
+                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
+                    {
+                        Id = v.Id,
+                        Code = v.Code,
+                        ProductId = v.ProductId,
+                        OptionId = v.OptionId,
+                        Value = v.Value,
+                        Label = v.Label
+                    }).ToList(),
+                }).ToList(),
+                ProductImages = p.ProductImages.Select(i => new ProductImageVM
+                {
+                    Id = i.Id,
+                    ProductId = i.ProductId,
+                    Path = i.Path,
+                    Type = i.Type,
+                    Driver = i.Driver,
+                    Deleted = i.Deleted
+                }).ToList(),
+                Skus = p.Skus.Select(s => new SkuVM
+                {
+                    Id = s.Id,
+                    ProductId = s.ProductId,
+                    Barcode = s.Barcode,
+                    Price = s.Price,
+                    Name = s.Name,
+                    Stock = s.Stock,
+                    Variants = s.Variants.Select(v => new VariantVM
+                    {
+                        Id = v.Id,
+                        ProductId = v.ProductId,
+                        SkuId = v.SkuId,
+                        OptionId = v.OptionId,
+                        OptionValueId = v.OptionValueId,
+                    }).ToList(),
+                }).ToList(),
+                Tax = new TaxVM
+                {
+                    Id = p.Tax.Id,
+                    Name = p.Tax.Name,
+                    Value = p.Tax.Value
                 }
-            }
-
+            });
+            // if (includes != null)
+            // {
+            //     foreach (var include in includes)
+            //     {
+            //         query = query.Include(include);
+            //     }
+            // }
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
                 query = query.Where(q => q.Name.Contains(request.Search));
@@ -178,7 +261,9 @@ namespace ShopAppApi.Repositories.Products
                     break;
             }
 
-            return await PaginatedList<Product>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
+            var Data = await PaginatedList<ProductVM>.CreateAsync(query.AsSingleQuery().AsNoTracking(), request.Page, request.PageSize);
+
+            return Data;
         }
 
         public async Task Update(long id, UpdateProductRequest product)

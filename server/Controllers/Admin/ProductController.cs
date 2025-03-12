@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopAppApi.Data;
-using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
-using System.Diagnostics;
-using System;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.Admin
 {
@@ -17,9 +15,9 @@ namespace ShopAppApi.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery]ProductRequest request)
         {
-            var entries = await _repo.GetAll(request, ["Options", "Options.OptionValues", "Skus", "Skus.Variants", "Category", "Brand"]);
+            var entries = await _repo.GetAll(request, ["Options", "Options.OptionValues", "Skus", "Skus.Variants", "Category", "Brand", "ProductImages"]);
             
-            return Ok(new ResponsePaginatedCollection<Product>(entries));
+            return Ok(new ResponsePaginatedCollection<ProductVM>(entries));
         }
 
         [HttpPost]

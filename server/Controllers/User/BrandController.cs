@@ -16,7 +16,7 @@ namespace ShopAppApi.Controllers.User
         {
             var request = new BrandRequest(){ NotUse = false };
             var entries = await repository.GetAll(request);
-            return Ok(new ResponseCollection<Brand>(entries));
+            return Ok(new ResponseCollection<BrandVM>(entries));
         }
 
         [HttpGet("brand-by-category")]

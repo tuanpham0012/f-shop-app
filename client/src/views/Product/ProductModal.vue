@@ -270,18 +270,6 @@
                         </div> -->
             </div>
           </div>
-          <div class="col-sm-12 h-[220px] mb-[80px]">
-            <label for="exampleFormControlTextarea1" class="form-label"
-              >Thông tin chi tiết sản phẩm</label
-            >
-            <QuillEditor
-              theme="snow"
-              v-model:content="product.description"
-              contentType="html"
-              placeholder="Nhập các thông tin chi tiết sản phẩm..."
-            />
-          </div>
-
           <div class="col-sm-12 mb-3 mt-3">
             <label class="form-label mb-3 me-2"
               >Hình ảnh sản phẩm ({{ product.images?.length }} /
@@ -303,7 +291,7 @@
               >
                 <img
                   :src="viewFile(item.path)"
-                  class="w-[120px] h-[120px] object-cover rounded-2xl"
+                  class="w-[120px] h-[120px] object-contain rounded-2xl"
                 />
                 <div class="middle rounded-2xl">
                   <div class="text">
@@ -340,6 +328,43 @@
                 />
               </div>
             </div>
+          </div>
+
+          <div class="col-sm-12 row mb-3 mt-3">
+            <div class="col-sm-6">
+              <div class="col-sm-12">
+                <label class="form-label mb-3 me-2">Chọn ảnh Thumbnail</label>
+              </div>
+              <div class="col-sm-12">
+                <select-search-user
+                  :firstSelected="true"
+                  :listData="product.images"
+                  src="path"
+                  :preImage="false"
+                  display="fileName"
+                  keyValue="id"
+                  v-model="thumbId"
+                ></select-search-user>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <img
+                :src="viewFile(product.imageThumb)"
+                class="w-[120px] h-[120px] object-contain rounded-2xl m-0 m-auto"
+              />
+            </div>
+          </div>
+
+          <div class="col-sm-12 h-[220px] mb-[80px]">
+            <label for="exampleFormControlTextarea1" class="form-label"
+              >Thêm mô tả sản phẩm</label
+            >
+            <QuillEditor
+              theme="snow"
+              v-model:content="product.description"
+              contentType="html"
+              placeholder="Nhập các thông tin chi tiết sản phẩm..."
+            />
           </div>
 
           <div v-if="product.hasVariants">
@@ -728,6 +753,8 @@ const fillAll = reactive({
   barCode: "",
 });
 
+const thumbId = ref("");
+
 const newProduct = reactive({
   id: null,
   code: "",
@@ -747,6 +774,7 @@ const newProduct = reactive({
   hasVariants: false,
   isNew: false,
   isFeatured: false,
+  imageThumb: "",
 });
 
 const product = computed(() => productStore.$state.entry ?? newProduct);
@@ -905,7 +933,7 @@ const generateSKUs = () => {
       }
 
       return {
-        id: null,
+        id: uuidv4(),
         productId: product.value.id,
         barCode: "",
         price: 0,
@@ -960,59 +988,85 @@ const generateCombinations = (arrays: any) => {
   return combinations.flat();
 };
 
-const productImage = (
-  event: any,
-  optionIndex: any = null,
-  optionValueIndex: any = null
-) => {
+const productImage = (event: any) => {
   // Reference to the DOM input element
   const { files } = event.target;
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    if (file) {
+    if (
+      file &&
+      !product.value.images.some((img: any) => img.fileName == file.name)
+    ) {
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const img: any = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx: any = canvas.getContext("2d");
-
-          const maxSize = 450;
-          let width = img.width;
-          let height = img.height;
-
-          if (img.height > img.width) {
-            height = maxSize;
-            width = (img.width / img.height) * height;
-          } else {
-            width = maxSize;
-            height = (img.height / img.width) * width;
-          }
-          // Set kích thước mong muốn
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-          if (optionIndex != null && optionValueIndex != null) {
-            product.value.options[optionIndex].optionValues[
-              optionValueIndex
-            ].image = canvas.toDataURL(file.type);
-            return;
-          }
-          if (product.value.images.length >= maxImage.value) {
-            warningMessage(`Tải lên tối đa ${maxImage.value} ảnh!`);
-            return;
-          }
-          console.log(typeof canvas.toDataURL(file.type));
-          
-          product.value.images.push({ id: 0, path: canvas.toDataURL(file.type), deleted: false, type: 0, driver: "" });
-        };
-        img.src = e.target.result;
+      reader.onload = async (e: any) => {
+        if (product.value.images.length >= maxImage.value) {
+          warningMessage(`Tải lên tối đa ${maxImage.value} ảnh!`);
+          return;
+        }
+        let dataImg = await resizeImage(e.target.result, file.type);
+        product.value.images.push({
+          id: uuidv4(),
+          path: dataImg,
+          fileName: file.name,
+          deleted: false,
+          type: 0,
+          driver: "",
+          extension: file.type,
+        });
       };
       reader.readAsDataURL(file);
     }
   }
   const fileInput = document.getElementById("image-files") as HTMLInputElement;
   fileInput.value = "";
+};
+
+// Hàm resize ảnh
+const resizeImage = (
+  imageSrc: any,
+  type: any,
+  targetWidth: any = null,
+  targetHeight: any = null,
+  maxSize = 500
+) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx: any = canvas.getContext("2d");
+
+        if (targetWidth == null || targetHeight == null) {
+          targetWidth = img.width;
+          targetHeight = img.height;
+
+          if (img.height > img.width) {
+            targetHeight = maxSize;
+            targetWidth = (img.width / img.height) * targetWidth;
+          } else {
+            targetWidth = maxSize;
+            targetHeight = (img.height / img.width) * targetWidth;
+          }
+        }
+        // Set kích thước của canvas
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        // Vẽ ảnh lên canvas và resize
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+        // Chuyển canvas thành base64
+        resolve(canvas.toDataURL(type));
+      } catch (err) {
+        reject(err);
+      }
+    };
+    img.onerror = (error) => {
+      reject(error); // Xử lý lỗi nếu không load được ảnh
+    };
+
+    img.src = imageSrc;
+  });
 };
 
 const deleteImage = (index: number, isDeleteAll = false) => {
@@ -1063,19 +1117,19 @@ const save = () => {
 
 const closeTaxModal = (value: any) => {
   showTaxModal.value = false;
-  taxStore.getList({notUse: false});
+  taxStore.getList({ notUse: false });
   product.value.taxId = value.id;
 };
 const closeBrandModal = (value: any) => {
   showBrandModal.value = false;
   console.log(value);
-  brandStore.getList({notUse: false});
+  brandStore.getList({ notUse: false });
   product.value.brandId = value.id;
 };
 const closeCategoryModal = (value: any) => {
   showCategoryModal.value = false;
   console.log(value);
-  categoryStore.getList({notUse: false});
+  categoryStore.getList({ notUse: false });
   product.value.categoryId = value.id;
 };
 
@@ -1093,12 +1147,18 @@ watch(
   }
 );
 
-// watch(
-//     () => fillAll.stock,
-//     (newVal, oldVal) => {
-//         fillAll.stock = isNaN(Number(newVal)) ? 0 : Number(newVal);
-//     }
-// );
+watch(
+  () => thumbId.value,
+  async (newVal) => {
+    const img = product.value.images.find((x: any) => x.id == newVal);
+    product.value.imageThumb = await resizeImage(
+      img.path,
+      img.extension,
+      250,
+      250
+    );
+  }
+);
 
 watch(
   () => product.value.numberWarning,
