@@ -125,14 +125,14 @@ namespace ShopAppApi.Request
     }
 
     public partial class ProductImageRequest
-{
-    public long? Id { get; set; }
-    
-    public string Path { get; set; } = null!;
+    {
+        // public long? Id { get; set; }
 
-    public byte Type { get; set; }
-
-    public bool? Deleted { get; set; }
-}
+        public string Path { get; set; } = null!;
+        public string FileName { get; set; } = null!;
+        public string Extension { get; set; } = null!;
+        public byte Type { get; set; }
+        // public bool? isDeleted { get; set; }
+    }
 
 }

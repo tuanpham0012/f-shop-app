@@ -50,11 +50,13 @@ namespace ShopAppApi.Repositories.Products
                     Path = await fileHelper.SaveFile(image.Path),
                     Type = image.Type,
                     Driver = driver,
+                    Deleted = false,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                 };
-                await _context.SaveChangesAsync();
+                _context.Add(productImage);
             }
+            await _context.SaveChangesAsync();
 
             double minPrice = Double.MaxValue;
             foreach (var option in product.Options)
@@ -140,7 +142,7 @@ namespace ShopAppApi.Repositories.Products
                 Code = p.Code,
                 Price = p.Price,
                 NumberWarning = p.NumberWarning,
-                ImageThumb = p.ImageThumb,
+                ImageThumb = fileHelper.getLink(p.ImageThumb),
                 UnitSell = p.UnitSell,
                 UnitBuy = p.UnitBuy,
                 Description = p.Description,
@@ -184,7 +186,7 @@ namespace ShopAppApi.Repositories.Products
                         Label = v.Label
                     }).ToList(),
                 }).ToList(),
-                ProductImages = p.ProductImages.Select(i => new ProductImageVM
+                Images = p.ProductImages.Select(i => new ProductImageVM
                 {
                     Id = i.Id,
                     ProductId = i.ProductId,

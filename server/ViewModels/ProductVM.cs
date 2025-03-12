@@ -55,7 +55,7 @@ public class ProductVM
 
     public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
 
-    public virtual ICollection<ProductImageVM> ProductImages { get; set; } = new List<ProductImageVM>();
+    public virtual ICollection<ProductImageVM> Images { get; set; } = new List<ProductImageVM>();
 
     public virtual ICollection<SkuVM> Skus { get; set; } = [];
 

@@ -5,11 +5,13 @@ using ShopAppApi.Helpers.Interfaces;
 
 namespace ShopAppApi.Helpers
 {
-    public class FileHelper(IConfiguration configuration) : IFileHelper
+    public class FileHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IFileHelper
     {
         private readonly string driver = configuration["FileStorage:Driver"] ?? "local";
         private readonly string defaultImage = configuration["FileStorage:DefaultImage"];
         private readonly string SaveFolder = "Files";
+
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly Dictionary<byte[], string> FileSignatures = new Dictionary<byte[], string>
     {
         { new byte[] { 0xFF, 0xD8, 0xFF }, "jpg" },  // JPEG
@@ -91,18 +93,20 @@ namespace ShopAppApi.Helpers
             return fileBytes;
         }
 
-        public string getLink(string? FileName, HttpContext httpContext)
+        public string getLink(string? FileName)
         {
+            var context = _httpContextAccessor.HttpContext ?? throw new ArgumentException("error context !");
+            string host = $"{context.Request.Scheme}://{context.Request.Host}";
             if(string.IsNullOrEmpty(FileName))
             {
-                return $"{httpContext.Request.Host.Value}/files/download/{defaultImage}";
+                return defaultImage;
             }
             switch (driver)
             {
                 case "local":
-                    return $"{httpContext.Request.Host.Value}/files/download/{FileName}";
+                    return $"{host}/files/download/{FileName}";
                 default:
-                    return $"{httpContext.Request.Host.Value}/files/download/{FileName}";
+                    return $"{host}/files/download/{FileName}";
             }
         }
     }

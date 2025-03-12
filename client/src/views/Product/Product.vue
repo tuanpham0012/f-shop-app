@@ -185,9 +185,7 @@ onBeforeMount(async () => {
                         </td>
                         <td>
                             <img
-                                :src="viewFile(item.images[0] ?? null)
-                                        
-                                "
+                                :src="item.imageThumb"
                                 class="w-[60px] h-[60px] object-contain"
                                 loading="lazy"
                             />

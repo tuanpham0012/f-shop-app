@@ -37,25 +37,11 @@ export const useProductStore = defineStore("product", {
                 .then((res) => {
                     console.log(res.data);
                     this.entries = res.data
-                    this.entries?.data.map((item:any) => {
-                        item.images = item.images ? JSON.parse(item.images) : []
-                        return item
-                    });
                 })
                 .catch((err) => {
                     console.log(err);
                 });
         },
-        // async getListSupplier(query: any) {
-        //     await _getList(`${adminUrl}/suppliers`, query)
-        //         .then((res) => {
-        //             console.log(res.data);
-        //             this.suppliers = res.data;
-        //         })
-        //         .catch((err) => {
-        //             console.log(err);
-        //         });
-        // },
         async create(data: any) {
             return await _create(`${adminUrl}/products`, data);
         },
@@ -64,8 +50,6 @@ export const useProductStore = defineStore("product", {
             await _show(`${adminUrl}/products/${id}`)
                 .then((res) => {
                     this.entry = res.data.data;
-                    if(this.entry)
-                    this.entry.images = this.entry.images ? JSON.parse(this.entry.images) : []
                 })
                 .catch((err) => {
                     console.log(err);

@@ -98,13 +98,12 @@ namespace ShopAppApi.Repositories.Products
 
         public async Task<List<BrandVM>> GetBrandByCategory(string CategoryCode)
         {
-            HttpContext httpContext = new HttpContextAccessor().HttpContext;
             var brands = await context.Brands.AsQueryable().AsNoTracking().Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM
             {
                 Id = x.Id,
                 Code = x.Code,
                 Name = x.Name,
-                Image = fileHelper.getLink(x.Image, httpContext),
+                Image = fileHelper.getLink(x.Image),
                 NotUse = x.NotUse,
                 ProductCount = x.Products.Count
             }).ToListAsync();
