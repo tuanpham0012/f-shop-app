@@ -1,4 +1,7 @@
-﻿namespace ShopAppApi.Data;
+﻿using System;
+using System.Collections.Generic;
+
+namespace ShopAppApi.Data;
 
 public partial class ProductImage
 {
@@ -8,11 +11,15 @@ public partial class ProductImage
 
     public string Path { get; set; } = null!;
 
+    public string FileName { get; set; } = null!;
+
+    public string Extension { get; set; } = null!;
+
     public byte Type { get; set; }
 
     public string Driver { get; set; } = null!;
 
-    public bool? Deleted { get; set; }
+    public bool? IsDeleted { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

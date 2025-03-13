@@ -6,6 +6,7 @@ services:
       - SA_PASSWORD=Anhem123@
       - ACCEPT_EULA=Y
       - TZ=Asia/Ho_Chi_Minh
+      - MSSQL_PID=Developer
     ports:
       - "1434:1433"
     volumes:

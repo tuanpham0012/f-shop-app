@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('path');
+            $table->string('file_name', 50);
+            $table->string('extension', 50);
             $table->tinyInteger('type')->default(0)->comment('0: image, 1: video');
             $table->string('driver', 50);
-            $table->boolean('deleted')->default(false);
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

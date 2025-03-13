@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('barcode', 24)->unique();
             $table->string('name');
             $table->double('price',12,4)->default(0);
-            $table->unsignedTinyInteger('number_warning')->default(0);
+            $table->unsignedSmallInteger('number_warning')->default(0);
             $table->string('image_thumb')->nullable();
             $table->string('unit_sell', 150);
             $table->string('unit_buy', 150);

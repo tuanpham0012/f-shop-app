@@ -15,7 +15,7 @@ public partial class Product
 
     public double Price { get; set; }
 
-    public byte NumberWarning { get; set; }
+    public short NumberWarning { get; set; }
 
     public string? ImageThumb { get; set; }
 
@@ -71,7 +71,7 @@ public partial class Product
 
     public virtual ICollection<Sku> Skus { get; set; } = new List<Sku>();
 
-    public virtual Tax Tax { get; set; } = null!;
+    public virtual Taxis Tax { get; set; } = null!;
 
     public virtual ICollection<Variant> Variants { get; set; } = new List<Variant>();
 }
