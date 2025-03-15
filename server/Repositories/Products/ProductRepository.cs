@@ -50,7 +50,9 @@ namespace ShopAppApi.Repositories.Products
                     Path = await fileHelper.SaveFile(image.Path),
                     Type = image.Type,
                     Driver = driver,
-                    Deleted = false,
+                    Extension = image.Extension,
+                    FileName = image.FileName,
+                    IsDeleted = false,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                 };
@@ -119,17 +121,91 @@ namespace ShopAppApi.Repositories.Products
             throw new NotImplementedException();
         }
 
-        public Product? Find(long Id, List<String>? Includes = null!)
+        public async Task<ProductVM> Show(long Id)
         {
-            var query = _context.Products.AsQueryable();
-            if (Includes != null)
+            var query = _context.Products.AsQueryable().Select(p => new ProductVM
             {
-                foreach (var include in Includes)
+                Id = p.Id,
+                Name = p.Name,
+                Barcode = p.Barcode,
+                Code = p.Code,
+                Price = p.Price,
+                NumberWarning = p.NumberWarning,
+                ImageThumb = fileHelper.getLink(p.ImageThumb),
+                UnitSell = p.UnitSell,
+                UnitBuy = p.UnitBuy,
+                Description = p.Description,
+                Alias = p.Alias,
+                CanEdit = p.CanEdit,
+                CanDelete = p.CanDelete,
+                HasVariants = p.HasVariants,
+                IsNew = p.IsNew,
+                IsFeatured = p.IsFeatured,
+                IsSale = p.IsSale,
+                BrandId = p.BrandId,
+                CategoryId = p.CategoryId,
+                TaxId = p.TaxId,
+
+                Options = p.Options.Select(o => new OptionVM
                 {
-                    query = query.Include(include);
-                }
-            }
-            return query.AsNoTracking().SingleOrDefault(x => x.Id == Id);
+                    Id = o.Id,
+                    Code = o.Code,
+                    ProductId = o.ProductId,
+                    Name = o.Name,
+                    Visual = o.Visual,
+                    Order = o.Order,
+                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
+                    {
+                        Id = v.Id,
+                        Code = v.Code,
+                        ProductId = v.ProductId,
+                        OptionId = v.OptionId,
+                        Value = v.Value,
+                        Label = v.Label
+                    }).ToList(),
+                }).ToList(),
+                Images = p.ProductImages.Select(i => new ProductImageVM
+                {
+                    Id = i.Id,
+                    ProductId = i.ProductId,
+                    Path = i.Path,
+                    Type = i.Type,
+                    Driver = i.Driver,
+                    Deleted = i.IsDeleted
+                }).ToList(),
+                Skus = p.Skus.Select(s => new SkuVM
+                {
+                    Id = s.Id,
+                    ProductId = s.ProductId,
+                    Barcode = s.Barcode,
+                    Price = s.Price,
+                    Name = s.Name,
+                    Stock = s.Stock,
+                    Variants = s.Variants.Select(v => new VariantVM
+                    {
+                        Id = v.Id,
+                        ProductId = v.ProductId,
+                        SkuId = v.SkuId,
+                        OptionId = v.OptionId,
+                        OptionValueId = v.OptionValueId,
+                        OptionValue = new OptionValueVM
+                        {
+                            Id = v.OptionValue.Id,
+                            Code = v.OptionValue.Code,
+                            Value = v.OptionValue.Value,
+                            Label = v.OptionValue.Label,
+                        }
+                    }).ToList(),
+                }).ToList()
+            });
+            // if (Includes != null)
+            // {
+            //     foreach (var include in Includes)
+            //     {
+            //         query = query.Include(include);
+            //     }
+            // }
+            return await query.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Id) ?? throw new ArgumentException("Product does not exists!");
         }
 
         public async Task<PaginatedList<ProductVM>> GetAll(ProductRequest request, List<string>? includes = null!)
@@ -193,7 +269,7 @@ namespace ShopAppApi.Repositories.Products
                     Path = i.Path,
                     Type = i.Type,
                     Driver = i.Driver,
-                    Deleted = i.Deleted
+                    Deleted = i.IsDeleted
                 }).ToList(),
                 Skus = p.Skus.Select(s => new SkuVM
                 {
@@ -277,10 +353,36 @@ namespace ShopAppApi.Repositories.Products
             //string[] arrImg = [];
 
 
-            // foreach (var item in product.Images.Select((value, i) => (value, i)))
-            // {
-            //     product.Images[item.i] = await fileHelper.SaveFile(item.value);
-            // }
+            foreach (var item in product.Images)
+            {
+                if (item.IsDeleted == true)
+                {
+                    var delImg = await _context.ProductImages.SingleOrDefaultAsync(x => x.Id == item.Id);
+                    fileHelper.DeleteFile(delImg.Path);
+                    _context.ProductImages.Remove(delImg);
+                }
+                else if (item.Id == 0)
+                {
+                    var saveImg = await fileHelper.SaveFile(item.Path);
+                    var newImg = new ProductImage
+                    {
+                        ProductId = _product.Id,
+                        Path = saveImg,
+                        Type = item.Type,
+                        Driver = driver,
+                        Extension = item.Extension,
+                        FileName = saveImg,
+                        IsDeleted = false,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                    };
+                    _context.Add(newImg);
+                }
+                else{
+                    continue;
+                }
+                await _context.SaveChangesAsync();
+            }
 
             _product.Name = product.Name ?? _product.Name;
             _product.Code = product.Code ?? _product.Code;
@@ -294,7 +396,10 @@ namespace ShopAppApi.Repositories.Products
             _product.BrandId = product.BrandId ?? _product.BrandId;
             _product.TaxId = product.TaxId ?? _product.TaxId;
             _product.UpdatedAt = DateTime.UtcNow;
-            _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb);
+            if(!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !_product.ImageThumb.Contains(product.ImageThumb)))
+            {
+                _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb);
+            }
             _product.IsNew = product.IsNew;
             _product.NumberWarning = product.NumberWarning;
             _product.HasVariants = product.HasVariants;

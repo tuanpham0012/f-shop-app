@@ -13,7 +13,7 @@ public class ProductVM
 
     public double Price { get; set; }
 
-    public byte NumberWarning { get; set; }
+    public short NumberWarning { get; set; }
 
     public string? ImageThumb { get; set; }
 

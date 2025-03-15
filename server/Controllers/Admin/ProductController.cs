@@ -13,10 +13,10 @@ namespace ShopAppApi.Controllers.Admin
     {
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery]ProductRequest request)
+        public async Task<IActionResult> Index([FromQuery] ProductRequest request)
         {
             var entries = await _repo.GetAll(request, ["Options", "Options.OptionValues", "Skus", "Skus.Variants", "Category", "Brand", "ProductImages"]);
-            
+
             return Ok(new ResponsePaginatedCollection<ProductVM>(entries));
         }
 
@@ -28,11 +28,12 @@ namespace ShopAppApi.Controllers.Admin
                 await _repo.Create(product);
                 return Ok(new SuccessResponse(200, "Thêm mới thành công"));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
-            
-            
+
+
         }
 
         [HttpPut("{Id}")]
@@ -43,29 +44,26 @@ namespace ShopAppApi.Controllers.Admin
                 await _repo.Update(Id, product);
                 return Ok(new SuccessResponse(200, "Cập nhật thành công"));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(new ErrorResponse(422, ex.Message, ex.ToString()));
             }
-            
-            
+
+
         }
 
         [HttpGet("{Id}")]
-        public IActionResult Show(long Id)
+        public async Task<IActionResult> Show(long Id)
         {
-            var entry = _repo.Find(Id, ["Options", "Options.OptionValues", "Skus", "Skus.Variants", "Skus.Variants.OptionValue"]);
-            if (entry != null)
+            try
             {
-                try
-                {
-                    return Ok(new ResponseOne<Product>(entry));
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                var entry = await _repo.Show(Id);
+                return Ok(new ResponseOne<ProductVM>(entry));
             }
-            return NotFound();
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

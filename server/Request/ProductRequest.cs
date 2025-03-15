@@ -35,7 +35,7 @@ namespace ShopAppApi.Request
         public bool? HasVariants { get; set; }
         public bool? IsNew { get; set; }
         public bool? IsFeatured { get; set; }
-        public byte NumberWarning { get; set; }
+        public short NumberWarning { get; set; }
         public string? Alias { get; set; }
         [Required(ErrorMessage = "Loại sản phẩm không được để trống")]
         [ModelExists("categories")]
@@ -126,13 +126,12 @@ namespace ShopAppApi.Request
 
     public partial class ProductImageRequest
     {
-        // public long? Id { get; set; }
-
+        public long? Id { get; set; }
         public string Path { get; set; } = null!;
         public string FileName { get; set; } = null!;
         public string Extension { get; set; } = null!;
         public byte Type { get; set; }
-        // public bool? isDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 
 }

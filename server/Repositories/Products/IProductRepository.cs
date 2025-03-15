@@ -9,7 +9,7 @@ namespace ShopAppApi.Repositories.Products
     public interface IProductRepository
     {
         Task<PaginatedList<ProductVM>> GetAll(ProductRequest request, List<string>? Includes = null!);
-        Product? Find(long Id, List<string>? Includes = null!);
+        Task<ProductVM> Show(long Id);
         Task Create(StoreProductRequest product);
         Task Update(long id, UpdateProductRequest product);
         Boolean Delete(long id);

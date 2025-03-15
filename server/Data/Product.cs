@@ -71,7 +71,7 @@ public partial class Product
 
     public virtual ICollection<Sku> Skus { get; set; } = new List<Sku>();
 
-    public virtual Taxis Tax { get; set; } = null!;
+    public virtual Tax Tax { get; set; } = null!;
 
     public virtual ICollection<Variant> Variants { get; set; } = new List<Variant>();
 }

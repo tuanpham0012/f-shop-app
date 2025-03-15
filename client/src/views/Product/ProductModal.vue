@@ -342,7 +342,7 @@
                   src="path"
                   :preImage="false"
                   display="fileName"
-                  keyValue="id"
+                  keyValue="code"
                   v-model="thumbId"
                 ></select-search-user>
               </div>
@@ -1005,7 +1005,8 @@ const productImage = (event: any) => {
         }
         let dataImg = await resizeImage(e.target.result, file.type);
         product.value.images.push({
-          id: uuidv4(),
+          id: 0,
+          code: uuidv4(),
           path: dataImg,
           fileName: file.name,
           deleted: false,
@@ -1078,7 +1079,7 @@ const deleteImage = (index: number, isDeleteAll = false) => {
 };
 
 const generateCode = () => {
-  product.value.code = randomPassword(12, false, false);
+  product.value.code = randomPassword(17, false, true);
 };
 
 const save = () => {
@@ -1150,7 +1151,7 @@ watch(
 watch(
   () => thumbId.value,
   async (newVal) => {
-    const img = product.value.images.find((x: any) => x.id == newVal);
+    const img = product.value.images.find((x: any) => x.code == newVal);
     product.value.imageThumb = await resizeImage(
       img.path,
       img.extension,
