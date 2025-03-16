@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
 using ShopAppApi.Helpers.Interfaces;
@@ -12,7 +13,9 @@ namespace ShopAppApi.Repositories.Products
     {
         public async Task<List<BrandVM>> GetAll(BrandRequest request)
         {
-            string cacheKey = $"{Constants.BrandCache}-request-{request.NotUse.ToString()}";
+            
+            string cacheKey = $"{Constants.BrandCache}:GetAll-request-" + cache.ReplaceString(JsonSerializer.Serialize(request));
+            Console.WriteLine(cacheKey);
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
                 var query = context.Brands.AsNoTracking().AsQueryable();
@@ -25,17 +28,25 @@ namespace ShopAppApi.Repositories.Products
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    Image = x.Image,
+                    Image = fileHelper.GetLink(x.Image),
                     NotUse = x.NotUse,
                     ProductCount = x.Products.Count
-                }).ToListAsync();
+                }).OrderByDescending(x => x.Id).ToListAsync();
             });
             return cacheData ?? [];
         }
 
-        public async Task<Brand> Show(long id)
+        public async Task<BrandVM> Show(long id)
         {
-            var brand = await context.Brands.FirstOrDefaultAsync(x => x.Id == id);
+            var brand = await context.Brands.Select(x => new BrandVM
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Name = x.Name,
+                Image = fileHelper.GetLink(x.Image),
+                NotUse = x.NotUse,
+                ProductCount = x.Products.Count
+            }).FirstOrDefaultAsync(x => x.Id == id);
             return brand ?? throw new ArgumentException("Not found");
         }
 
@@ -55,6 +66,7 @@ namespace ShopAppApi.Repositories.Products
             context.Add(entry);
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+            cache.RemoveByPrefix(Constants.BrandCache);
             return entry;
         }
 
@@ -76,6 +88,7 @@ namespace ShopAppApi.Repositories.Products
                 brand.UpdatedAt = DateTime.UtcNow;
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
+                cache.RemoveByPrefix(Constants.BrandCache);
             }
         }
 
@@ -93,21 +106,27 @@ namespace ShopAppApi.Repositories.Products
                 context.Brands.Remove(brand);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
+                cache.RemoveByPrefix(Constants.BrandCache);
             }
         }
 
         public async Task<List<BrandVM>> GetBrandByCategory(string CategoryCode)
         {
-            var brands = await context.Brands.AsQueryable().AsNoTracking().Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM
+            string cacheKey = $"{Constants.BrandCache}-GetBrandByCategory-CategoryCode-{CategoryCode}";
+            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
-                Id = x.Id,
-                Code = x.Code,
-                Name = x.Name,
-                Image = fileHelper.getLink(x.Image),
-                NotUse = x.NotUse,
-                ProductCount = x.Products.Count
-            }).ToListAsync();
-            return brands ?? [];
+                return await context.Brands.AsQueryable().AsNoTracking().Include("Products").Where(x => x.Products.Any(y => y.Category.Code == CategoryCode)).Select(x => new BrandVM
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Image = fileHelper.GetLink(x.Image),
+                    NotUse = x.NotUse,
+                    ProductCount = x.Products.Count
+                }).OrderByDescending(x => x.Id).ToListAsync();
+            });
+
+            return cacheData ?? [];
         }
     }
 }

@@ -9,7 +9,7 @@ namespace ShopAppApi.Repositories.Products
         Task<List<BrandVM>> GetAll(BrandRequest request);
         Task<Brand> Create(StoreBrandRequest request);
         Task Update(long Id, UpdateBrandRequest request);
-        Task<Brand> Show(long Id);
+        Task<BrandVM> Show(long Id);
         Task Delete(long Id);
 
         Task<List<BrandVM>> GetBrandByCategory(string CategoryCode);

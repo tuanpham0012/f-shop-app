@@ -48,3 +48,65 @@ export function textCode(text: string) {
     text = text.toUpperCase();
     return text;
   }
+
+export const createSlug = (text: string) => {
+    // Chuyển sang chữ thường
+    let slug = text.toLowerCase();
+
+    // Thay thế các ký tự đặc biệt
+    slug = slug.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Loại bỏ dấu
+    slug = slug.replace(/[^a-z0-9\s-]/g, ''); // Loại bỏ ký tự không hợp lệ
+
+    // Thay thế khoảng trắng và các ký tự liên tiếp bằng dấu gạch ngang
+    slug = slug.trim().replace(/\s+/g, '-'); // Thay thế khoảng trắng thành dấu gạch ngang
+    slug = slug.replace(/--+/g, '-'); // Loại bỏ các dấu gạch ngang liên tiếp
+
+    return slug;
+}
+
+export const resizeImage = (
+    imageSrc: any,
+    type: any,
+    targetWidth: any = null,
+    targetHeight: any = null,
+    maxSize = 500
+  ) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx: any = canvas.getContext("2d");
+  
+          if (targetWidth == null || targetHeight == null) {
+            targetWidth = img.width;
+            targetHeight = img.height;
+  
+            if (img.height > img.width) {
+              targetHeight = maxSize;
+              targetWidth = (img.width / img.height) * targetWidth;
+            } else {
+              targetWidth = maxSize;
+              targetHeight = (img.height / img.width) * targetWidth;
+            }
+          }
+          // Set kích thước của canvas
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+  
+          // Vẽ ảnh lên canvas và resize
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+  
+          // Chuyển canvas thành base64
+          resolve(canvas.toDataURL(type));
+        } catch (err) {
+          reject(err);
+        }
+      };
+      img.onerror = (error) => {
+        reject(error); // Xử lý lỗi nếu không load được ảnh
+      };
+  
+      img.src = imageSrc;
+    });
+  };

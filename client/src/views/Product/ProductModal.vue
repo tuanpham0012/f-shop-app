@@ -290,7 +290,7 @@
                 :key="index"
               >
                 <img
-                  :src="viewFile(item.path)"
+                  :src="item.path"
                   class="w-[120px] h-[120px] object-contain rounded-2xl"
                 />
                 <div class="middle rounded-2xl">
@@ -349,7 +349,7 @@
             </div>
             <div class="col-sm-6">
               <img
-                :src="viewFile(product.imageThumb)"
+                :src="product.imageThumb"
                 class="w-[120px] h-[120px] object-contain rounded-2xl m-0 m-auto"
               />
             </div>
@@ -714,10 +714,9 @@ import {
 } from "@/stores/product";
 import { useTaxStore } from "@/stores/tax";
 import { errorMessage, successMessage, warningMessage } from "@/helpers/toast";
-import { isNumber } from "@/helpers/helpers";
 import { v4 as uuidv4 } from "uuid";
 import { ResizeEvent } from "vue-advanced-cropper";
-import { viewFile, randomPassword } from "@/helpers/helpers";
+import { randomPassword, resizeImage, isNumber } from "@/helpers/helpers";
 import TaxModal from "../Tax/TaxModal.vue";
 import BrandModal from "../Brand/BrandModal.vue";
 import CategoryModal from "../Category/CategoryModal.vue";
@@ -1022,7 +1021,7 @@ const productImage = (event: any) => {
   fileInput.value = "";
 };
 
-// Hàm resize ảnh
+/* Hàm resize ảnh
 const resizeImage = (
   imageSrc: any,
   type: any,
@@ -1069,6 +1068,8 @@ const resizeImage = (
     img.src = imageSrc;
   });
 };
+
+*/
 
 const deleteImage = (index: number, isDeleteAll = false) => {
   if (isDeleteAll) {

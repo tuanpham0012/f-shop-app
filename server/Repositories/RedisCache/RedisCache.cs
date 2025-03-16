@@ -8,12 +8,14 @@ using Newtonsoft.Json;
 using Ardalis.GuardClauses;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 
 namespace ShopAppApi.Repositories.RedisCache
 {
     public class RedisCache : IRedisCache
     {
         private readonly IDistributedCache _cache;
+        private readonly IConfiguration _configuration;
 
         private static JsonSerializerOptions serializerOptions = new JsonSerializerOptions
         {
@@ -25,9 +27,10 @@ namespace ShopAppApi.Repositories.RedisCache
 
         private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);
 
-        public RedisCache(IDistributedCache cache)
+        public RedisCache(IDistributedCache cache, IConfiguration configuration)
         {
             _cache = cache;
+            _configuration = configuration;
         }
 
 
@@ -74,9 +77,25 @@ namespace ShopAppApi.Repositories.RedisCache
             _cache.Remove(key);
         }
 
-        public void RemoveByPrefix(string pattern)
+        public void RemoveByPrefix(string prefix)
         {
-            throw new NotImplementedException();
+            var redis = ConnectionMultiplexer.Connect($"{_configuration["RedisCache:Host"]}:{_configuration["RedisCache:Port"]}");
+            // IDatabase db = redis.GetDatabase();
+            // Lấy tất cả các key theo prefix
+            var server = redis.GetServer(redis.GetEndPoints()[0]);
+
+            // Đóng kết nối
+            
+            var keys = server.Keys(pattern: $"{prefix}*");
+            foreach (var key in keys)
+            {
+                _cache.Remove(key.ToString());
+            }
+            redis.Close();
+        }
+
+        public string ReplaceString(string request){
+            return request.Replace("\"", "").Replace(":", "-");
         }
     }
 }

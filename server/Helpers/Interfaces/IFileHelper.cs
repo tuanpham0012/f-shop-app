@@ -12,6 +12,6 @@ namespace ShopAppApi.Helpers.Interfaces
 
         public byte[]? Download(string fileName);
 
-        public string getLink(string FileName);
+        public string GetLink(string FileName);
     }
 }

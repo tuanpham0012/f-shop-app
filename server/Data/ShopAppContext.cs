@@ -612,6 +612,9 @@ public partial class ShopAppContext : DbContext
                 .IsRequired()
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("is_deleted");
+            entity.Property(e => e.Code)
+                .HasMaxLength(64)
+                .HasColumnName("code");
             entity.Property(e => e.Path)
                 .HasMaxLength(255)
                 .HasColumnName("path");

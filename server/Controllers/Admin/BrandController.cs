@@ -42,7 +42,7 @@ namespace ShopAppApi.Controllers.Admin
             try
             {
                 var entry = await _repo.Show(Id);
-                return Ok(new ResponseOne<Brand>(entry));
+                return Ok(new ResponseOne<BrandVM>(entry));
             }
             catch (Exception ex)
             {

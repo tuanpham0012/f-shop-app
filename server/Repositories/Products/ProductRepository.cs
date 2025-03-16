@@ -47,6 +47,7 @@ namespace ShopAppApi.Repositories.Products
                 var productImage = new ProductImage
                 {
                     ProductId = entry.Id,
+                    Code = image.Code,
                     Path = await fileHelper.SaveFile(image.Path),
                     Type = image.Type,
                     Driver = driver,
@@ -131,7 +132,7 @@ namespace ShopAppApi.Repositories.Products
                 Code = p.Code,
                 Price = p.Price,
                 NumberWarning = p.NumberWarning,
-                ImageThumb = fileHelper.getLink(p.ImageThumb),
+                ImageThumb = fileHelper.GetLink(p.ImageThumb),
                 UnitSell = p.UnitSell,
                 UnitBuy = p.UnitBuy,
                 Description = p.Description,
@@ -168,10 +169,13 @@ namespace ShopAppApi.Repositories.Products
                 {
                     Id = i.Id,
                     ProductId = i.ProductId,
-                    Path = i.Path,
+                    Code = i.Code,
+                    Path = fileHelper.GetLink(i.Path),
                     Type = i.Type,
                     Driver = i.Driver,
-                    Deleted = i.IsDeleted
+                    IsDeleted = i.IsDeleted,
+                    Extension = i.Extension,
+                    FileName = i.FileName
                 }).ToList(),
                 Skus = p.Skus.Select(s => new SkuVM
                 {
@@ -218,7 +222,7 @@ namespace ShopAppApi.Repositories.Products
                 Code = p.Code,
                 Price = p.Price,
                 NumberWarning = p.NumberWarning,
-                ImageThumb = fileHelper.getLink(p.ImageThumb),
+                ImageThumb = fileHelper.GetLink(p.ImageThumb),
                 UnitSell = p.UnitSell,
                 UnitBuy = p.UnitBuy,
                 Description = p.Description,
@@ -266,10 +270,13 @@ namespace ShopAppApi.Repositories.Products
                 {
                     Id = i.Id,
                     ProductId = i.ProductId,
-                    Path = i.Path,
+                    Code = i.Code,
+                    Path = fileHelper.GetLink(i.Path),
                     Type = i.Type,
                     Driver = i.Driver,
-                    Deleted = i.IsDeleted
+                    IsDeleted = i.IsDeleted,
+                    Extension = i.Extension,
+                    FileName = i.FileName
                 }).ToList(),
                 Skus = p.Skus.Select(s => new SkuVM
                 {
@@ -368,6 +375,7 @@ namespace ShopAppApi.Repositories.Products
                     {
                         ProductId = _product.Id,
                         Path = saveImg,
+                        Code = item.Code,
                         Type = item.Type,
                         Driver = driver,
                         Extension = item.Extension,

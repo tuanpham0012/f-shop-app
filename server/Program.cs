@@ -12,6 +12,7 @@ using ShopAppApi.Repositories.Products;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Repositories.RepoCustomer;
 using ShopAppApi.Repositories.TelegramBotRepository;
+using StackExchange.Redis;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -45,13 +46,14 @@ builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
 
 builder.Services.AddStackExchangeRedisCache( options =>
         {
-            options.Configuration = builder.Configuration.GetConnectionString("RedisDb");
+            options.Configuration = $"{builder.Configuration["RedisCache:Host"]}:{builder.Configuration["RedisCache:Port"]}";
             options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions()
             {
                 AbortOnConnectFail = true,
                 EndPoints = { options.Configuration ?? throw new ArgumentNullException("RedisDb connection string is null") }
             };
         });
+// builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect($"{builder.Configuration["RedisCache:Host"]}:{builder.Configuration["RedisCache:Port"]}"));
 
 builder.Services.AddHttpContextAccessor();
 

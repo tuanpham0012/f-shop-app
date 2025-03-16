@@ -23,7 +23,7 @@
                             <img
                                 class="w-100 h-100 object-contain"
                                 loading='lazy'
-                                :src="imgSelect? viewFile(imgSelect) : viewFile(product.images[indexImg])"
+                                :src="imgSelect ?? product.images[indexImg]"
                             />
                         </a>
                     </div>
@@ -38,7 +38,7 @@
                             <img
                                 class="w-100 h-100 object-contain"
                                 loading='lazy'
-                                :src="viewFile(img)"
+                                :src="img"
                             />
                         </a>
                     </div>

@@ -1,6 +1,6 @@
 <template >
     <tr v-if="entry" @click="showChildren = !showChildren" class="table-row">
-        <td class="text-center"><img :src="viewFile(entry.image)" class="max-w-[45px] max-h-[45px] object-fill m-auto" ></td>
+        <td class="text-center"><img :src="entry.image" class="max-w-[45px] max-h-[45px] object-fill m-auto" ></td>
         <td class="max-w-[350px] pb-0" >
             <div class="d-flex align-content-center" :style="{ paddingLeft: `${props.depth * 1.125}rem` }">
                 <!-- <i class="fa-solid fa-l -translate-y-1.5" v-if="props.depth != 0"></i> <i class="fa-solid fa-window-minimize -translate-y-1" v-else></i>   -->

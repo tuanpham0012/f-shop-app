@@ -10,7 +10,7 @@ namespace ShopAppApi.Repositories.Categories
         List<CategoryTreeVM> BuildTree(List<CategoryVM> categories);
         Task<Category> Create(StoreCategoryRequest request);
         Task Update(long Id, UpdateCategoryRequest request);
-        Task<Category> Show(long Id);
+        Task<CategoryVM> Show(long Id);
         Task Delete(long Id);
 
         Task<List<Category>> GetPopularCategory();

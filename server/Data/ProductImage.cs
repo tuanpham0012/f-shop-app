@@ -7,6 +7,8 @@ public partial class ProductImage
 {
     public long Id { get; set; }
 
+    public string Code { get; set; } = null!;
+
     public long ProductId { get; set; }
 
     public string Path { get; set; } = null!;

@@ -93,7 +93,7 @@ namespace ShopAppApi.Helpers
             return fileBytes;
         }
 
-        public string getLink(string? FileName)
+        public string GetLink(string? FileName)
         {
             var context = _httpContextAccessor.HttpContext ?? throw new ArgumentException("error context !");
             string host = $"{context.Request.Scheme}://{context.Request.Host}";

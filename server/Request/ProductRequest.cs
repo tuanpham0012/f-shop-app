@@ -127,6 +127,7 @@ namespace ShopAppApi.Request
     public partial class ProductImageRequest
     {
         public long? Id { get; set; }
+        public string Code { get; set; } = null!;
         public string Path { get; set; } = null!;
         public string FileName { get; set; } = null!;
         public string Extension { get; set; } = null!;

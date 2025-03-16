@@ -139,7 +139,7 @@ onBeforeMount(async () => {
             <figure>
               <span>
                 <img
-                  :src="viewFile(item.image, 'src/assets/images/brands/7.png')"
+                  :src="item.image"
                   alt="Category image"
                 />
               </span>
@@ -168,7 +168,7 @@ onBeforeMount(async () => {
             <figure>
               <span>
                 <img
-                  :src="viewFile(item.image, 'src/assets/images/brands/7.png')"
+                  :src="item.image"
                   alt="Category image"
                 />
               </span>
@@ -288,11 +288,7 @@ onBeforeMount(async () => {
                 <!-- <span class="product-label label-circle label-sale">Sale</span> -->
                 <a href="product.html">
                   <img
-                    :src="
-                      viewFile(
-                        item.images[0],
-                        'src/assets/images/demos/demo-21/newArrivals/product-1.jpg'
-                      )
+                    :src="item.imageThumb
                     "
                     alt="Product image"
                     class="product-image object-contain"

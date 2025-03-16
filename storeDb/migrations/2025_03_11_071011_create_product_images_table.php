@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 64)->unique();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('path');
-            $table->string('file_name', 50);
+            $table->string('file_name');
             $table->string('extension', 50);
             $table->tinyInteger('type')->default(0)->comment('0: image, 1: video');
             $table->string('driver', 50);

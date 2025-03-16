@@ -99,7 +99,7 @@ onBeforeMount(async () => {
 </script>
 <template>
   <div class="card">
-    <h5 class="card-header">Khách hàng</h5>
+    <h5 class="card-header">Thương hiệu</h5>
     <div class="d-flex justify-content-between mx-3 my-2">
       <div class="d-flex">
         <div class="d-flex align-items-center w-auto me-2">
@@ -154,7 +154,7 @@ onBeforeMount(async () => {
             <td class="max-w-[350px]">
               {{ item.name }}
             </td>
-            <td class="text-center"> <img :src="viewFile(item.image)" class="w-[45px] h-[45px] object-contain m-auto rounded-full" loading="lazy" /></td>
+            <td class="text-center"> <img :src="item.image" class="h-[45px] object-fill m-auto rounded-md" loading="lazy" /></td>
             <td class="max-w-[350px]">
               {{ item.notUse ? "Ngưng sử dụng" : "Sử dụng" }}
             </td>
