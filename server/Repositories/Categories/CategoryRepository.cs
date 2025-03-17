@@ -5,6 +5,7 @@ using ShopAppApi.Helpers;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Categories
 {
@@ -12,7 +13,7 @@ namespace ShopAppApi.Repositories.Categories
     {
         public async Task<List<CategoryVM>> GetAll(CategoryRequest request)
         {
-            string cacheKey = $"{Constants.CategoryCache}-GetAll-request-{cache.ReplaceString(JsonSerializer.Serialize(request))}";
+            string cacheKey = $"{Constants.CategoryCache}:GetAll-request-{cache.ReplaceString(JsonSerializer.Serialize(request))}";
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
                 var query = context.Categories.AsNoTracking().Select(q => new CategoryVM
@@ -79,19 +80,19 @@ namespace ShopAppApi.Repositories.Categories
         public async Task<CategoryVM> Show(long id)
         {
             var category = await context.Categories.Select(q => new CategoryVM
-                {
-                    Id = q.Id,
-                    Name = q.Name,
-                    Code = q.Code,
-                    ParentId = q.ParentId,
-                    Lft = q.Lft,
-                    Rgt = q.Rgt,
-                    NotUse = q.NotUse,
-                    Image = fileHelper.GetLink(q.Image),
-                    IsPopular = q.IsPopular,
-                    HidenMenu = q.HidenMenu,
-                    // ProductCount = context.Products.Count(p => p.CategoryId == q.Id),
-                }).FirstOrDefaultAsync(x => x.Id == id);
+            {
+                Id = q.Id,
+                Name = q.Name,
+                Code = q.Code,
+                ParentId = q.ParentId,
+                Lft = q.Lft,
+                Rgt = q.Rgt,
+                NotUse = q.NotUse,
+                Image = fileHelper.GetLink(q.Image),
+                IsPopular = q.IsPopular,
+                HidenMenu = q.HidenMenu,
+                // ProductCount = context.Products.Count(p => p.CategoryId == q.Id),
+            }).FirstOrDefaultAsync(x => x.Id == id);
             return category ?? throw new ArgumentException("Not found");
         }
 
@@ -134,7 +135,7 @@ namespace ShopAppApi.Repositories.Categories
                 category.Lft = request.Lft;
                 category.ParentId = request.ParentId;
                 category.NotUse = request.NotUse;
-                if (category.Image != request.Image)
+                if (!string.IsNullOrEmpty(request.Image) && (category.Image == null || !category.Image.Contains(request.Image)))
                 {
                     fileHelper.DeleteFile(category.Image);
                     category.Image = await fileHelper.SaveFile(request.Image);
@@ -165,22 +166,12 @@ namespace ShopAppApi.Repositories.Categories
             }
         }
 
-        public async Task<List<Category>> GetPopularCategory()
+        public async Task<List<CategoryVM>> GetPopularCategory()
         {
-            var cacheKey = $"{Constants.CategoryCache}-GetPopularCategory";
+            var cacheKey = $"{Constants.CategoryCache}:GetPopularCategory";
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
-                return await context.Categories.AsNoTracking().Where(c => c.IsPopular == true && c.NotUse == false).ToListAsync();
-            });
-            return cacheData ?? new List<Category>();
-        }
-
-        public async Task<List<Category>> GetTopCategoryWithProduct()
-        {
-            var cacheKey = $"{Constants.CategoryCache}-GetTopCategoryWithProduct";
-            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
-            {
-                return await context.Categories.AsNoTracking().Include("Products").Where(c => c.IsPopular == true && c.NotUse == false).Select(q => new Category
+                return await context.Categories.AsNoTracking().Select(q => new CategoryVM
                 {
                     Id = q.Id,
                     Name = q.Name,
@@ -192,20 +183,71 @@ namespace ShopAppApi.Repositories.Categories
                     Image = fileHelper.GetLink(q.Image),
                     IsPopular = q.IsPopular,
                     HidenMenu = q.HidenMenu,
-                    Products = q.Products.OrderByDescending(x => x.Id).Take(20).ToList(),
-                }).Take(3).ToListAsync();
+                    ProductCount = context.Products.Count(p => p.CategoryId == q.Id),
+                }).Where(c => c.IsPopular == true && c.NotUse == false).ToListAsync();
             });
-            return cacheData ?? new List<Category>();
+            return cacheData ?? [];
         }
 
-        public async Task<List<Category>> GetCategoryHasFeaturedProduct()
+        public async Task<List<CategoryVM>> GetTopCategoryWithProduct()
         {
-            var cacheKey = $"{Constants.CategoryCache}-GetCategoryHasFeaturedProduct";
+            var cacheKey = $"{Constants.CategoryCache}:GetTopCategoryWithProduct";
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
-                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsFeatured == true || p.IsNew == true)).ToListAsync();
+                return await context.Categories.AsNoTracking().Include("Products").Where(c => c.IsPopular == true && c.NotUse == false).Select(q => new CategoryVM
+                {
+                    Id = q.Id,
+                    Name = q.Name,
+                    Code = q.Code,
+                    ParentId = q.ParentId,
+                    Lft = q.Lft,
+                    Rgt = q.Rgt,
+                    NotUse = q.NotUse,
+                    Image = fileHelper.GetLink(q.Image),
+                    IsPopular = q.IsPopular,
+                    HidenMenu = q.HidenMenu,
+                    Products = q.Products.Select(p => new ProductVM
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Price = p.Price,
+                        ImageThumb = fileHelper.GetLink(p.ImageThumb),
+                        UnitSell = p.UnitSell,
+                        UnitBuy = p.UnitBuy,
+                        Alias = p.Alias,
+                        HasVariants = p.HasVariants,
+                        IsNew = p.IsNew,
+                        IsFeatured = p.IsFeatured,
+                        IsSale = p.IsSale,
+                        BrandId = p.BrandId,
+                        CategoryId = p.CategoryId,
+                    }).OrderByDescending(x => x.Id).Take(20).ToList(),
+                }).Take(3).ToListAsync();
             });
-            return cacheData ?? new List<Category>();
+            return cacheData ?? new List<CategoryVM>();
+        }
+
+        public async Task<List<CategoryVM>> GetCategoryHasFeaturedProduct()
+        {
+            var cacheKey = $"{Constants.CategoryCache}:GetCategoryHasFeaturedProduct";
+            var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
+            {
+                return await context.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsFeatured == true || p.IsNew == true)).Select(q => new CategoryVM
+                {
+                    Id = q.Id,
+                    Name = q.Name,
+                    Code = q.Code,
+                    ParentId = q.ParentId,
+                    Lft = q.Lft,
+                    Rgt = q.Rgt,
+                    NotUse = q.NotUse,
+                    Image = fileHelper.GetLink(q.Image),
+                    IsPopular = q.IsPopular,
+                    HidenMenu = q.HidenMenu,
+                    ProductCount = q.Products.Count(),
+                }).ToListAsync();
+            });
+            return cacheData ?? new List<CategoryVM>();
         }
     }
 }

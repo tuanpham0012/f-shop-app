@@ -1,6 +1,7 @@
 services:
   sqlserver:
     container_name: sqlserver
+    user: root
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - SA_PASSWORD=Anhem123@
@@ -9,8 +10,11 @@ services:
       - MSSQL_PID=Developer
     ports:
       - "1434:1433"
+      - "5022:5022"
+      - "5023:5023"
     volumes:
       - c:/volumes/shop_app/mssql/data:/var/opt/mssql/data
+      - ./hosts:/etc/hosts
     restart: unless-stopped
     hostname: sqlserver
     # deploy:

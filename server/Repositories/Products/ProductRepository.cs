@@ -386,7 +386,8 @@ namespace ShopAppApi.Repositories.Products
                     };
                     _context.Add(newImg);
                 }
-                else{
+                else
+                {
                     continue;
                 }
                 await _context.SaveChangesAsync();
@@ -404,8 +405,9 @@ namespace ShopAppApi.Repositories.Products
             _product.BrandId = product.BrandId ?? _product.BrandId;
             _product.TaxId = product.TaxId ?? _product.TaxId;
             _product.UpdatedAt = DateTime.UtcNow;
-            if(!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !_product.ImageThumb.Contains(product.ImageThumb)))
+            if (!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !_product.ImageThumb.Contains(product.ImageThumb)))
             {
+                fileHelper.DeleteFile(_product.ImageThumb);
                 _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb);
             }
             _product.IsNew = product.IsNew;
@@ -419,28 +421,28 @@ namespace ShopAppApi.Repositories.Products
             {
                 if (option.IsDeleted == true)
                 {
-                    await this.DeleteOption((long)option.Id);
+                    await DeleteOption((long)option.Id);
                     continue;
                 }
                 option.ProductId = _product.Id;
-                var _option = await this.CreateOrUpdateOption(option);
+                var _option = await CreateOrUpdateOption(option);
 
                 foreach (var value in option.OptionValues)
                 {
                     if (value.IsDeleted == true)
                     {
-                        await this.DeleteOptionValue((long)value.Id);
+                        await DeleteOptionValue((long)value.Id);
                         continue;
                     }
                     value.OptionId = _option.Id;
                     value.ProductId = _product.Id;
-                    await this.CreateOrUpdateOptionValue(value);
+                    await CreateOrUpdateOptionValue(value);
                 }
             }
 
             if (product.NewSkus == true)
             {
-                await this.DeleteSkus((long)product.Id);
+                await DeleteSkus((long)product.Id);
             }
 
             if (product.Skus.Count() > 0)
@@ -449,7 +451,7 @@ namespace ShopAppApi.Repositories.Products
                 {
                     sku.ProductId = _product.Id;
                     sku.Barcode = sku.Barcode ?? _product.Barcode;
-                    var _sku = await this.CreateOrUpdateSku(sku);
+                    var _sku = await CreateOrUpdateSku(sku);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
 
@@ -462,7 +464,7 @@ namespace ShopAppApi.Repositories.Products
                             variant.OptionValueId = optionValue.Id;
                             variant.OptionId = optionValue.OptionId;
                             variant.SkuId = _sku.Id;
-                            await this.CreateOrUpdateVariant(variant);
+                            await CreateOrUpdateVariant(variant);
                         }
                     }
                 }
@@ -476,7 +478,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = _product.Price,
                     Barcode = _product.Barcode
                 };
-                var _sku = await this.CreateOrUpdateSku(sku);
+                var _sku = await CreateOrUpdateSku(sku);
                 minPrice = sku.Price;
                 maxStock = sku.Stock;
             }
@@ -654,17 +656,46 @@ namespace ShopAppApi.Repositories.Products
 
         }
 
-        public async Task<PaginatedList<Product>> GetFeaturedProduct(ProductRequest request, List<string>? includes = null!)
+        public async Task<PaginatedList<ProductVM>> GetFeaturedProduct(ProductRequest request)
         {
-            var query = _context.Products.AsQueryable().Where(q => q.IsFeatured == true || q.IsNew == true);
-
-            if (includes != null)
+            var query = _context.Products.AsQueryable().Select(p => new ProductVM
             {
-                foreach (var include in includes)
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                NumberWarning = p.NumberWarning,
+                ImageThumb = fileHelper.GetLink(p.ImageThumb),
+                UnitSell = p.UnitSell,
+                UnitBuy = p.UnitBuy,
+                Alias = p.Alias,
+                HasVariants = p.HasVariants,
+                IsNew = p.IsNew,
+                IsFeatured = p.IsFeatured,
+                IsSale = p.IsSale,
+                BrandId = p.BrandId,
+                CategoryId = p.CategoryId,
+                TaxId = p.TaxId,
+                Brand = new BrandVM
                 {
-                    query = query.Include(include);
-                }
-            }
+                    Id = p.Brand.Id,
+                    Name = p.Brand.Name,
+                    Code = p.Brand.Code
+                },
+                Category = new CategoryVM
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name,
+                    Code = p.Category.Code,
+                },
+            }).Where(q => q.IsFeatured == true || q.IsNew == true);
+
+            // if (includes != null)
+            // {
+            //     foreach (var include in includes)
+            //     {
+            //         query = query.Include(include);
+            //     }
+            // }
 
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
@@ -693,25 +724,46 @@ namespace ShopAppApi.Repositories.Products
                     break;
             }
 
-            return await PaginatedList<Product>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
+            return await PaginatedList<ProductVM>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
         }
 
-        public async Task<PaginatedList<Product>> GetProductByCategory(string categoryCode, ProductRequest request, List<string>? Includes = null!)
+        public async Task<PaginatedList<ProductVM>> GetProductByCategory(string categoryCode, ProductRequest request)
         {
             var category = _context.Categories.AsNoTracking().FirstOrDefault(x => x.Code == categoryCode);
             if (category == null || category.NotUse == true)
             {
                 throw new ArgumentException("Category does not exists!");
             }
-            var query = _context.Products.AsQueryable().Where(q => q.CategoryId == category.Id);
-
-            if (Includes != null)
+            var query = _context.Products.AsQueryable().Select(p => new ProductVM
             {
-                foreach (var include in Includes)
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                NumberWarning = p.NumberWarning,
+                ImageThumb = fileHelper.GetLink(p.ImageThumb),
+                UnitSell = p.UnitSell,
+                UnitBuy = p.UnitBuy,
+                Alias = p.Alias,
+                HasVariants = p.HasVariants,
+                IsNew = p.IsNew,
+                IsFeatured = p.IsFeatured,
+                IsSale = p.IsSale,
+                BrandId = p.BrandId,
+                CategoryId = p.CategoryId,
+                TaxId = p.TaxId,
+                Brand = new BrandVM
                 {
-                    query = query.Include(include);
-                }
-            }
+                    Id = p.Brand.Id,
+                    Name = p.Brand.Name,
+                    Code = p.Brand.Code
+                },
+                Category = new CategoryVM
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name,
+                    Code = p.Category.Code,
+                },
+            }).Where(q => q.CategoryId == category.Id);
 
             if (request.BrandId != null)
             {
@@ -731,7 +783,7 @@ namespace ShopAppApi.Repositories.Products
                     break;
             }
 
-            return await PaginatedList<Product>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
+            return await PaginatedList<ProductVM>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
         }
     }
 }

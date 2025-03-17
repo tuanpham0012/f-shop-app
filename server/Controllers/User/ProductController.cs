@@ -22,15 +22,15 @@ namespace ShopAppApi.Controllers.User
         [HttpGet("featured-product")]
         public async Task<IActionResult> GetFeaturedProduct([FromQuery]ProductRequest request)
         {
-            var product = await productRepository.GetFeaturedProduct(request, ["Category"]);
-            return Ok(new ResponsePaginatedCollection<Product>(product));
+            var product = await productRepository.GetFeaturedProduct(request);
+            return Ok(new ResponsePaginatedCollection<ProductVM>(product));
         }
 
         [HttpGet("{CategoryCode}")]
         public async Task<IActionResult> GetProductByCategory(string CategoryCode, [FromQuery]ProductRequest request)
         {
-            var product = await productRepository.GetProductByCategory(CategoryCode, request, ["Category"]);
-            return Ok(new ResponsePaginatedCollection<Product>(product));
+            var product = await productRepository.GetProductByCategory(CategoryCode, request);
+            return Ok(new ResponsePaginatedCollection<ProductVM>(product));
         }
     }
 }

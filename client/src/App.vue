@@ -6,20 +6,6 @@ import NavBar from "./layouts/NavBar.vue";
 </script>
 
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView /> -->
   <!-- Layout wrapper -->
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
@@ -48,12 +34,12 @@ import NavBar from "./layouts/NavBar.vue";
   </div>
 </template>
 
-<style lang="scss">
-@import "assets/vendor/fonts/boxicons.css";
-@import "assets/vendor/css/core.css";
-@import "assets/vendor/css/theme-default.css";
-@import "assets/css/demo.css";
-@import "assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
-@import "assets/vendor/libs/apex-charts/apex-charts.css";
-@import "assets/css/style.scss";
+<style>
+@import "./assets/vendor/fonts/boxicons.css";
+@import "./assets/vendor/css/core.css";
+@import "./assets/vendor/css/theme-default.css";
+@import "./assets/css/demo.css";
+@import "./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
+@import "./assets/vendor/libs/apex-charts/apex-charts.css";
+@import "./assets/css/style.scss";
 </style>

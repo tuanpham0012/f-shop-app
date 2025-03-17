@@ -243,7 +243,7 @@ onBeforeMount(async () => {
           >
         </li>
         <li
-          class="nav-item cursor-pointer"
+          class="nav-item cursor-pointer "
           v-for="(item, index) in featuredProducts.categories"
           :key="index"
           @click="featuredProductQuery.categoryId = item.id"
@@ -251,7 +251,7 @@ onBeforeMount(async () => {
           <a
             class="nav-link"
             :class="{ active: featuredProductQuery.categoryId == item.id }"
-            >{{ item.name }}</a
+            >{{ item.name }} ({{ item.productCount }})</a
           >
         </li>
       </ul>
@@ -265,13 +265,13 @@ onBeforeMount(async () => {
         role="tabpanel"
         aria-labelledby="arrivals-all-link"
       >
-        <div class="row gap-y-3">
+        <div class="row gap-y-10">
           <div
-            class="col-6 col-lg-2 col-sm-4 px-2 box-border"
+            class="col-6 col-lg-2 col-sm-4 px-2 box-border cursor-pointer"
             v-for="(item, index) in featuredProducts.products"
             :key="index"
           >
-            <div class="product mt-0 py-1 box-border h-[100%]">
+            <div class="product mt-0 py-1 box-border h-[100%] rounded-xl">
               <figure
                 class="product-media d-flex items-center bg-gray-100 positon-relative aspect-square mb-1"
               >
@@ -295,20 +295,21 @@ onBeforeMount(async () => {
                   />
                 </a>
                 <div class="product-action">
-                  <a href="#" class="btn-product btn-cart" title="Add to cart"
-                    ><span>Thêm vào giỏ hàng</span></a
+                  <button href="#" class="btn-product btn-cart" title="Add to cart"
+                    ><span>Thêm vào giỏ hàng</span></button
                   >
                 </div>
               </figure>
-              <div class="product-body p-0 px-3">
-                <div class="product-cat">
-                  <a class="text-xl" href="#">{{ item.category?.name }}</a>
-                </div>
+              <div class="product-body p-0 px-3 py-2">
                 <h3 class="product-title">
-                  <a href="product.html">{{ item.name }}</a>
+                  {{ item.name }}
                 </h3>
-                <div class="product-price justify-start">
-                  <span class="cur-price text-red-500">{{
+                <div class="product-cat">
+                  {{ item.category?.name }}
+                </div>
+                
+                <div class="">
+                  <span class="text-3xl text-red-500">{{
                     currencyFormatTenant(item.price) + "đ"
                   }}</span>
                 </div>
@@ -320,10 +321,10 @@ onBeforeMount(async () => {
     </div>
     <!-- End .tab-content -->
     <div class="text-center">
-      <a href="category.html" class="btn btn-viewMore">
-        <span>Xem thêm</span>
+      <button href="category.html" class="btn btn-viewMore">
+        <span class="text-2xl">Xem thêm</span>
         <i class="icon-long-arrow-right"></i>
-      </a>
+      </button>
     </div>
   </div>
 
@@ -369,11 +370,7 @@ onBeforeMount(async () => {
                 <!-- <span class="product-label label-circle label-sale">Sale</span> -->
                 <a href="product.html">
                   <img
-                    :src="
-                      viewFile(
-                        '', 'src/assets/images/demos/demo-21/newArrivals/product-1.jpg'
-                      )
-                    "
+                    :src="item.imageThumb"
                     alt="Product image"
                     class="product-image object-contain"
                   />
@@ -385,12 +382,12 @@ onBeforeMount(async () => {
                 </div>
               </figure>
               <div class="product-body p-0 px-3">
-                <div class="product-cat">
-                  <a class="text-xl" href="#">{{ item.category?.name }}</a>
-                </div>
                 <h3 class="product-title">
                   <a href="product.html">{{ item.name }}</a>
                 </h3>
+                <div class="product-cat">
+                  <a class="text-xl" href="#">{{ item.category?.name }}</a>
+                </div>
                 <div class="product-price justify-start">
                   <span class="cur-price text-red-500">{{
                     currencyFormatTenant(item.price) + "đ"

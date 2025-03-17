@@ -13,9 +13,9 @@ namespace ShopAppApi.Repositories.Categories
         Task<CategoryVM> Show(long Id);
         Task Delete(long Id);
 
-        Task<List<Category>> GetPopularCategory();
+        Task<List<CategoryVM>> GetPopularCategory();
 
-        Task<List<Category>> GetTopCategoryWithProduct();
-        Task<List<Category>> GetCategoryHasFeaturedProduct();
+        Task<List<CategoryVM>> GetTopCategoryWithProduct();
+        Task<List<CategoryVM>> GetCategoryHasFeaturedProduct();
     }
 }

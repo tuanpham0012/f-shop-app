@@ -49,7 +49,7 @@ namespace ShopAppApi.Controllers.Admin
             try
             {
                 var entry = await _repo.Show(Id);
-                return Ok(new ResponseOne<Category>(entry));
+                return Ok(new ResponseOne<CategoryVM>(entry));
             }
             catch (Exception ex)
             {

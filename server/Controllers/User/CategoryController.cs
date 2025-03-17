@@ -13,21 +13,21 @@ namespace ShopAppApi.Controllers.User
         public async Task<IActionResult> GetPopularCategory()
         {
             var entries = await repository.GetPopularCategory();
-            return Ok(new ResponseCollection<Category>(entries));
+            return Ok(new ResponseCollection<CategoryVM>(entries));
         }
 
         [HttpGet("top-category")]
         public async Task<IActionResult> GetTopCategoryWithProduct()
         {
             var entries = await repository.GetTopCategoryWithProduct();
-            return Ok(new ResponseCollection<Category>(entries));
+            return Ok(new ResponseCollection<CategoryVM>(entries));
         }
 
         [HttpGet("featured-product-category")]
         public async Task<IActionResult> GetCategoryHasFeaturedProduct()
         {
             var entries = await repository.GetCategoryHasFeaturedProduct();
-            return Ok(new ResponseCollection<Category>(entries));
+            return Ok(new ResponseCollection<CategoryVM>(entries));
         }
     }
 }

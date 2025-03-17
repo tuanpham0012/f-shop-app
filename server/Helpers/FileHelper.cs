@@ -77,7 +77,7 @@ namespace ShopAppApi.Helpers
 
         public void DeleteFile(string? fileName)
         {
-            if (String.IsNullOrEmpty(fileName)) return;
+            if (string.IsNullOrEmpty(fileName)) return;
             var path = Path.Combine(GetFileFolder().FullName, fileName);
             if (File.Exists(path)) File.Delete(path);
         }

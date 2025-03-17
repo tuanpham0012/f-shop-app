@@ -14,8 +14,8 @@ namespace ShopAppApi.Repositories.Products
         Task Update(long id, UpdateProductRequest product);
         Boolean Delete(long id);
 
-        Task<PaginatedList<Product>> GetFeaturedProduct(ProductRequest request, List<string>? Includes = null!);
-        Task<PaginatedList<Product>> GetProductByCategory(string categoryCode, ProductRequest request, List<string>? Includes = null!);
+        Task<PaginatedList<ProductVM>> GetFeaturedProduct(ProductRequest request);
+        Task<PaginatedList<ProductVM>> GetProductByCategory(string categoryCode, ProductRequest request);
 
     }
 }
