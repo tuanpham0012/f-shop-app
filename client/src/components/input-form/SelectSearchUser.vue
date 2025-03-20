@@ -3,15 +3,15 @@
         <div class="box" ref="containerElm">
             <div
                 class="select-box"
-                :class="{ active: showList, disabled: props.disabled }"
+                :class="{ 'active': showList, 'disabled': props.disabled }"
             >
                 <div
                     class="selected break-text"
                     :id="props.idElement"
                     @click="toggleShow()"
-                    :class="{ focus: showList == true }"
+                    :class="{ 'focus': showList == true }"
                 >
-                    <div class="d-flex align-items-center gap-1 nowrap" v-if="dataSelect">
+                    <div class="d-flex align-items-center gap-1 nowrap bg-[#ffffff00]" v-if="dataSelect">
                         <img
                             v-if="props.src && props.preImage"
                             class="w-[65px] h-[auto] max-h-[65px] img-radius object-cover me-2"
@@ -39,7 +39,7 @@
                     </div>
                     <div v-else>
                         <span
-                                class="content text-gray-600"
+                                class="content text-gray-600 bg-[#ffffff00]"
                                 style="white-space: nowrap"
                                 >{{
                                     props.placeholder
@@ -57,7 +57,7 @@
                     v-if="showList"
                     :style="{ top: top + 'px', left: left + 'px', width: maxWidth + 'px' }"
                 >
-                    <div class="search-box">
+                    <div class="search-box" v-if="searchBox">
                         <input
                             type="text"
                             placeholder="Tìm kiếm..."
@@ -201,6 +201,10 @@ const props = defineProps({
             return result;
         },
     },
+    searchBox: {
+        typeo: Boolean,
+        default: true
+    }
 });
 
 const emits = defineEmits([
@@ -423,7 +427,7 @@ p {
     }
 
     &.disabled {
-        background: #ffffff;
+        background: #ffffff !important;
         pointer-events: none;
     }
 }

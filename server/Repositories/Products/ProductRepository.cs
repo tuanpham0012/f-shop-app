@@ -132,7 +132,7 @@ namespace ShopAppApi.Repositories.Products
                 Code = p.Code,
                 Price = p.Price,
                 NumberWarning = p.NumberWarning,
-                ImageThumb = fileHelper.GetLink(p.ImageThumb),
+                ImageThumb = !string.IsNullOrEmpty(p.ImageThumb) ? fileHelper.GetLink(p.ImageThumb) : null,
                 UnitSell = p.UnitSell,
                 UnitBuy = p.UnitBuy,
                 Description = p.Description,

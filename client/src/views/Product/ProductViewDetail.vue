@@ -12,7 +12,7 @@
             <div class="row gx-5" v-if="product">
                 <div class="col-lg-6">
                     <div
-                        class="border rounded-4 mb-3 d-flex justify-content-center w-[525px] h-[525px] bg-gray-300 d-flex justify-center items-center"
+                        class="border rounded-4 mb-3 d-flex justify-content-center w-[100%] h-[auto] bg-gray-300 d-flex justify-center items-center"
                     >
                         <a
                             data-fslightbox="mygalley"
@@ -261,6 +261,8 @@ const onlyInLeft = (left: any, right: any, compareFunction: any) =>
     );
 
 const product = computed(() => productStore.$state.entry);
+
+watch( () => product.value, (value) => imgSelect.value = value.imageThumb)
 
 onBeforeMount(async () => {
     await productStore.show(props.id);

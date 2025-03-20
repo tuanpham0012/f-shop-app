@@ -88,7 +88,7 @@ namespace ShopAppApi.Repositories.Categories
                 Lft = q.Lft,
                 Rgt = q.Rgt,
                 NotUse = q.NotUse,
-                Image = fileHelper.GetLink(q.Image),
+                Image = !string.IsNullOrEmpty(q.Image) ? fileHelper.GetLink(q.Image) : null,
                 IsPopular = q.IsPopular,
                 HidenMenu = q.HidenMenu,
                 // ProductCount = context.Products.Count(p => p.CategoryId == q.Id),

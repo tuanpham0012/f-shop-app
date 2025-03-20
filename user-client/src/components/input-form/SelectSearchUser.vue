@@ -57,7 +57,7 @@
                     v-if="showList"
                     :style="{ top: top + 'px', left: left + 'px' }"
                 >
-                    <div class="search-box">
+                    <div class="search-box" v-if="searchBox">
                         <input
                             type="text"
                             placeholder="Tìm kiếm..."
@@ -197,6 +197,10 @@ const props = defineProps({
             return result;
         },
     },
+    searchBox: {
+        typeo: Boolean,
+        default: true
+    }
 });
 
 const emits = defineEmits([

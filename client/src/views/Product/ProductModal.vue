@@ -333,24 +333,27 @@
           <div class="col-sm-12 row mb-3 mt-3">
             <div class="col-sm-6">
               <div class="col-sm-12">
-                <label class="form-label mb-3 me-2">Chọn ảnh Thumbnail</label>
+                <label class="form-label mb-3 me-2">Chọn ảnh Thumbnail {{ thumbId }}</label>
               </div>
               <div class="col-sm-12">
                 <select-search-user
                   :firstSelected="true"
                   :listData="product.images"
+                  placeholder="-- Chọn ảnh --"
                   src="path"
                   :preImage="false"
                   display="fileName"
                   keyValue="code"
                   v-model="thumbId"
+                  :search-box="false"
+                  :disabled="product.images.length < 1"
                 ></select-search-user>
               </div>
             </div>
             <div class="col-sm-6">
               <img
                 :src="product.imageThumb"
-                class="w-[120px] h-[120px] object-contain rounded-2xl m-0 m-auto"
+                class="max-w-[100%] h-[140px] object-contain rounded-2xl m-0 m-auto"
               />
             </div>
           </div>
@@ -1003,9 +1006,10 @@ const productImage = (event: any) => {
           return;
         }
         let dataImg = await resizeImage(e.target.result, file.type);
+        let imgId = uuidv4()
         product.value.images.push({
           id: 0,
-          code: uuidv4(),
+          code: imgId,
           path: dataImg,
           fileName: file.name,
           deleted: false,
@@ -1013,6 +1017,14 @@ const productImage = (event: any) => {
           driver: "",
           extension: file.type,
         });
+        console.log(i);
+        console.log('value -- ' + thumbId.value);
+        
+        if(i == 0 && (thumbId.value == "" || thumbId.value == null)){
+          thumbId.value = imgId
+          console.log(imgId);
+          
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -1076,6 +1088,9 @@ const deleteImage = (index: number, isDeleteAll = false) => {
     product.value.images = [];
   } else {
     product.value.images.splice(index, 1);
+  }
+  if(product.value.images.length < 1){
+    thumbId.value = ""
   }
 };
 
@@ -1153,12 +1168,17 @@ watch(
   () => thumbId.value,
   async (newVal) => {
     const img = product.value.images.find((x: any) => x.code == newVal);
-    product.value.imageThumb = await resizeImage(
+    if(img){
+      product.value.imageThumb = await resizeImage(
       img.path,
       img.extension,
       250,
       250
     );
+    }else{
+      product.value.imageThumb = ""
+    }
+    
   }
 );
 

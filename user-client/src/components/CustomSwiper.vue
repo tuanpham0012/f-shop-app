@@ -2,11 +2,16 @@
   <Swiper
     :slides-per-view="slidesPerView"
     :space-between="spaceBetween"
-    :navigation="itemCount > slidesPerView"
+    :navigation="(itemCount > slidesPerView) && navigation"
     :modules="modules"
     :class="ids"
     class="px-7"
     :style="{ '--slide-item': itemCount > slidesPerView ? 'flex-start' : 'center' }"
+    :autoplay="autoPlay ? {
+      delay: delay,
+      disableOnInteraction: false,
+    } : false"
+    :loop="autoPlay"
   >
     <slot></slot>
   </Swiper>
@@ -17,9 +22,9 @@ import { Swiper } from "swiper/vue";
 import "swiper/swiper-bundle.css";
 import "swiper/css";
 import "swiper/scss/navigation";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 
-const modules = ref([Navigation]);
+const modules = ref([Navigation, Autoplay]);
 
 const props = defineProps({
   itemCount: {
@@ -38,6 +43,18 @@ const props = defineProps({
     type: String,
     default: "swiper",
   },
+  navigation: {
+    type: Boolean,
+    default: true
+  },
+  autoPlay:{
+    type: Boolean,
+    default: false
+  },
+  delay: {
+    type: Number,
+    default: 2000
+  }
 });
 
 
