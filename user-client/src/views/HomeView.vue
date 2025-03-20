@@ -139,7 +139,7 @@ onBeforeMount(async () => {
           <a href="category.html" class="cat-block">
             <figure>
               <span>
-                <img :src="item.image" alt="Category image" />
+                <img :src="item.image" alt="Category image h-[95px] w-[auto]" />
               </span>
             </figure>
           </a>
@@ -162,13 +162,15 @@ onBeforeMount(async () => {
         :itemCount="popularCategories.length"
       >
         <swiper-slide v-for="(item, index) in popularCategories" :key="index">
-          <a href="category.html" class="cat-block">
+          <div class="">
+            <router-link :to="'/danh-muc/' + item.code" class="cat-block aspect-square">
             <figure>
-              <img :src="item.image" alt="Category image" />
+              <img :src="item.image" alt="Category image" class="w-[125px] h-[auto] object-contain" />
             </figure>
-
             <h3 class="cat-block-title">{{ item.name }}</h3>
-          </a>
+          </router-link>
+          </div>
+          
         </swiper-slide>
       </swiper-component>
     </div>
@@ -350,7 +352,6 @@ onBeforeMount(async () => {
       :navigation="false"
       :auto-play="false"
       :delay="4000"
-      :autoHeight="false"
       class="py-4"
     >
       <swiper-slide
@@ -517,6 +518,9 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss" scoped>
+a{
+    text-decoration: none;
+  }
 .cat-blocks-container {
   position: relative;
   padding-top: 0.5rem;
@@ -572,7 +576,7 @@ onBeforeMount(async () => {
   }
   &:hover {
     img {
-      transform: translateY(-14px);
+      transform: translateY(-10px);
     }
     figure span:after {
       opacity: 1;
@@ -582,10 +586,10 @@ onBeforeMount(async () => {
 
 .cat-block-title {
   color: #333;
-  font-weight: 400;
-  font-size: 1.4rem;
+  font-weight: 450;
+  font-size: 1.8rem;
   letter-spacing: -0.01em;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
   margin-bottom: 0;
 }
 

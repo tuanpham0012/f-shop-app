@@ -113,4 +113,7 @@ const props = defineProps({
   align-items: center;
   justify-content: var(--slide-item);
 }
+.swiper-slide{
+  height: 100%;
+}
 </style>

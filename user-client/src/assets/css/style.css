@@ -2042,7 +2042,7 @@ blockquote.text-white cite span {
 .menu>li>a {
     font-weight: 500;
     font-size: 1.5rem;
-    /* color: #333;*/
+    color: #333;
     
     letter-spacing: -.01em;
     padding: 3.95rem 3rem;

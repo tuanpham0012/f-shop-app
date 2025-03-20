@@ -23,7 +23,7 @@
                             <img
                                 class="w-100 h-100 object-contain"
                                 loading='lazy'
-                                :src="imgSelect ?? product.images[indexImg]"
+                                :src="imgSelect ?? product.images[indexImg].path"
                             />
                         </a>
                     </div>
@@ -38,7 +38,7 @@
                             <img
                                 class="w-100 h-100 object-contain"
                                 loading='lazy'
-                                :src="img"
+                                :src="img.path"
                             />
                         </a>
                     </div>

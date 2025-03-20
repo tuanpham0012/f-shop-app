@@ -10,7 +10,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/:categoryCode',
+      path: '/danh-muc/:categoryCode',
       name: 'Category',
       component: () => import('../views/Product/FindProductByCategory.vue')
       
