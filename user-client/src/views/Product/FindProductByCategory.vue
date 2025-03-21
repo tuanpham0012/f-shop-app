@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from "vue";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 import { useProductStore } from "../../stores/product";
 import { useBrandStore } from "../../stores/brand";
 import debounce from "lodash.debounce";
@@ -54,13 +54,17 @@ const getListData = async () => {
   await productStore.getListProductByCategory(categoryCode.value, query);
 };
 
-watch( () => query.brandIds, (newValue) => {
+watch(
+  () => query.brandIds,
+  (newValue) => {
     console.log(newValue);
-    
-})
+  }
+);
 
 onBeforeMount(async () => {
-  categoryCode.value = Array.isArray(route.params?.categoryCode) ? route.params?.categoryCode[0] : route.params?.categoryCode ?? ""
+  categoryCode.value = Array.isArray(route.params?.categoryCode)
+    ? route.params?.categoryCode[0]
+    : route.params?.categoryCode ?? "";
   await getListData();
   await brandStore.getListBrandByCategory({ categoryCode: categoryCode.value });
 });
@@ -82,12 +86,12 @@ onBeforeMount(async () => {
 
   <div class="page-content">
     <div class="container">
-      <div class="row">
+      <div class="row col-12">
         <aside class="col-lg-2 ps-4 box-border order-lg-first">
           <div class="sidebar sidebar-shop">
             <div class="widget widget-clean">
-              <label>Lọc:</label>
-              <a href="#" class="sidebar-filter-clear">Xoá tất cả</a>
+              <label class="text-3xl">Lọc:</label>
+              <a href="#" class="sidebar-filter-clear text-2xl">Xoá tất cả</a>
             </div>
 
             <div class="widget">
@@ -105,7 +109,11 @@ onBeforeMount(async () => {
               <!-- End .widget-title -->
 
               <div class="show">
-                <div class="form-check" v-for="(item, index) in brands" :key="index">
+                <div
+                  class="form-check"
+                  v-for="(item, index) in brands"
+                  :key="index"
+                >
                   <input
                     class="form-check-input w-[1.5rem] h-[1.5rem] me-3"
                     type="checkbox"
@@ -113,7 +121,10 @@ onBeforeMount(async () => {
                     :id="'brand-' + item.id"
                     v-model="query.brandIds"
                   />
-                  <label class="form-check-label text-2xl" :for="'brand-' + item.id">
+                  <label
+                    class="form-check-label text-2xl"
+                    :for="'brand-' + item.id"
+                  >
                     {{ item.name }}
                   </label>
                 </div>
@@ -134,7 +145,7 @@ onBeforeMount(async () => {
               </h3>
               <!-- End .widget-title -->
 
-              <div class="" >
+              <div class="">
                 <div class="widget-body">
                   <div class="filter-price">
                     <div class="filter-price-text">
@@ -160,22 +171,21 @@ onBeforeMount(async () => {
           <div class="toolbox">
             <div class="toolbox-left">
               <div class="toolbox-info">
-                Hiển thị <span>{{ query.pageSize }} of {{ totalCount }}</span> Sản phẩm
+                Hiển thị
+                <span>{{ query.pageSize }} of {{ totalCount }}</span> Sản phẩm
               </div>
               <!-- End .toolbox-info -->
             </div>
             <!-- End .toolbox-left -->
 
             <div class="toolbox-right">
-              <div class="toolbox-sort">
-                <label for="sortby">Sort by:</label>
+              <div class="toolbox-sort text-2xl">
+                <label for="sortby">Sắp xếp theo giá:</label>
                 <div class="select-custom">
                   <select name="sortby" id="sortby" class="form-control">
-                    <option value="popularity" select="selected">
-                      Most Popular
-                    </option>
-                    <option value="rating">Most Rated</option>
-                    <option value="date">Date</option>
+                    <option value="popularity" select="selected">Không</option>
+                    <option value="rating">Giá thấp đến cao</option>
+                    <option value="date">Giá cao đến thấp</option>
                   </select>
                 </div>
               </div>
@@ -184,60 +194,65 @@ onBeforeMount(async () => {
             <!-- End .toolbox-right -->
           </div>
           <!-- End .toolbox -->
+            <div class="products mb-3">
+              <div class="columns-5xl columns-3xs columns-2sm gap-8">
+                <div
+                  class=""
+                  v-for="(item, index) in products"
+                  :key="index"
+                >
+                  <div class="product product-7 text-center">
+                    <figure
+                      class="product-media bg-gray-100 aspect-square d-flex items-center"
+                    >
+                      <a href="product.html">
+                        <img
+                          :src="viewFile(item.images[0])"
+                          alt="Product image"
+                          class="product-image"
+                        />
+                      </a>
 
-          <div class="products mb-3">
-            <div class="row justify-start">
-              <div class="col-6 col-md-4 col-lg-4 col-xl-3" v-for="(item, index) in products" :key="index">
-                <div class="product product-7 text-center">
-                  <figure class="product-media bg-gray-100 aspect-square  d-flex items-center">
-                    <a href="product.html">
-                      <img
-                        :src="viewFile(item.images[0])"
-                        alt="Product image"
-                        class="product-image"
-                      />
-                    </a>
-
-                    <div class="product-action">
-                      <a href="#" class="btn-product btn-cart"
-                        ><span>add to cart</span></a
-                      >
-                    </div>
-                    <!-- End .product-action -->
-                  </figure>
-                  <!-- End .product-media -->
-
-                  <div class="product-body">
-                    <div class="product-cat">
-                      <a href="#">{{ item.category?.name }}</a>
-                    </div>
-                    <!-- End .product-cat -->
-                    <h3 class="product-title">
-                      <a href="product.html"
-                        >{{ item.name }}</a
-                      >
-                    </h3>
-                    <!-- End .product-title -->
-                    <div class="product-price text-red-500">{{displayPrice(item.price)}}đ</div>
-                    <!-- End .product-price -->
-                    <div class="ratings-container">
-                      <div class="ratings">
-                        <div class="ratings-val" style="width: 20%"></div>
-                        <!-- End .ratings-val -->
+                      <div class="product-action">
+                        <a href="#" class="btn-product btn-cart"
+                          ><span>add to cart</span></a
+                        >
                       </div>
-                      <!-- End .ratings -->
-                      <span class="ratings-text">( 2 Reviews )</span>
-                    </div>
-                  </div>
-                  <!-- End .product-body -->
-                </div>
-                <!-- End .product -->
-              </div>
-              <!-- End .col-sm-6 col-lg-4 col-xl-3 -->
+                      <!-- End .product-action -->
+                    </figure>
+                    <!-- End .product-media -->
 
+                    <div class="product-body">
+                      <div class="product-cat">
+                        <a href="#">{{ item.category?.name }}</a>
+                      </div>
+                      <!-- End .product-cat -->
+                      <h3 class="product-title">
+                        <a href="product.html">{{ item.name }}</a>
+                      </h3>
+                      <!-- End .product-title -->
+                      <div class="product-price text-red-500">
+                        {{ displayPrice(item.price) }}đ
+                      </div>
+                      <!-- End .product-price -->
+                      <div class="ratings-container">
+                        <div class="ratings">
+                          <div class="ratings-val" style="width: 20%"></div>
+                          <!-- End .ratings-val -->
+                        </div>
+                        <!-- End .ratings -->
+                        <span class="ratings-text">( 2 Reviews )</span>
+                      </div>
+                    </div>
+                    <!-- End .product-body -->
+                  </div>
+                  <!-- End .product -->
+                </div>
+                <!-- End .col-sm-6 col-lg-4 col-xl-3 -->
+              </div>
+              <!-- End .row -->
             </div>
-            <!-- End .row -->
-          </div>
+
           <!-- End .products -->
 
           <nav aria-label="Page navigation">

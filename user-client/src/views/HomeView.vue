@@ -518,9 +518,6 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss" scoped>
-a{
-    text-decoration: none;
-  }
 .cat-blocks-container {
   position: relative;
   padding-top: 0.5rem;

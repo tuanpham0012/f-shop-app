@@ -1,7 +1,7 @@
 ﻿/* @import url("https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800"); */
 
 html {
-    font-size: 60%;
+    font-size: 62.5%;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     font-size-adjust: 100%
@@ -2043,10 +2043,10 @@ blockquote.text-white cite span {
     font-weight: 500;
     font-size: 1.5rem;
     color: #333;
-    
+
     letter-spacing: -.01em;
     padding: 3.95rem 3rem;
-    text-transform: uppercase 
+    text-transform: uppercase
 }
 
 .menu>li+li {
@@ -10178,14 +10178,6 @@ textarea.form-control {
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px
 }
-
-label {
-    color: #666;
-    font-weight: 300;
-    font-size: 1.4rem;
-    margin: 0 0 1.1rem
-}
-
 .form-text {
     color: #999;
     line-height: 1.5;
@@ -12098,7 +12090,7 @@ button:focus {
     font-size: 1.4rem;
     line-height: 1.5;
     margin-top: 0;
-    margin-bottom: 2rem
+    margin-bottom: 1.1rem
 }
 
 .toolbox::after {
@@ -12128,7 +12120,6 @@ button:focus {
 .toolbox label {
     font-weight: 400;
     color: #333;
-    font-size: 1.2rem;
     letter-spacing: -.01em;
     margin: 0
 }
@@ -12292,13 +12283,12 @@ button:focus {
     display: flex;
     align-items: center;
     padding-top: .6rem;
-    padding-bottom: 2.1rem
+    padding-bottom: 1.2rem
 }
 
 .widget-clean label {
     color: inherit;
     font-weight: 400;
-    font-size: 1.4rem;
     letter-spacing: -.01em;
     margin: 0
 }
@@ -12306,7 +12296,6 @@ button:focus {
 .widget-clean a {
     display: inline-block;
     font-weight: 400;
-    font-size: 1.2rem;
     margin-left: auto
 }
 
