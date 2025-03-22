@@ -1,6 +1,6 @@
 <template lang="">
   <!-- Mobile Menu -->
-  <div class="mobile-menu-overlay"></div>
+  <!-- <div class="mobile-menu-overlay"></div> -->
   <!-- End .mobil-menu-overlay -->
 
   <div class="mobile-menu-container mobile-menu-light">

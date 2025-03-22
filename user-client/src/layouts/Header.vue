@@ -259,7 +259,6 @@ onBeforeMount(async () => {
   position: absolute;
   top: 100%;
   z-index: 1000;
-  right: -150% !important;
 }
 
 .product {

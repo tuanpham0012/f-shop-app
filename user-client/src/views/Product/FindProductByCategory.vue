@@ -87,7 +87,7 @@ onBeforeMount(async () => {
   <div class="page-content">
     <div class="container">
       <div class="row col-12">
-        <aside class="col-lg-2 ps-4 box-border order-lg-first">
+        <aside class="col-12 col-sm-2 ps-4 box-border order-lg-first">
           <div class="sidebar sidebar-shop">
             <div class="widget widget-clean">
               <label class="text-3xl">Lọc:</label>
@@ -106,8 +106,6 @@ onBeforeMount(async () => {
                   Brand
                 </a>
               </h3>
-              <!-- End .widget-title -->
-
               <div class="show">
                 <div
                   class="form-check"
@@ -143,8 +141,6 @@ onBeforeMount(async () => {
                   Price
                 </a>
               </h3>
-              <!-- End .widget-title -->
-
               <div class="">
                 <div class="widget-body">
                   <div class="filter-price">
@@ -152,22 +148,14 @@ onBeforeMount(async () => {
                       Price Range:
                       <span id="filter-price-range"></span>
                     </div>
-                    <!-- End .filter-price-text -->
-
                     <div id="price-slider"></div>
-                    <!-- End #price-slider -->
                   </div>
-                  <!-- End .filter-price -->
                 </div>
-                <!-- End .widget-body -->
               </div>
-              <!-- End .collapse -->
             </div>
-            <!-- End .widget -->
           </div>
-          <!-- End .sidebar sidebar-shop -->
         </aside>
-        <div class="col-lg-10">
+        <div class="col-12 col-sm-10">
           <div class="toolbox">
             <div class="toolbox-left">
               <div class="toolbox-info">
@@ -195,7 +183,7 @@ onBeforeMount(async () => {
           </div>
           <!-- End .toolbox -->
             <div class="products mb-3">
-              <div class="columns-5xl columns-3xs columns-2sm gap-8">
+              <div class="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-8">
                 <div
                   class=""
                   v-for="(item, index) in products"

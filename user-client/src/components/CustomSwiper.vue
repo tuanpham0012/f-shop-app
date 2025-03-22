@@ -1,17 +1,24 @@
 <template lang="">
   <Swiper
-    :slides-per-view="slidesPerView"
-    :space-between="spaceBetween"
-    :navigation="(itemCount > slidesPerView) && navigation"
+    :slides-per-view="breakpoints ? Object.entries(breakpoints)[0][1][slidesPerView] : slidesPerView"
+    :space-between="breakpoints ? Object.entries(breakpoints)[0][1][spaceBetween] : spaceBetween"
+    :navigation="itemCount > slidesPerView && navigation"
     :modules="modules"
     :class="ids"
     class="px-7"
-    :style="{ '--slide-item': itemCount > slidesPerView ? 'flex-start' : 'center' }"
-    :autoplay="autoPlay ? {
-      delay: delay,
-      disableOnInteraction: false,
-    } : false"
+    :style="{
+      '--slide-item': itemCount > slidesPerView ? 'flex-start' : 'center',
+    }"
+    :autoplay="
+      autoPlay
+        ? {
+            delay: delay,
+            disableOnInteraction: false,
+          }
+        : false
+    "
     :loop="autoPlay"
+    :breakpoints="breakpoints"
   >
     <slot></slot>
   </Swiper>
@@ -45,23 +52,23 @@ const props = defineProps({
   },
   navigation: {
     type: Boolean,
-    default: true
+    default: true,
   },
-  autoPlay:{
+  autoPlay: {
     type: Boolean,
-    default: false
+    default: false,
   },
   delay: {
     type: Number,
-    default: 2000
-  }
+    default: 2000,
+  },
+  breakpoints: {
+    type: Object,
+    default: null,
+  },
 });
-
-
-
 </script>
 <style lang="scss">
-
 .swiper-custom-navigation {
   position: absolute;
   top: calc(50%);
@@ -72,11 +79,11 @@ const props = defineProps({
   z-index: 1; /* Ensure buttons are above the slides */
 }
 
-.swiper-button-prev{
+.swiper-button-prev {
   left: var(--swiper-navigation-sides-offset, 0px);
 }
 
-.swiper-button-next{
+.swiper-button-next {
   right: var(--swiper-navigation-sides-offset, 0px);
 }
 
@@ -98,7 +105,7 @@ const props = defineProps({
 /* Change color on hover */
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
-    background: #ebedf0c0;
+  background: #ebedf0c0;
   color: #007bff;
 }
 
@@ -113,7 +120,7 @@ const props = defineProps({
   align-items: center;
   justify-content: var(--slide-item);
 }
-.swiper-slide{
+.swiper-slide {
   height: 100%;
 }
 </style>

@@ -130,16 +130,34 @@ onBeforeMount(async () => {
     <h2 class="text-center text-[2.6rem] font-medium mb-2">Thương hiệu</h2>
     <div class="cat-blocks-container">
       <swiper-component
-        :slidesPerView="6"
         :ids="'brand'"
         :itemCount="brands.length"
         :auto-play="true"
+        :delay="4000"
+        :breakpoints="{
+          '0': {
+            slidesPerView: 2,
+            spaceBetween: 10,
+          },
+          '640': {
+            slidesPerView: 4,
+            spaceBetween: 20,
+          },
+          '768': {
+            slidesPerView: 6,
+            spaceBetween: 30,
+          },
+          '1024': {
+            slidesPerView: 8,
+            spaceBetween: 40,
+          },
+        }"
       >
         <swiper-slide v-for="(item, index) in brands" :key="index">
           <a href="category.html" class="cat-block">
             <figure>
               <span>
-                <img :src="item.image" alt="Category image h-[95px] w-[auto]" />
+                <img :src="item.image" alt="Category image" class="max-h-[55px] w-[auto]" />
               </span>
             </figure>
           </a>
@@ -163,14 +181,20 @@ onBeforeMount(async () => {
       >
         <swiper-slide v-for="(item, index) in popularCategories" :key="index">
           <div class="">
-            <router-link :to="'/danh-muc/' + item.code" class="cat-block aspect-square">
-            <figure>
-              <img :src="item.image" alt="Category image" class="w-[125px] h-[auto] object-contain" />
-            </figure>
-            <h3 class="cat-block-title">{{ item.name }}</h3>
-          </router-link>
+            <router-link
+              :to="'/danh-muc/' + item.code"
+              class="cat-block aspect-square"
+            >
+              <figure>
+                <img
+                  :src="item.image"
+                  alt="Category image"
+                  class="w-[125px] h-[auto] object-contain"
+                />
+              </figure>
+              <h3 class="cat-block-title">{{ item.name }}</h3>
+            </router-link>
           </div>
-          
         </swiper-slide>
       </swiper-component>
     </div>
