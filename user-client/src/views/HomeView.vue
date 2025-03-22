@@ -126,13 +126,13 @@ onBeforeMount(async () => {
     </div>
   </div>
 
-  <div class="container mb-3" v-if="brands.length > 0">
+  <div class="container mb-6" v-if="brands.length > 0">
     <h2 class="text-center text-[2.6rem] font-medium mb-2">Thương hiệu</h2>
     <div class="cat-blocks-container">
       <swiper-component
-        :ids="'brand'"
         :itemCount="brands.length"
         :auto-play="true"
+        :navigation="false"
         :delay="4000"
         :breakpoints="{
           '0': {
@@ -147,17 +147,13 @@ onBeforeMount(async () => {
             slidesPerView: 6,
             spaceBetween: 30,
           },
-          '1024': {
-            slidesPerView: 8,
-            spaceBetween: 40,
-          },
         }"
       >
         <swiper-slide v-for="(item, index) in brands" :key="index">
-          <a href="category.html" class="cat-block">
+          <a href="category.html" class="cat-block" :title="item.name">
             <figure>
               <span>
-                <img :src="item.image" alt="Category image" class="max-h-[55px] w-[auto]" />
+                <img :src="item.image" alt="Category image" class="h-[60px] w-[120px] object-cover" />
               </span>
             </figure>
           </a>
@@ -167,23 +163,38 @@ onBeforeMount(async () => {
   </div>
   <!-- End .container -->
 
-  <div class="container my-3" v-if="popularCategories.length > 0">
-    <h2 class="text-center text-[2.6rem] font-medium mb-4">
+  <div class="container mb-6" v-if="popularCategories.length > 0">
+    <h2 class="text-center text-[2.6rem] font-medium mb-2">
       Danh mục phổ biến
     </h2>
     <!-- End .title text-center -->
 
     <div class="cat-blocks-container">
       <swiper-component
-        :slidesPerView="6"
         :id="'category'"
         :itemCount="popularCategories.length"
+        :navigation="false"
+        :breakpoints="{
+          '0': {
+            slidesPerView: 2,
+            spaceBetween: 10,
+          },
+          '640': {
+            slidesPerView: 4,
+            spaceBetween: 20,
+          },
+          '768': {
+            slidesPerView: 6,
+            spaceBetween: 30,
+          },
+        }"
       >
         <swiper-slide v-for="(item, index) in popularCategories" :key="index">
           <div class="">
             <router-link
               :to="'/danh-muc/' + item.code"
-              class="cat-block aspect-square"
+              class="cat-block"
+              :title="item.name"
             >
               <figure>
                 <img
@@ -192,7 +203,7 @@ onBeforeMount(async () => {
                   class="w-[125px] h-[auto] object-contain"
                 />
               </figure>
-              <h3 class="cat-block-title">{{ item.name }}</h3>
+              <!-- <h3 :title="item.name" class="cat-block-title d-none d-lg-block whitespace-nowrap max-w-[100%] overflow-hidden text-ellipsis">{{ item.name }}</h3> -->
             </router-link>
           </div>
         </swiper-slide>
@@ -284,9 +295,9 @@ onBeforeMount(async () => {
         role="tabpanel"
         aria-labelledby="arrivals-all-link"
       >
-        <div class="row gap-y-10">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
           <div
-            class="col-6 col-lg-2 col-sm-4 px-2 box-border cursor-pointer"
+            class="box-border cursor-pointer"
             v-for="(item, index) in featuredProducts.products"
             :key="index"
           >
@@ -597,7 +608,7 @@ onBeforeMount(async () => {
   }
   &:hover {
     img {
-      transform: translateY(-10px);
+      transform: translateY(-6px);
     }
     figure span:after {
       opacity: 1;
@@ -621,6 +632,5 @@ onBeforeMount(async () => {
   overflow: hidden; /* Ẩn phần văn bản vượt ra ngoài */
   line-height: 2rem; /* Chiều cao dòng */
   max-height: 4em; /* Chiều cao tối đa tương ứng với số dòng */
-  position: relative; /* Để thêm dấu ba chấm */
 }
 </style>
