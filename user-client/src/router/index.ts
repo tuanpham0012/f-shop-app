@@ -14,6 +14,12 @@ const router = createRouter({
       component: () => import('../views/Product/FindProductByCategory.vue')
       
     },
+    {
+      path: '/san-pham/:productCode',
+      name: 'ProductDetail',
+      component: () => import('../views/Product/ProductViewDetail.vue')
+      
+    },
   ]
 })
 

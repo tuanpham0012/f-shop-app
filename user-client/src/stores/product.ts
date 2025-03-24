@@ -28,7 +28,8 @@ export const useProductStore = defineStore("product", {
                 message: "",
                 data: [],
                 meta: null as any
-            }
+            },
+            product: null,
         };
     },
 
@@ -56,6 +57,16 @@ export const useProductStore = defineStore("product", {
             await _getList(`${apiUrl}/products/${categoryCode}`, query)
                 .then((res) => {
                     this.listProductByCategory = res.data
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+
+        async getProductByAlias(alias:any) {
+            await _show(`${apiUrl}/products/find/${alias}`)
+                .then((res) => {
+                    this.product = res.data.data
                 })
                 .catch((err) => {
                     console.log(err);

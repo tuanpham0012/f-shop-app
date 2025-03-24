@@ -57,6 +57,7 @@ const query = reactive<any>({
   brandCode: "",
   minPrice: null,
   maxPrice: null,
+  orderBy: null,
 });
 
 const products = computed<any>(
@@ -102,6 +103,10 @@ const setBrandCode = (value: any) => {
 const errorImg = (value: any, index: any) => {
   brands.value[index].imagePreview = 1;
 };
+
+const viewDetail = (alias:string) => {
+  router.push({ name: 'ProductDetail', params: {productCode: alias }})
+}
 
 watch(
   () => query,
@@ -174,10 +179,10 @@ onBeforeMount(async () => {
   <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
     <div class="container">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+        <li class="breadcrumb-item"><a href="index.html">Sản phẩm</a></li>
+        <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
         <li class="breadcrumb-item active" aria-current="page">
-          Grid 4 Columns
+          {{products[0]?.category.name}}
         </li>
       </ol>
     </div>
@@ -283,10 +288,10 @@ onBeforeMount(async () => {
               <div class="toolbox-sort text-2xl">
                 <label for="sortby">Sắp xếp theo giá:</label>
                 <div class="select-custom">
-                  <select name="sortby" id="sortby" class="form-control">
-                    <option value="popularity" select="selected">Không</option>
-                    <option value="rating">Giá thấp đến cao</option>
-                    <option value="date">Giá cao đến thấp</option>
+                  <select name="sortby" id="sortby" class="form-control" v-model="query.orderBy">
+                    <option :value="null">Không</option>
+                    <option :value="1">Giá thấp đến cao</option>
+                    <option :value="2">Giá cao đến thấp</option>
                   </select>
                 </div>
                 <div class="block xl:hidden">
@@ -405,17 +410,15 @@ onBeforeMount(async () => {
               class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-8 sm:gap-4 md:gap-6"
             >
               <div class="" v-for="(item, index) in products" :key="index">
-                <div class="product h-100 d-flex flex-col">
+                <div class="product h-100 d-flex flex-col cursor-pointer" @click="viewDetail(item.alias)">
                   <figure
                     class="product-media bg-gray-100 aspect-square d-flex items-center"
                   >
-                    <a href="product.html">
                       <img
                         :src="viewFile(item.images[0])"
                         alt="Product image"
                         class="product-image"
                       />
-                    </a>
                     <div class="product-action">
                       <a href="#" class="btn-product btn-cart"
                         ><span>add to cart</span></a
@@ -428,7 +431,7 @@ onBeforeMount(async () => {
                   >
                     <div>
                       <h3 class="product-title">
-                        <a href="product.html">{{ item.name }}</a>
+                        {{ item.name }}
                       </h3>
                     </div>
                     <div>

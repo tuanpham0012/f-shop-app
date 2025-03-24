@@ -112,5 +112,8 @@ import MobileMenu from "./layouts/MobileMenu.vue";
   line-height: 2rem; /* Chiều cao dòng */
   max-height: 4em; /* Chiều cao tối đa tương ứng với số dòng */
 }
-
+.breadcrumb-nav .breadcrumb-item{
+  font-size: 1.6rem;
+  font-weight: 400
+}
 </style>
