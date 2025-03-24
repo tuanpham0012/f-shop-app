@@ -27,6 +27,11 @@ import MobileMenu from "./layouts/MobileMenu.vue";
 @import url('./assets/css/skins/skin-demo-21.css');
 @import url('./assets/css/demos/demo-21.css');
 
+:root {
+  --slider-connect-bg: #7a7a7a;
+  --slider-tooltip-bg: #4b4b4b;
+}
+
 .cat-blocks-container {
   position: relative;
   padding-top: 0.5rem;

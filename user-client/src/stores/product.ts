@@ -7,7 +7,6 @@ import {
     _destroy,
 } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
-import { list } from "postcss";
 
 export const useProductStore = defineStore("product", {
     state: () => {
@@ -37,7 +36,6 @@ export const useProductStore = defineStore("product", {
         async getListNewProduct(query: any) {
             await _getList(`${apiUrl}/products/new-product`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.newProducts = res.data
                 })
                 .catch((err) => {
@@ -47,7 +45,6 @@ export const useProductStore = defineStore("product", {
         async getListFeaturedProduct(query: any) {
             await _getList(`${apiUrl}/products/featured-product`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.featuredProducts = res.data
                 })
                 .catch((err) => {
@@ -58,7 +55,6 @@ export const useProductStore = defineStore("product", {
         async getListProductByCategory(categoryCode:string, query: any) {
             await _getList(`${apiUrl}/products/${categoryCode}`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.listProductByCategory = res.data
                 })
                 .catch((err) => {

@@ -120,7 +120,7 @@ namespace ShopAppApi.Repositories.Products
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    Image = fileHelper.GetLink(x.Image),
+                    Image = !string.IsNullOrEmpty(x.Image) ? fileHelper.GetLink(x.Image) : "",
                     NotUse = x.NotUse,
                     ProductCount = x.Products.Count
                 }).OrderByDescending(x => x.Id).ToListAsync();

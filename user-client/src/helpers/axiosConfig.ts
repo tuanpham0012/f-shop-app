@@ -20,17 +20,17 @@ http.interceptors.request.use(
         return response;
     },
     (error) => {
-        console.log('err Data');
+        // console.log('err Data');
         return Promise.reject(error);
     }
 )
 
 http.interceptors.response.use(response => {
-    console.log("success: ", response);
+    // console.log("success: ", response);
     document.body.classList.remove("loading");
     return response;
 }, error => {
-    console.log("error:", error);
+    // console.log("error:", error);
     errorMessage(error.message ?? 'something went wrong!')
     document.body.classList.remove("loading");
     return Promise.reject(error);

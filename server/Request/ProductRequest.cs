@@ -15,6 +15,8 @@ namespace ShopAppApi.Request
         public int? OrderBy { get; set; } = null!;
         public bool? IsNew { get; set; } = null!;
         public bool? IsFeatured { get; set; } = null!;
+        public int? MinPrice { get; set; } = null!;
+        public int? MaxPrice { get; set; } = null!;
 
     }
 

@@ -81,7 +81,7 @@
     --bs-body-line-height: 1.5;
     --bs-body-color: #212529;
     --bs-body-color-rgb: 33, 37, 41;
-    --bs-body-bg: #fff;
+    --bs-body-bg: #f8f8f8;
     --bs-body-bg-rgb: 255, 255, 255;
     --bs-emphasis-color: #000;
     --bs-emphasis-color-rgb: 0, 0, 0;
@@ -5436,7 +5436,7 @@ fieldset:disabled .btn {
 
 .page-link:focus {
     z-index: 3;
-    color: var(--bs-pagination-focus-color);
+    color: var(--bs-pagination-active-color);
     background-color: var(--bs-pagination-focus-bg);
     outline: 0;
     box-shadow: var(--bs-pagination-focus-box-shadow)
