@@ -9,6 +9,8 @@ namespace ShopAppApi.Request
     public class ProductRequest : BaseRequest
     {
         public long? CategoryId { get; set; } = null!;
+        public string? CategoryCode { get; set; } = null!;
+        public string? BrandCode { get; set; } = null!;
         public long? BrandId { get; set; } = null!;
         public int? OrderBy { get; set; } = null!;
         public bool? IsNew { get; set; } = null!;

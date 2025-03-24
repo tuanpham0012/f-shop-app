@@ -1,23 +1,33 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useProductStore } from "../../stores/product";
 import { useBrandStore } from "../../stores/brand";
-import debounce from "lodash.debounce";
 import { displayPrice } from "@/services/utils";
 import { viewFile } from "@/helpers/helpers";
+import Pagination from "@/components/pagination/Pagination.vue";
 
 const productStore = useProductStore();
 const brandStore = useBrandStore();
 const route = useRoute();
+const router = useRouter();
 
 const categoryCode = ref<string>("");
-const query = reactive({
-  pageSize: 20,
-  search: "",
+
+const showMore = (container: string) => {
+  const headers = document.querySelectorAll("." + container);
+  headers.forEach((header: Element) => {
+    const content = window.getComputedStyle(header);
+    if (content.getPropertyValue("display") === "grid") {
+      (header as HTMLElement).style.display = "none";
+    } else {
+      (header as HTMLElement).style.display = "grid";
+    }
+  });
+};
+const query = reactive<any>({
   page: 1,
-  categoryId: null,
-  brandIds: [],
+  brandCode: "",
 });
 
 const products = computed<any>(
@@ -44,27 +54,40 @@ const totalCount = computed<any>(
 );
 const changePage = async (value: any) => {
   console.log(value);
-
-  query.pageSize = value.pageSize;
+  // query.pageSize = value.pageSize;
   query.page = value.currentPage;
   await getListData();
 };
 
 const getListData = async () => {
-  await productStore.getListProductByCategory(categoryCode.value, query);
+  await productStore.getListProductByCategory(categoryCode.value, {
+    ...query,
+    pageSize: 20,
+  });
+};
+
+const setBrandCode = (value: any) => {
+  query.brandCode = value;
 };
 
 watch(
-  () => query.brandIds,
-  (newValue) => {
+  () => query,
+  async (newValue) => {
     console.log(newValue);
-  }
+    router.push({ query: query });
+    await getListData();
+  },
+  { deep: true }
 );
 
 onBeforeMount(async () => {
   categoryCode.value = Array.isArray(route.params?.categoryCode)
     ? route.params?.categoryCode[0]
     : route.params?.categoryCode ?? "";
+  console.log(route.query);
+  query.page = route.query.page ?? query.page;
+  query.pageSize = route.query.pageSize ?? query.pageSize;
+  query.brandCode = route.query.brandCode ?? query.brandCode;
   await getListData();
   await brandStore.getListBrandByCategory({ categoryCode: categoryCode.value });
 });
@@ -86,45 +109,34 @@ onBeforeMount(async () => {
 
   <div class="page-content">
     <div class="container">
-      <div class="row col-12">
-        <aside class="col-12 col-sm-2 ps-4 box-border order-lg-first">
+      <div class="row col-12 justify-center lg:justify-start">
+        <aside class="col-12 col-lg-2 ps-4 box-border order-lg-first">
           <div class="sidebar sidebar-shop">
             <div class="widget widget-clean">
               <label class="text-3xl">Lọc:</label>
               <a href="#" class="sidebar-filter-clear text-2xl">Xoá tất cả</a>
             </div>
 
-            <div class="widget">
+            <div class="widget widget-collapsible">
               <h3 class="widget-title mb-2">
-                <a
-                  data-toggle="collapse"
-                  href="#widget-4"
-                  role="button"
-                  aria-expanded="true"
-                  aria-controls="widget-4"
-                >
+                <a class="cursor-pointer" @click="showMore('filter-brand')">
                   Brand
                 </a>
               </h3>
-              <div class="show">
+              <div
+                class="filter-brand collapsed hidden lg:grid grid-cols-5 md:grid-cols-5 lg:grid-cols-2 gap-3 my-3"
+              >
                 <div
-                  class="form-check"
+                  class="w-[100%] h-[50px] border-1 border-solid d-flex justify-center items-center rounded-lg cursor-pointer"
                   v-for="(item, index) in brands"
                   :key="index"
+                  @click="setBrandCode(item.code)"
+                  :class="{ 'brand-active': query.brandCode == item.code }"
                 >
-                  <input
-                    class="form-check-input w-[1.5rem] h-[1.5rem] me-3"
-                    type="checkbox"
-                    :value="item.id"
-                    :id="'brand-' + item.id"
-                    v-model="query.brandIds"
+                  <img
+                    :src="item.image"
+                    class="w-[80px] h-[40px] object-contain"
                   />
-                  <label
-                    class="form-check-label text-2xl"
-                    :for="'brand-' + item.id"
-                  >
-                    {{ item.name }}
-                  </label>
                 </div>
               </div>
             </div>
@@ -159,12 +171,10 @@ onBeforeMount(async () => {
           <div class="toolbox">
             <div class="toolbox-left">
               <div class="toolbox-info">
-                Hiển thị
-                <span>{{ query.pageSize }} of {{ totalCount }}</span> Sản phẩm
+                <!-- Hiển thị
+                <span>{{ query.pageSize }} of {{ totalCount }}</span> Sản phẩm -->
               </div>
-              <!-- End .toolbox-info -->
             </div>
-            <!-- End .toolbox-left -->
 
             <div class="toolbox-right">
               <div class="toolbox-sort text-2xl">
@@ -182,98 +192,61 @@ onBeforeMount(async () => {
             <!-- End .toolbox-right -->
           </div>
           <!-- End .toolbox -->
-            <div class="products mb-3">
-              <div class="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-8">
-                <div
-                  class=""
-                  v-for="(item, index) in products"
-                  :key="index"
-                >
-                  <div class="product product-7 text-center">
-                    <figure
-                      class="product-media bg-gray-100 aspect-square d-flex items-center"
-                    >
-                      <a href="product.html">
-                        <img
-                          :src="viewFile(item.images[0])"
-                          alt="Product image"
-                          class="product-image"
-                        />
-                      </a>
+          <div class="products min-h-[calc(100vh-320px)] mb-3">
+            <div
+              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-8 sm:gap-4"
+            >
+              <div class="" v-for="(item, index) in products" :key="index">
+                <div class="product h-100 d-flex flex-col">
+                  <figure
+                    class="product-media bg-gray-100 aspect-square d-flex items-center"
+                  >
+                    <a href="product.html">
+                      <img
+                        :src="viewFile(item.images[0])"
+                        alt="Product image"
+                        class="product-image"
+                      />
+                    </a>
+                    <div class="product-action">
+                      <a href="#" class="btn-product btn-cart"
+                        ><span>add to cart</span></a
+                      >
+                    </div>
+                  </figure>
 
-                      <div class="product-action">
-                        <a href="#" class="btn-product btn-cart"
-                          ><span>add to cart</span></a
-                        >
-                      </div>
-                      <!-- End .product-action -->
-                    </figure>
-                    <!-- End .product-media -->
-
-                    <div class="product-body">
-                      <div class="product-cat">
-                        <a href="#">{{ item.category?.name }}</a>
-                      </div>
-                      <!-- End .product-cat -->
+                  <div
+                    class="product-body d-flex flex-1 flex-col justify-between"
+                  >
+                    <div>
                       <h3 class="product-title">
                         <a href="product.html">{{ item.name }}</a>
                       </h3>
-                      <!-- End .product-title -->
-                      <div class="product-price text-red-500">
+                    </div>
+                    <div>
+                      <div class="text-2xl text-red-500 my-2">
                         {{ displayPrice(item.price) }}đ
                       </div>
-                      <!-- End .product-price -->
                       <div class="ratings-container">
                         <div class="ratings">
                           <div class="ratings-val" style="width: 20%"></div>
-                          <!-- End .ratings-val -->
                         </div>
-                        <!-- End .ratings -->
                         <span class="ratings-text">( 2 Reviews )</span>
                       </div>
                     </div>
-                    <!-- End .product-body -->
                   </div>
-                  <!-- End .product -->
                 </div>
-                <!-- End .col-sm-6 col-lg-4 col-xl-3 -->
               </div>
-              <!-- End .row -->
             </div>
+          </div>
 
-          <!-- End .products -->
-
-          <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <a
-                  class="page-link page-link-prev"
-                  href="#"
-                  aria-label="Previous"
-                  tabindex="-1"
-                  aria-disabled="true"
-                >
-                  <span aria-hidden="true"
-                    ><i class="icon-long-arrow-left"></i></span
-                  >Prev
-                </a>
-              </li>
-              <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item-total">of 6</li>
-              <li class="page-item">
-                <a class="page-link page-link-next" href="#" aria-label="Next">
-                  Next
-                  <span aria-hidden="true"
-                    ><i class="icon-long-arrow-right"></i
-                  ></span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+          <Pagination
+            :current-page="currenPage"
+            :page-size="pageSize"
+            :total-pages="totalPages"
+            :total-count="totalCount"
+            @change-page="changePage"
+          />
         </div>
       </div>
     </div>
@@ -281,7 +254,10 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss" scoped>
-.table-scroll {
-  height: calc(100vh - 330px);
+.brand-active {
+  border-color: rgba(
+    var(--bs-link-color-rgb),
+    var(--bs-link-opacity, 1)
+  ) !important;
 }
 </style>

@@ -5387,7 +5387,7 @@ fieldset:disabled .btn {
 .pagination {
     --bs-pagination-padding-x: 0.75rem;
     --bs-pagination-padding-y: 0.375rem;
-    --bs-pagination-font-size: 1rem;
+    --bs-pagination-font-size: 1.6rem;
     --bs-pagination-color: var(--bs-link-color);
     --bs-pagination-bg: var(--bs-body-bg);
     --bs-pagination-border-width: var(--bs-border-width);
@@ -5412,7 +5412,6 @@ fieldset:disabled .btn {
 
 .page-link {
     position: relative;
-    display: block;
     padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
     font-size: var(--bs-pagination-font-size);
     color: var(--bs-pagination-color);

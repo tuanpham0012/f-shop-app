@@ -770,6 +770,11 @@ namespace ShopAppApi.Repositories.Products
                 query = query.Where(q => q.BrandId == request.BrandId);
             }
 
+            if (!string.IsNullOrEmpty(request.BrandCode))
+            {
+                query = query.Where(q => q.Brand.Code == request.BrandCode);
+            }
+
             switch (request.OrderBy)
             {
                 case 1:

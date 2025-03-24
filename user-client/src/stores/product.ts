@@ -39,10 +39,6 @@ export const useProductStore = defineStore("product", {
                 .then((res) => {
                     console.log(res.data);
                     this.newProducts = res.data
-                    this.newProducts?.data.map((item:any) => {
-                        item.images = item.images ? JSON.parse(item.images) : []
-                        return item
-                    });
                 })
                 .catch((err) => {
                     console.log(err);
@@ -53,10 +49,6 @@ export const useProductStore = defineStore("product", {
                 .then((res) => {
                     console.log(res.data);
                     this.featuredProducts = res.data
-                    this.featuredProducts?.data.map((item:any) => {
-                        item.images = item.images ? JSON.parse(item.images) : []
-                        return item
-                    });
                 })
                 .catch((err) => {
                     console.log(err);
@@ -68,10 +60,6 @@ export const useProductStore = defineStore("product", {
                 .then((res) => {
                     console.log(res.data);
                     this.listProductByCategory = res.data
-                    this.listProductByCategory?.data.map((item:any) => {
-                        item.images = item.images ? JSON.parse(item.images) : []
-                        return item
-                    });
                 })
                 .catch((err) => {
                     console.log(err);

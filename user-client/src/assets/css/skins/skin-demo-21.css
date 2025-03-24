@@ -697,10 +697,6 @@ a:focus {
     color: #66f
 }
 
-.page-item.active .page-link {
-    color: #66f
-}
-
 .social-icon:hover,
 .social-icon:focus {
     color: #66f;

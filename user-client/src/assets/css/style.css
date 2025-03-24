@@ -7641,7 +7641,7 @@ p {
 
 .product-body {
     position: relative;
-    padding: 1.6rem 2rem;
+    padding: .8rem 1.4rem;
     transition: all .35s ease;
     background-color: #fff
 }
@@ -7800,9 +7800,9 @@ p {
     display: flex;
     align-items: center;
     font-size: 1.3rem;
-    margin-bottom: 1.7rem;
     line-height: 1;
-    white-space: nowrap
+    white-space: nowrap;
+    margin: 1.2rem 0  ;
 }
 
 .ratings {
@@ -10618,8 +10618,8 @@ small.form-text {
     justify-content: center;
     min-width: 3rem;
     height: 4rem;
+    width: 4rem;
     font-weight: 400;
-    font-size: 1.4rem;
     padding: 0 .3rem;
     line-height: 1;
     color: #706f6c;
@@ -10688,7 +10688,7 @@ small.form-text {
     border-bottom-right-radius: .3rem
 }
 
-.page-item.active .page-link {
+/* .page-item.active .page-link {
     color: #c96;
     background-color: transparent;
     border-color: #ebebeb
@@ -10697,7 +10697,7 @@ small.form-text {
 .page-item.disabled .page-link {
     border-color: transparent;
     color: #eaeaea
-}
+} */
 
 .modal-backdrop {
     background-color: #333

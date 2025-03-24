@@ -460,16 +460,6 @@
     justify-content: center
 }
 
-.ratings-container {
-    display: flex;
-    align-items: center;
-    font-size: 1.3rem;
-    margin-bottom: 1.7rem;
-    line-height: 1;
-    white-space: nowrap;
-    justify-content: center
-}
-
 .product-nav {
     display: flex;
     align-items: center;

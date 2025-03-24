@@ -1,89 +1,47 @@
 <template>
-  <div
-    class="w-100 d-flex col-lg-12 m-1 pe-4 flex-wrap justify-content-center justify-content-sm-between"
-    
-  >
-    <div
-      class="d-none d-lg-flex align-items-center min-w-[500px] justify-start"
-    >
-      <div class="d-flex w-[150px]">
-        <label for="currenPage" class="col-form-label w-[75px]"
-          >SL hiển thị</label
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li
+        class="page-item"
+        v-if="props.currentPage > 1"
+        @click.prevent="changePage((currentPage -= 1))"
+      >
+        <a
+          class="page-link page-link-prev"
+          href="#"
+          aria-label="Previous"
+          tabindex="-1"
+          aria-disabled="true"
         >
-        <div class="">
-          <select
-            class="form-select form-select-sm"
-            data-placeholder="Select an option"
-            v-model="pageSize"
-          >
-            <option :value="10">10</option>
-            <option :value="25">25</option>
-            <option :value="50">50</option>
-            <!-- <option :value="100">100</option>
-            <option :value="150">150</option> -->
-          </select>
-        </div>
-      </div>
-      <div class="d-flex w-[250px]">
-        <label for="currenPage" class="col-form-label"
-          >Hiển thị
-          {{ (currentPage - 1) * pageSize + 1 }}
-          -
-          {{ ((currentPage - 1) * pageSize + pageSize) > props.totalCount ? props.totalCount : ((currentPage - 1) * pageSize + pageSize) }} 
-          / {{ props.totalCount }} bản ghi.</label
-        >
-      </div>
-    </div>
-    <div class="d-flex gap-2 flex-wrap">
-      <div>
-        <ul class="pagination pagination-outline align-items-center pt-3 me-5">
-          <li
-            class="page-item previous"
-            v-if="props.currentPage > 1"
-            @click.prevent="changePage((currentPage -= 1))"
-          >
-            <a href="#" class="page-link"
-              ><i class="bx bxs-chevrons-left bx-fade-left-hover"></i
-            ></a>
-          </li>
-          <li
-            class="page-item"
-            v-for="(page, index) in pageView(props.totalPages)"
-            :key="index"
-            :class="{
-              'active': page == props.currentPage,
-              'disabled': typeof page == 'string',
-            }"
-            @click.prevent="changePage(page)"
-          >
-            <a href="#" class="page-link">{{ page }}</a>
-          </li>
-          <li
-            class="page-item next"
-            v-if="props.currentPage < props.totalPages"
-            @click.prevent="changePage((currentPage += 1))"
-          >
-            <a href="#" class="page-link"
-              ><i class="bx bxs-chevrons-right bx-fade-right-hover"></i
-            ></a>
-          </li>
-        </ul>
-      </div>
-      <div class="d-flex g-3 align-items-center max-w-[175px]">
-        <div class="max-w-[100px] pe-2">
-          <label for="toPage" class="col-form-label">Tới trang</label>
-        </div>
-        <div class="p-0 max-w-[50px]">
-          <input
-            type="text"
-            class="form-control"
-            @keypress="filter($event)"
-            v-model="currentPage"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
+          <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span
+          >Prev
+        </a>
+      </li>
+      <li
+        class="page-item"
+        aria-current="page"
+        v-for="(page, index) in pageView(props.totalPages)"
+        :key="index"
+        :class="{
+          'active': page == props.currentPage,
+          'disabled': typeof page == 'string',
+        }"
+        @click.prevent="changePage(page)"
+      >
+        <a class="page-link" href="#">{{ page }}</a>
+      </li>
+      <li
+        class="page-item"
+        v-if="props.currentPage < props.totalPages"
+        @click.prevent="changePage((currentPage += 1))"
+      >
+        <a class="page-link page-link-next" href="#" aria-label="Next">
+          Next
+          <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <script setup>
@@ -158,7 +116,7 @@ watch(
       currentPage.value = props.totalPages;
     }
     changePage(currentPage.value);
-  },400)
+  }, 400)
 );
 
 const pageView = (totalPages, delta = 1) => {
@@ -210,47 +168,16 @@ const pageView = (totalPages, delta = 1) => {
   }
 };
 
-const filter = (evt) => {
-  evt = evt ? evt : window.event;
-  var charCode = evt.which ? evt.which : evt.keyCode;
-  if (charCode == 13 && currentPage.value != props.pagination.current_page) {
-    changePage(currentPage.value);
-  }
-  if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
-    evt.preventDefault();
-  } else {
-    return true;
-  }
-};
 </script>
 <style lang="scss" scoped>
-.active, .disabled {
+.active,
+.disabled {
   pointer-events: none;
 }
 
 label {
   &.col-form-label {
     font-size: 12px;
-  }
-}
-
-input {
-  &.form-control {
-    font-size: 12px;
-  }
-}
-
-li {
-  &.page-item {
-    padding: 0 !important;
-    a {
-      &.page-link {
-        font-size: 12px;
-        // width: 2rem !important;
-        min-width: 2rem !important;
-        height: 2rem !important;
-      }
-    }
   }
 }
 </style>
