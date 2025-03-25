@@ -78,7 +78,7 @@ namespace ShopAppApi.Repositories.Products
             {
                 brand.Name = request.Name;
                 brand.Code = request.Code;
-                if (brand.Image != request.Image)
+                if (!string.IsNullOrEmpty(request.Image) && (brand.Image == null || !request.Image.Contains(brand.Image)))
                 {
                     fileHelper.DeleteFile(brand.Image);
                     brand.Image = await fileHelper.SaveFile(request.Image);

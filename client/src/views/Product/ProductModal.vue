@@ -333,7 +333,7 @@
           <div class="col-sm-12 row mb-3 mt-3">
             <div class="col-sm-6">
               <div class="col-sm-12">
-                <label class="form-label mb-3 me-2">Chọn ảnh Thumbnail {{ thumbId }}</label>
+                <label class="form-label mb-3 me-2">Chọn ảnh Thumbnail</label>
               </div>
               <div class="col-sm-12">
                 <select-search-user
@@ -914,7 +914,6 @@ const generateSKUs = () => {
         });
     })
     .flat();
-  console.log(arrOptionValueFlat);
 
   if (optionErrors.value.length > 0) {
     errorMessage("Không được để trống các trường thông tin!");
@@ -935,7 +934,7 @@ const generateSKUs = () => {
       }
 
       return {
-        id: uuidv4(),
+        id: null,
         productId: product.value.id,
         barCode: "",
         price: 0,
@@ -947,7 +946,6 @@ const generateSKUs = () => {
   );
   editing.value = false;
   product.value.newSkus = true;
-  // console.log(rs);
 };
 
 const mapOptionValue = (arrOptionValue: any, value: any) => {
@@ -1017,8 +1015,6 @@ const productImage = (event: any) => {
           driver: "",
           extension: file.type,
         });
-        console.log(i);
-        console.log('value -- ' + thumbId.value);
         
         if(i == 0 && (thumbId.value == "" || thumbId.value == null)){
           thumbId.value = imgId
@@ -1032,56 +1028,6 @@ const productImage = (event: any) => {
   const fileInput = document.getElementById("image-files") as HTMLInputElement;
   fileInput.value = "";
 };
-
-/* Hàm resize ảnh
-const resizeImage = (
-  imageSrc: any,
-  type: any,
-  targetWidth: any = null,
-  targetHeight: any = null,
-  maxSize = 500
-) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        const ctx: any = canvas.getContext("2d");
-
-        if (targetWidth == null || targetHeight == null) {
-          targetWidth = img.width;
-          targetHeight = img.height;
-
-          if (img.height > img.width) {
-            targetHeight = maxSize;
-            targetWidth = (img.width / img.height) * targetWidth;
-          } else {
-            targetWidth = maxSize;
-            targetHeight = (img.height / img.width) * targetWidth;
-          }
-        }
-        // Set kích thước của canvas
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-
-        // Vẽ ảnh lên canvas và resize
-        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-        // Chuyển canvas thành base64
-        resolve(canvas.toDataURL(type));
-      } catch (err) {
-        reject(err);
-      }
-    };
-    img.onerror = (error) => {
-      reject(error); // Xử lý lỗi nếu không load được ảnh
-    };
-
-    img.src = imageSrc;
-  });
-};
-
-*/
 
 const deleteImage = (index: number, isDeleteAll = false) => {
   if (isDeleteAll) {

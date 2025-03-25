@@ -305,10 +305,10 @@ a:focus {
 .btn-outline-primary:not(:disabled):not(.disabled):active,
 .btn-outline-primary:not(:disabled):not(.disabled).active,
 .show>.btn-outline-primary.dropdown-toggle {
-    color: #66f;
+    /* color: #66f;
     background-color: transparent;
     border-color: #ebebeb;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05)
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05) */
 }
 
 .btn-outline-primary.disabled,

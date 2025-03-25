@@ -135,7 +135,7 @@ namespace ShopAppApi.Repositories.Categories
                 category.Lft = request.Lft;
                 category.ParentId = request.ParentId;
                 category.NotUse = request.NotUse;
-                if (!string.IsNullOrEmpty(request.Image) && (category.Image == null || !category.Image.Contains(request.Image)))
+                if (!string.IsNullOrEmpty(request.Image) && (category.Image == null || !request.Image.Contains(category.Image)))
                 {
                     fileHelper.DeleteFile(category.Image);
                     category.Image = await fileHelper.SaveFile(request.Image);

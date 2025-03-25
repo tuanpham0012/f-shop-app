@@ -36,7 +36,7 @@ namespace ShopAppApi.Controllers.User
         [HttpGet("find/{Alias}")]
         public async Task<IActionResult> FindProductByAlias(string Alias)
         {
-            var product = await productRepository.FindByAlias(Alias);
+            var product = await productRepository.FindProductByAlias(Alias);
             return Ok(new ResponseOne<ProductVM>(product));
         }
     }

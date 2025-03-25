@@ -97,7 +97,7 @@ const props = defineProps({
   cursor: pointer;
   padding: 10px;
   color: #333; /* Default color */
-  font-size: 24px;
+  font-size: 22px;
   transition: color 0.3s ease;
   outline: none;
 }
@@ -105,7 +105,7 @@ const props = defineProps({
 /* Change color on hover */
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
-  background: #ebedf0c0;
+  // background: #ebedf0c0;
   color: #007bff;
 }
 

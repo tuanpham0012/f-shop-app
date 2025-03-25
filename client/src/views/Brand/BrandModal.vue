@@ -54,7 +54,7 @@
               />
             </div>
             <div class="col-sm-4 d-flex py-1 justify-center">
-              <img :src="brand.Image" loading="lazy" class="h-[75px] rounded-sm" />
+              <img :src="brand.image" loading="lazy" class="h-[75px] rounded-sm" />
             </div>
           </div>
           <div class="col-sm-6 mb-3">

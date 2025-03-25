@@ -2,16 +2,16 @@ namespace ShopAppApi.Helpers.Interfaces
 {
     public interface IFileHelper
     {
-        public string GetFileFormat(byte[] fileBytes);
+        string GetFileFormat(byte[] fileBytes);
 
-        public Task<string> SaveFile(string? fileBase64);
+        Task<string> SaveFile(string? fileBase64);
 
-        public Task<string?> SaveFile(byte[] fileBytes);
+        Task<string?> SaveFile(byte[] fileBytes);
 
-        public void DeleteFile(string? fileName);
+        void DeleteFile(string? fileName);
 
-        public byte[]? Download(string fileName);
+        Task<byte[]> Download(string fileName);
 
-        public string GetLink(string FileName);
+        string GetLink(string? FileName);
     }
 }

@@ -1,5 +1,6 @@
 using System.Configuration;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using RestSharp;
 using ShopAppApi.Helpers.Interfaces;
 
@@ -82,15 +83,14 @@ namespace ShopAppApi.Helpers
             if (File.Exists(path)) File.Delete(path);
         }
 
-        public byte[]? Download(string fileName)
+        public async Task<byte[]?> Download(string fileName)
         {
             string filePath = Path.Combine(GetFileFolder().FullName, fileName);
             if (!System.IO.File.Exists(filePath))
             {
                 return null;
             }
-            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return fileBytes;
+            return await System.IO.File.ReadAllBytesAsync(filePath);
         }
 
         public string GetLink(string? FileName)
