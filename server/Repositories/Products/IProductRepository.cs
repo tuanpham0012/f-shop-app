@@ -13,9 +13,9 @@ namespace ShopAppApi.Repositories.Products
         Task Create(StoreProductRequest product);
         Task Update(long id, UpdateProductRequest product);
         Boolean Delete(long id);
-
         Task<PaginatedList<ProductVM>> GetFeaturedProduct(ProductRequest request);
         Task<PaginatedList<ProductVM>> GetProductByCategory(string categoryCode, ProductRequest request);
+        Task<ProductVM> FindByAlias(string Alias);
 
     }
 }

@@ -800,5 +800,40 @@ namespace ShopAppApi.Repositories.Products
 
             return await PaginatedList<ProductVM>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
         }
+
+        public async Task<ProductVM> FindByAlias(string Alias){
+            var query = await _context.Products.AsQueryable().Select(p => new ProductVM
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                NumberWarning = p.NumberWarning,
+                ImageThumb = fileHelper.GetLink(p.ImageThumb),
+                UnitSell = p.UnitSell,
+                UnitBuy = p.UnitBuy,
+                Alias = p.Alias,
+                HasVariants = p.HasVariants,
+                IsNew = p.IsNew,
+                IsFeatured = p.IsFeatured,
+                IsSale = p.IsSale,
+                BrandId = p.BrandId,
+                CategoryId = p.CategoryId,
+                TaxId = p.TaxId,
+                Brand = new BrandVM
+                {
+                    Id = p.Brand.Id,
+                    Name = p.Brand.Name,
+                    Code = p.Brand.Code
+                },
+                Category = new CategoryVM
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name,
+                    Code = p.Category.Code,
+                },
+            }).SingleOrDefaultAsync(x => x.Alias.Equals(Alias)) ?? throw new ArgumentException("Product does not exists!");
+
+            return query;
+        }
     }
 }
