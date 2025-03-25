@@ -7084,11 +7084,11 @@ p {
 }
 
 .btn-outline-primary {
-    color: #c96;
+    /* color: #c96;
     background-color: transparent;
     background-image: none;
     border-color: #c96;
-    box-shadow: none
+    box-shadow: none */
 }
 
 .btn-outline-primary:hover,
@@ -7097,10 +7097,10 @@ p {
 .btn-outline-primary:not(:disabled):not(.disabled):active,
 .btn-outline-primary:not(:disabled):not(.disabled).active,
 .show>.btn-outline-primary.dropdown-toggle {
-    color: #c96;
+    /* color: #c96;
     background-color: transparent;
     border-color: #ebebeb;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05)
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05) */
 }
 
 .btn-outline-primary.disabled,
@@ -16147,7 +16147,7 @@ button:focus {
 }
 
 .input-spinner .form-control {
-    padding: .85rem 2.6rem;
+    padding: .95rem 3rem;
     height: auto;
     border-color: #dadada;
     background-color: #fff;

@@ -32,5 +32,12 @@ namespace ShopAppApi.Controllers.User
             var product = await productRepository.GetProductByCategory(CategoryCode, request);
             return Ok(new ResponsePaginatedCollection<ProductVM>(product));
         }
+
+        [HttpGet("find/{Alias}")]
+        public async Task<IActionResult> FindProductByAlias(string Alias)
+        {
+            var product = await productRepository.FindProductByAlias(Alias);
+            return Ok(new ResponseOne<ProductVM>(product));
+        }
     }
 }

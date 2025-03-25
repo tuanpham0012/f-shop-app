@@ -73,6 +73,7 @@ export const resizeImage = (
   ) => {
     return new Promise((resolve, reject) => {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       img.onload = () => {
         try {
           const canvas = document.createElement("canvas");
@@ -96,7 +97,7 @@ export const resizeImage = (
   
           // Vẽ ảnh lên canvas và resize
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-  
+          
           // Chuyển canvas thành base64
           resolve(canvas.toDataURL(type));
         } catch (err) {

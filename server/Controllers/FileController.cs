@@ -9,9 +9,9 @@ namespace ShopAppApi.Controllers
     {
 
         [HttpGet("download/{fileName}")]
-        public IActionResult Download(String fileName)
+        public async Task<IActionResult> Download(String fileName)
         {
-            var fileBytes = fileHelper.Download(fileName);
+            var fileBytes = await fileHelper.Download(fileName);
             if (fileBytes == null)
             {
                 return Content("File not found.");

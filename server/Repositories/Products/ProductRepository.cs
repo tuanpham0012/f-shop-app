@@ -406,7 +406,7 @@ namespace ShopAppApi.Repositories.Products
             _product.BrandId = product.BrandId ?? _product.BrandId;
             _product.TaxId = product.TaxId ?? _product.TaxId;
             _product.UpdatedAt = DateTime.UtcNow;
-            if (!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !_product.ImageThumb.Contains(product.ImageThumb)))
+            if (!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !product.ImageThumb.Contains(_product.ImageThumb)))
             {
                 fileHelper.DeleteFile(_product.ImageThumb);
                 _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb);
@@ -799,6 +799,96 @@ namespace ShopAppApi.Repositories.Products
             }
 
             return await PaginatedList<ProductVM>.CreateAsync(query.AsSplitQuery().AsNoTracking(), request.Page, request.PageSize);
+        }
+
+        public async Task<ProductVM> FindProductByAlias(string Alias)
+        {
+            var query = await _context.Products.AsQueryable().Select(p => new ProductVM
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                NumberWarning = p.NumberWarning,
+                ImageThumb = fileHelper.GetLink(p.ImageThumb),
+                UnitSell = p.UnitSell,
+                UnitBuy = p.UnitBuy,
+                Alias = p.Alias,
+                HasVariants = p.HasVariants,
+                IsNew = p.IsNew,
+                IsFeatured = p.IsFeatured,
+                IsSale = p.IsSale,
+                BrandId = p.BrandId,
+                CategoryId = p.CategoryId,
+                TaxId = p.TaxId,
+                Brand = new BrandVM
+                {
+                    Id = p.Brand.Id,
+                    Name = p.Brand.Name,
+                    Code = p.Brand.Code
+                },
+                Category = new CategoryVM
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name,
+                    Code = p.Category.Code,
+                },
+                Options = p.Options.Select(o => new OptionVM
+                {
+                    Id = o.Id,
+                    Code = o.Code,
+                    ProductId = o.ProductId,
+                    Name = o.Name,
+                    Visual = o.Visual,
+                    Order = o.Order,
+                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
+                    {
+                        Id = v.Id,
+                        Code = v.Code,
+                        ProductId = v.ProductId,
+                        OptionId = v.OptionId,
+                        Value = v.Value,
+                        Label = v.Label
+                    }).ToList(),
+                }).ToList(),
+                Images = p.ProductImages.Select(i => new ProductImageVM
+                {
+                    Id = i.Id,
+                    ProductId = i.ProductId,
+                    Code = i.Code,
+                    Path = fileHelper.GetLink(i.Path),
+                    Type = i.Type,
+                    Driver = i.Driver,
+                    IsDeleted = i.IsDeleted,
+                    Extension = i.Extension,
+                    FileName = i.FileName
+                }).ToList(),
+                Skus = p.Skus.Select(s => new SkuVM
+                {
+                    Id = s.Id,
+                    ProductId = s.ProductId,
+                    Barcode = s.Barcode,
+                    Price = s.Price,
+                    Name = s.Name,
+                    Stock = s.Stock,
+                    Variants = s.Variants.Select(v => new VariantVM
+                    {
+                        Id = v.Id,
+                        ProductId = v.ProductId,
+                        SkuId = v.SkuId,
+                        OptionId = v.OptionId,
+                        OptionValueId = v.OptionValueId,
+                        OptionValue = new OptionValueVM
+                        {
+                            Id = v.OptionValue.Id,
+                            Code = v.OptionValue.Code,
+                            Value = v.OptionValue.Value,
+                            Label = v.OptionValue.Label,
+                        }
+                    }).ToList(),
+                }).ToList()
+            }).SingleOrDefaultAsync(x => x.Alias.Equals(Alias)) ?? throw new ArgumentException("Product does not exists!");
+
+            return query;
         }
     }
 }
