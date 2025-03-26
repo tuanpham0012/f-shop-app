@@ -16,6 +16,9 @@ namespace ShopAppApi.Repositories.Products
         Task<PaginatedList<ProductVM>> GetFeaturedProduct(ProductRequest request);
         Task<PaginatedList<ProductVM>> GetProductByCategory(string categoryCode, ProductRequest request);
         Task<ProductVM> FindProductByAlias(string Alias);
-
+        Task<string?> GetDescriptionProduct(long Id);
+        Task<ProductVM> GetSkuProduct(long Id);
+        Task<string?> GetDescriptionProduct(string Alias);
+        void UpdateDesctionProduct(long Id, ProductDesRequest request);
     }
 }

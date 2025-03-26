@@ -32,6 +32,10 @@ import MobileMenu from "./layouts/MobileMenu.vue";
   --slider-tooltip-bg: #4b4b4b;
 }
 
+.main{
+  min-height: calc(100vh - 87px);
+}
+
 .cat-blocks-container {
   position: relative;
   padding-top: 0.5rem;

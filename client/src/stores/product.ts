@@ -10,24 +10,19 @@ import { apiUrl } from "@/helpers/config";
 
 const adminUrl = apiUrl + "/admin";
 
-interface State {
-    entries: any | [];
-    entry: any | null;
-    errors: any | null;
-}
-
 
 export const useProductStore = defineStore("product", {
-    state: (): State => {
+    state: () => {
         return {
             entries: {
                 code: 200,
                 message: "",
                 data: [],
-                meta: null,
+                meta: null as any,
             },
             entry: null,
             errors: null,
+            descriptionProduct: ""
         };
     },
 
@@ -64,6 +59,19 @@ export const useProductStore = defineStore("product", {
         },
         async delete(id: any) {
             return await _destroy("http://localhost:5077/Customer/" + id);
+        },
+
+        async getDescriptionProductById(id:any) {
+            await _show(`${adminUrl}/products/description/${id}`)
+                .then((res) => {
+                    this.descriptionProduct = res.data
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async updateDes(id:any, data: any) {
+            return await _update(`${adminUrl}/products/description/${id}`, data);
         },
     },
 });
@@ -136,13 +144,13 @@ export const useCategoryStore = defineStore("category", {
 });
 
 export const useBrandStore = defineStore("brand", {
-    state: ():State => {
+    state: () => {
         return {
             entries: {
                 code: 200,
                 message: "",
                 data: [],
-                meta: null,
+                meta: null as any,
             },
             entry: null,
             errors: null,

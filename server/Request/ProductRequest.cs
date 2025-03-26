@@ -35,7 +35,6 @@ namespace ShopAppApi.Request
         public string? Barcode { get; set; }
         public string UnitBuy { get; set; } = string.Empty;
         public string UnitSell { get; set; } = string.Empty;
-        public string? Description { get; set; } = string.Empty;
         public bool? HasVariants { get; set; }
         public bool? IsNew { get; set; }
         public bool? IsFeatured { get; set; }
@@ -110,7 +109,6 @@ namespace ShopAppApi.Request
         public string Barcode { get; set; } = string.Empty;
         public string UnitBuy { get; set; } = string.Empty;
         public string UnitSell { get; set; } = string.Empty;
-        public string? Description { get; set; } = string.Empty;
         public bool? HasVariants { get; set; }
         public bool? IsNew { get; set; }
         public bool? IsFeatured { get; set; }
@@ -137,6 +135,12 @@ namespace ShopAppApi.Request
         public string Extension { get; set; } = null!;
         public byte Type { get; set; }
         public bool? IsDeleted { get; set; }
+    }
+
+    public partial class ProductDesRequest
+    {
+        [Required(ErrorMessage = "Nội dung không được để trống")]
+        public string Description { get; set; } = string.Empty;
     }
 
 }

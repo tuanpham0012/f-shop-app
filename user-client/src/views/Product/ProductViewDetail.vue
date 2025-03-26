@@ -97,7 +97,7 @@
           <div class="row mt-5 mb-4 text-2xl">
             <div
               class="row col-12 mb-4 items-start"
-              v-for="(option, i) in product.options"
+              v-for="(option, i) in options"
               :key="i"
             >
               <div class="col-3">
@@ -230,11 +230,16 @@
           </ul>
         </div>
         <div class="p-5">
-          <ProductDescription :description="product.description" />
+          <ProductDescription :alias="$route.params.productCode" />
         </div>
       </div>
     </div>
   </div>
+  <div class="w-[100%] h-[80vh]" v-else>
+    <LoadingComponent />
+  </div>
+  
+
 </template>
 <script lang="ts" setup>
 import { reactive, ref, onBeforeMount, computed, watch } from "vue";
@@ -254,6 +259,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import ProductDescription from "./ProductDescription.vue";
+import LoadingComponent from "@/components/LoadingComponent.vue";
 
 const modules = ref([FreeMode, Navigation, Thumbs]);
 
@@ -290,7 +296,7 @@ const selectOption = (value: any) => {
 
   selected.value.push(item);
 
-  product.value.skus.every((sku: any) => {
+  skus.value.every((sku: any) => {
     const check = onlyInLeft(sku.variants, selected.value, isSameUser);
 
     if (check.length == 0) {
@@ -313,6 +319,8 @@ const onlyInLeft = (left: any, right: any, compareFunction: any) =>
   );
 
 const product = computed<any>(() => productStore.$state.product);
+const options = computed<any>(() => productStore.$state.options);
+const skus = computed<any>(() => productStore.$state.skus);
 
 watch(
   () => quantity.value,

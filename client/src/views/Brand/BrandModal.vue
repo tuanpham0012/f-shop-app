@@ -111,7 +111,7 @@ const newBrand = reactive({
   notUse: false,
 });
 
-const brand = computed(() =>
+const brand = computed<any>(() =>
   props.id && brandStore.$state.entry ? brandStore.$state.entry : newBrand
 );
 

@@ -358,7 +358,7 @@
             </div>
           </div>
 
-          <div class="col-sm-12 h-[220px] mb-[80px]">
+          <div class="col-sm-12 h-[250px] mb-32">
             <label for="exampleFormControlTextarea1" class="form-label"
               >Thêm mô tả sản phẩm</label
             >
@@ -366,10 +366,11 @@
               theme="snow"
               v-model:content="product.description"
               contentType="html"
+              toolbar="full"
               placeholder="Nhập các thông tin chi tiết sản phẩm..."
             />
           </div>
-
+          {{ product.description }}
           <div v-if="product.hasVariants">
             <!-- Thuộc tính sản phẩm -->
             <div class="col-sm-12 mb-3">
@@ -779,7 +780,7 @@ const newProduct = reactive({
   imageThumb: "",
 });
 
-const product = computed(() => productStore.$state.entry ?? newProduct);
+const product = computed<any>(() => productStore.$state.entry ?? newProduct);
 
 const maxOptionValue = ref(10);
 const maxImage = ref(10);

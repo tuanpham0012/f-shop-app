@@ -65,5 +65,19 @@ namespace ShopAppApi.Controllers.Admin
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("description/{Id}")]
+        public async Task<IActionResult> GetDesctionProduct(long Id)
+        {
+            var product = await _repo.GetDescriptionProduct(Id);
+            return Ok(new ResponseOne<string>(product ?? ""));
+        }
+
+        [HttpPut("description/{Id}")]
+        public IActionResult UpdateDesctionProduct(long Id, ProductDesRequest request)
+        {
+            _repo.UpdateDesctionProduct(Id, request);
+            return Ok(new SuccessResponse(200, "Cập nhật thành công"));
+        }
     }
 }

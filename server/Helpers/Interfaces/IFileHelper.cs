@@ -4,7 +4,8 @@ namespace ShopAppApi.Helpers.Interfaces
     {
         string GetFileFormat(byte[] fileBytes);
 
-        Task<string> SaveFile(string? fileBase64);
+        Task<string?> SaveFile(string? fileBase64);
+        void SaveHtmlFile(string content, string fileName);
 
         Task<string?> SaveFile(byte[] fileBytes);
 
@@ -13,5 +14,6 @@ namespace ShopAppApi.Helpers.Interfaces
         Task<byte[]> Download(string fileName);
 
         string GetLink(string? FileName);
+        Task<string> GetPostContentAsync(string slug);
     }
 }

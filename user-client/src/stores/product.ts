@@ -30,6 +30,9 @@ export const useProductStore = defineStore("product", {
                 meta: null as any
             },
             product: null,
+            descriptionProduct: "",
+            options: [],
+            skus: [],
         };
     },
 
@@ -64,9 +67,31 @@ export const useProductStore = defineStore("product", {
         },
 
         async getProductByAlias(alias:any) {
+            this.getDescriptionProductByAlias(alias);
             await _show(`${apiUrl}/products/find/${alias}`)
-                .then((res) => {
+                .then( async (res) => {
                     this.product = res.data.data
+                    await this.getSkuProduct(res.data.data.id);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+
+        async getDescriptionProductByAlias(alias:any) {
+            await _show(`${apiUrl}/products/description/${alias}`)
+                .then((res) => {
+                    this.descriptionProduct = res.data.data
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getSkuProduct(id:any) {
+            await _show(`${apiUrl}/products/sku/${id}`)
+                .then((res) => {
+                    this.options = res.data.data?.options
+                    this.skus = res.data.data?.skus
                 })
                 .catch((err) => {
                     console.log(err);

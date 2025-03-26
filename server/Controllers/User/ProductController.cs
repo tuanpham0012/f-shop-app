@@ -39,5 +39,22 @@ namespace ShopAppApi.Controllers.User
             var product = await productRepository.FindProductByAlias(Alias);
             return Ok(new ResponseOne<ProductVM>(product));
         }
+
+        [HttpGet("description/{Alias}")]
+        public async Task<IActionResult> GetDesctionProduct(string Alias)
+        {
+            var product = await productRepository.GetDescriptionProduct(Alias);
+            return Ok(new ResponseOne<string>(product ?? ""));
+        }
+
+        [HttpGet("sku/{Id}")]
+        public async Task<IActionResult> GetSkuProduct(long Id)
+        {
+            var entry = await productRepository.GetSkuProduct(Id);
+            return Ok(new ResponseOne<object>(new{
+                Options = entry.Options,
+                Skus = entry.Skus,
+            }));
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using RestSharp;
 using ShopAppApi.Helpers.Interfaces;
+using Slugify;
 
 namespace ShopAppApi.Helpers
 {
@@ -24,9 +25,9 @@ namespace ShopAppApi.Helpers
         { new byte[] { 0x50, 0x4B, 0x03, 0x04 }, "zip" }  // ZIP (bao gồm cả DOCX, XLSX, PPTX) "FileStorage.SaveFolder"
     };
 
-        public DirectoryInfo GetFileFolder()
+        public DirectoryInfo GetFileFolder(string subFolder = "")
         {
-            return new DirectoryInfo(Directory.GetCurrentDirectory() + "/" + SaveFolder);
+            return new DirectoryInfo(Directory.GetCurrentDirectory() + $"/{SaveFolder}/{subFolder}");
         }
 
         public string GetFileFormat(byte[] fileBytes)
@@ -97,7 +98,7 @@ namespace ShopAppApi.Helpers
         {
             var context = _httpContextAccessor.HttpContext ?? throw new ArgumentException("error context !");
             string host = $"{context.Request.Scheme}://{context.Request.Host}";
-            if(string.IsNullOrEmpty(FileName))
+            if (string.IsNullOrEmpty(FileName))
             {
                 return defaultImage;
             }
@@ -108,6 +109,29 @@ namespace ShopAppApi.Helpers
                 default:
                     return $"{host}/files/download/{FileName}";
             }
+        }
+
+        public async void SaveHtmlFile(string content, string fileName)
+        {
+            DirectoryInfo info = GetFileFolder("HtmlFiles");
+            if (!info.Exists)
+            {
+                info.Create();
+            }
+            string path = Path.Combine(info.FullName, fileName);
+            await File.WriteAllTextAsync(path, content);
+        }
+
+        public async Task<string> GetPostContentAsync(string slug)
+        {
+            string fileName = $"{slug}.html";
+            string filePath = Path.Combine(GetFileFolder("HtmlFiles").FullName, fileName);
+
+            if (File.Exists(filePath))
+            {
+                return await File.ReadAllTextAsync(filePath);
+            }
+            return ""; // Hoặc ném Exception
         }
     }
 }
