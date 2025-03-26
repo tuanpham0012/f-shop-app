@@ -932,7 +932,7 @@ namespace ShopAppApi.Repositories.Products
             var entry = _context.Products.SingleOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Product does not exists!");
             entry.Description = request.Description;
             _context.SaveChanges();
-            transaction.Commit();
+            transaction.Commit(); 
         }
 
     }
