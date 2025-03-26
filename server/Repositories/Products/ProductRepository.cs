@@ -931,7 +931,7 @@ namespace ShopAppApi.Repositories.Products
             using var transaction = _context.Database.BeginTransaction();
             var entry = _context.Products.SingleOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Product does not exists!");
             entry.Description = request.Description;
-            _context.SaveChanges();
+            _context.SaveChanges(); 
             transaction.Commit(); 
         }
 

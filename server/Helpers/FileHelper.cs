@@ -74,7 +74,7 @@ namespace ShopAppApi.Helpers
                 memoryStream.Position = 0;
                 await memoryStream.CopyToAsync(streamToWriteTo);
             }
-            return fileName;
+            return fileName; 
         }
 
         public void DeleteFile(string? fileName)
