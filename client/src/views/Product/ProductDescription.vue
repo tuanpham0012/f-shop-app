@@ -11,10 +11,10 @@
       @load="setIframeHeight"
     ></iframe>
     <div class="show more d-flex justify-center items-center" v-if="!showMore">
-      <a class="text-3xl cursor-pointer" @click="toggleShowMore"> Xem thêm </a>
+      <a class="text-md cursor-pointer" @click="toggleShowMore"> Xem thêm </a>
     </div>
     <div class="show less d-flex justify-center items-center" v-if="showMore">
-      <a class="text-3xl cursor-pointer" @click="toggleShowMore"> Rút gọn </a>
+      <a class="text-md cursor-pointer" @click="toggleShowMore"> Rút gọn </a>
     </div>
   </div>
 </template>
@@ -48,20 +48,21 @@ const setIframeHeight = () => {
     if (count > 10) clearInterval(intervalId);
   }, 200);
   const doc = iframe.value.contentWindow.document;
-  if (!doc) console.log("không tìm thấy document");
-  const link1 = document.createElement("link");
-  link1.rel = "stylesheet";
-  link1.type = "text/css";
-  link1.href = "/src/assets/css/editor/content.css";
-  doc.head.appendChild(link1);
-  const link2 = document.createElement("link");
-  link2.rel = "stylesheet";
-  link2.type = "text/css";
-  link2.href = "/src/assets/css/editor/content.min.css";
-  doc.head.appendChild(link2);
-  const link3 = document.createElement("script");
-  link3.src = "/src/assets/css/editor/content.js";
-  doc.body.appendChild(link3);
+  if (doc) {
+    const link1 = document.createElement("link");
+    link1.rel = "stylesheet";
+    link1.type = "text/css";
+    link1.href = "/src/assets/css/editor/content.css";
+    doc.head.appendChild(link1);
+    const link2 = document.createElement("link");
+    link2.rel = "stylesheet";
+    link2.type = "text/css";
+    link2.href = "/src/assets/css/editor/content.min.css";
+    doc.head.appendChild(link2);
+    const link3 = document.createElement("script");
+    link3.src = "/src/assets/css/editor/content.js";
+    doc.body.appendChild(link3);
+  }
 };
 
 const toggleShowMore = () => {

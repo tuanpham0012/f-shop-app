@@ -109,7 +109,7 @@
                   v-for="(value, j) in option.optionValues"
                   :key="j"
                   :class="{
-                    'border-primary shadow-2xl shadow-cyan-800/30':
+                    'border-danger text-danger shadow-2xl shadow-cyan-800/30':
                       selected.findIndex((x:any) => x.optionValueId == value.id) >=
                       0,
                   }"

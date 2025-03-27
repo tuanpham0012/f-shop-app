@@ -20,7 +20,7 @@ export const useProductStore = defineStore("product", {
                 data: [],
                 meta: null as any,
             },
-            entry: null,
+            entry: null as any,
             errors: null,
             descriptionProduct: ""
         };
@@ -40,11 +40,15 @@ export const useProductStore = defineStore("product", {
         async create(data: any) {
             return await _create(`${adminUrl}/products`, data);
         },
-        async show(id: any) {
+        async show(id: any, loadDescription = false) {
             this.entry = null
             await _show(`${adminUrl}/products/${id}`)
-                .then((res) => {
+                .then( async (res) => {
                     this.entry = res.data.data;
+                    await this.getSkuProduct(id)
+                    if(loadDescription){
+                        await this.getDescriptionProductById(id)
+                    }
                 })
                 .catch((err) => {
                     console.log(err);
@@ -64,7 +68,7 @@ export const useProductStore = defineStore("product", {
         async getDescriptionProductById(id:any) {
             await _show(`${adminUrl}/products/description/${id}`)
                 .then((res) => {
-                    this.descriptionProduct = res.data
+                    this.descriptionProduct = res.data.data
                 })
                 .catch((err) => {
                     console.log(err);
@@ -73,6 +77,17 @@ export const useProductStore = defineStore("product", {
         async updateDes(id:any, data: any) {
             return await _update(`${adminUrl}/products/description/${id}`, data);
         },
+
+        async getSkuProduct(id:any) {
+                    await _show(`${adminUrl}/products/sku/${id}`)
+                        .then((res) => {
+                            this.entry.options = res.data.data?.options
+                            this.entry.skus = res.data.data?.skus
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                },
     },
 });
 

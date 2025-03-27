@@ -14,6 +14,8 @@ import globalComponent from '@/helpers/import-global-components';
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
+import Editor from "@tinymce/tinymce-vue";
+
 const app = createApp(App)
 
 Object.entries(globalComponent).forEach(([name, component]) => {
@@ -36,6 +38,7 @@ app.directive('click-outside', {
 
 app.component('Cropper', Cropper);
 app.component('QuillEditor', QuillEditor)
+app.component('Editor', Editor)
 app.use(createPinia())
 app.use(router)
 

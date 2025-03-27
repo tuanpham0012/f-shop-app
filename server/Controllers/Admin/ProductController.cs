@@ -79,5 +79,15 @@ namespace ShopAppApi.Controllers.Admin
             _repo.UpdateDesctionProduct(Id, request);
             return Ok(new SuccessResponse(200, "Cập nhật thành công"));
         }
+
+        [HttpGet("sku/{Id}")]
+        public async Task<IActionResult> GetSkuProduct(long Id)
+        {
+            var entry = await _repo.GetSkuProduct(Id);
+            return Ok(new ResponseOne<object>(new{
+                Options = entry.Options,
+                Skus = entry.Skus,
+            }));
+        }
     }
 }

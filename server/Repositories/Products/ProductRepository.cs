@@ -148,24 +148,24 @@ namespace ShopAppApi.Repositories.Products
                 CategoryId = p.CategoryId,
                 TaxId = p.TaxId,
 
-                Options = p.Options.Select(o => new OptionVM
-                {
-                    Id = o.Id,
-                    Code = o.Code,
-                    ProductId = o.ProductId,
-                    Name = o.Name,
-                    Visual = o.Visual,
-                    Order = o.Order,
-                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
-                    {
-                        Id = v.Id,
-                        Code = v.Code,
-                        ProductId = v.ProductId,
-                        OptionId = v.OptionId,
-                        Value = v.Value,
-                        Label = v.Label
-                    }).ToList(),
-                }).ToList(),
+                // Options = p.Options.Select(o => new OptionVM
+                // {
+                //     Id = o.Id,
+                //     Code = o.Code,
+                //     ProductId = o.ProductId,
+                //     Name = o.Name,
+                //     Visual = o.Visual,
+                //     Order = o.Order,
+                //     OptionValues = o.OptionValues.Select(v => new OptionValueVM
+                //     {
+                //         Id = v.Id,
+                //         Code = v.Code,
+                //         ProductId = v.ProductId,
+                //         OptionId = v.OptionId,
+                //         Value = v.Value,
+                //         Label = v.Label
+                //     }).ToList(),
+                // }).ToList(),
                 Images = p.ProductImages.Select(i => new ProductImageVM
                 {
                     Id = i.Id,
@@ -178,30 +178,30 @@ namespace ShopAppApi.Repositories.Products
                     Extension = i.Extension,
                     FileName = i.FileName
                 }).ToList(),
-                Skus = p.Skus.Select(s => new SkuVM
-                {
-                    Id = s.Id,
-                    ProductId = s.ProductId,
-                    Barcode = s.Barcode,
-                    Price = s.Price,
-                    Name = s.Name,
-                    Stock = s.Stock,
-                    Variants = s.Variants.Select(v => new VariantVM
-                    {
-                        Id = v.Id,
-                        ProductId = v.ProductId,
-                        SkuId = v.SkuId,
-                        OptionId = v.OptionId,
-                        OptionValueId = v.OptionValueId,
-                        OptionValue = new OptionValueVM
-                        {
-                            Id = v.OptionValue.Id,
-                            Code = v.OptionValue.Code,
-                            Value = v.OptionValue.Value,
-                            Label = v.OptionValue.Label,
-                        }
-                    }).ToList(),
-                }).ToList()
+                // Skus = p.Skus.Select(s => new SkuVM
+                // {
+                //     Id = s.Id,
+                //     ProductId = s.ProductId,
+                //     Barcode = s.Barcode,
+                //     Price = s.Price,
+                //     Name = s.Name,
+                //     Stock = s.Stock,
+                //     Variants = s.Variants.Select(v => new VariantVM
+                //     {
+                //         Id = v.Id,
+                //         ProductId = v.ProductId,
+                //         SkuId = v.SkuId,
+                //         OptionId = v.OptionId,
+                //         OptionValueId = v.OptionValueId,
+                //         OptionValue = new OptionValueVM
+                //         {
+                //             Id = v.OptionValue.Id,
+                //             Code = v.OptionValue.Code,
+                //             Value = v.OptionValue.Value,
+                //             Label = v.OptionValue.Label,
+                //         }
+                //     }).ToList(),
+                // }).ToList()
             });
             // if (Includes != null)
             // {
@@ -249,53 +249,6 @@ namespace ShopAppApi.Repositories.Products
                     Name = p.Category.Name,
                     Code = p.Category.Code,
                 },
-                Options = p.Options.Select(o => new OptionVM
-                {
-                    Id = o.Id,
-                    Code = o.Code,
-                    ProductId = o.ProductId,
-                    Name = o.Name,
-                    Visual = o.Visual,
-                    Order = o.Order,
-                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
-                    {
-                        Id = v.Id,
-                        Code = v.Code,
-                        ProductId = v.ProductId,
-                        OptionId = v.OptionId,
-                        Value = v.Value,
-                        Label = v.Label
-                    }).ToList(),
-                }).ToList(),
-                Images = p.ProductImages.Select(i => new ProductImageVM
-                {
-                    Id = i.Id,
-                    ProductId = i.ProductId,
-                    Code = i.Code,
-                    Path = fileHelper.GetLink(i.Path),
-                    Type = i.Type,
-                    Driver = i.Driver,
-                    IsDeleted = i.IsDeleted,
-                    Extension = i.Extension,
-                    FileName = i.FileName
-                }).ToList(),
-                Skus = p.Skus.Select(s => new SkuVM
-                {
-                    Id = s.Id,
-                    ProductId = s.ProductId,
-                    Barcode = s.Barcode,
-                    Price = s.Price,
-                    Name = s.Name,
-                    Stock = s.Stock,
-                    Variants = s.Variants.Select(v => new VariantVM
-                    {
-                        Id = v.Id,
-                        ProductId = v.ProductId,
-                        SkuId = v.SkuId,
-                        OptionId = v.OptionId,
-                        OptionValueId = v.OptionValueId,
-                    }).ToList(),
-                }).ToList(),
                 Tax = new TaxVM
                 {
                     Id = p.Tax.Id,
@@ -493,7 +446,7 @@ namespace ShopAppApi.Repositories.Products
 
             _product.Price = minPrice;
             await _context.SaveChangesAsync();
-            transaction.Commit(); 
+            transaction.Commit();
 
         }
 
@@ -888,25 +841,28 @@ namespace ShopAppApi.Repositories.Products
         public async Task<ProductVM> GetSkuProduct(long Id)
         {
             var options = await _context.Options.Where(o => o.ProductId == Id).Select(o => new OptionVM
-            {
-                Id = o.Id,
-                Code = o.Code,
-                Name = o.Name,
-                Visual = o.Visual,
-                Order = o.Order,
-                OptionValues = o.OptionValues.Select(v => new OptionValueVM
                 {
-                    Id = v.Id,
-                    Code = v.Code,
-                    OptionId = v.OptionId,
-                    Value = v.Value,
-                    Label = v.Label
-                }).ToList(),
-            }).ToListAsync();
+                    Id = o.Id,
+                    Code = o.Code,
+                    ProductId = o.ProductId,
+                    Name = o.Name,
+                    Visual = o.Visual,
+                    Order = o.Order,
+                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
+                    {
+                        Id = v.Id,
+                        Code = v.Code,
+                        ProductId = v.ProductId,
+                        OptionId = v.OptionId,
+                        Value = v.Value,
+                        Label = v.Label
+                    }).ToList(),
+                }).ToListAsync();
 
             var skus = await _context.Skus.Where(o => o.ProductId == Id).Select(s => new SkuVM
             {
                 Id = s.Id,
+                ProductId = s.ProductId,
                 Barcode = s.Barcode,
                 Price = s.Price,
                 Name = s.Name,
@@ -914,10 +870,18 @@ namespace ShopAppApi.Repositories.Products
                 Variants = s.Variants.Select(v => new VariantVM
                 {
                     Id = v.Id,
+                    ProductId = v.ProductId,
                     SkuId = v.SkuId,
                     OptionId = v.OptionId,
                     OptionValueId = v.OptionValueId,
-                }).ToList(),
+                    OptionValue = new OptionValueVM
+                    {
+                        Id = v.OptionValue.Id,
+                        Code = v.OptionValue.Code,
+                        Value = v.OptionValue.Value,
+                        Label = v.OptionValue.Label,
+                    }
+                }).ToList()
             }).ToListAsync();
 
             return new ProductVM
@@ -931,8 +895,8 @@ namespace ShopAppApi.Repositories.Products
             using var transaction = _context.Database.BeginTransaction();
             var entry = _context.Products.SingleOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Product does not exists!");
             entry.Description = request.Description;
-            _context.SaveChanges(); 
-            transaction.Commit(); 
+            _context.SaveChanges();
+            transaction.Commit();
         }
 
     }

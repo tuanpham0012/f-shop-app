@@ -9,16 +9,9 @@
     "
   >
     <template #body>
-      <div class="col-sm-12 h-[calc(100vh-380px)] mb-24">
-        <label for="exampleFormControlTextarea1" class="form-label"
-          >Thêm mô tả sản phẩm</label
-        >
-        <QuillEditor
-          theme="snow"
-          v-model:content="data.data"
-          contentType="html"
-          toolbar="full"
-          placeholder="Nhập các thông tin chi tiết sản phẩm..."
+      <div class="col-sm-12 h-[calc(100vh-350px)] mb-24">
+        <TinyEditor
+          v-model="data.data"
         />
       </div>
     </template>
@@ -41,6 +34,7 @@
 <script setup lang="ts">
 import { computed, ref, onBeforeMount } from "vue";
 import { useProductStore } from "@/stores/product";
+import TinyEditor from "@/components/TinyEditor.vue";
 const productStore = useProductStore();
 const props = defineProps({
   id: {

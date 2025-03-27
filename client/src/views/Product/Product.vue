@@ -204,6 +204,7 @@ onBeforeMount(async () => {
               <button
                 type="button"
                 class="btn btn-sm btn-icon btn-outline-info me-1"
+                title="Xem chi tiết"
                 @click="
                   () => {
                     id = item.id;
@@ -216,13 +217,15 @@ onBeforeMount(async () => {
               <button
                 type="button"
                 class="btn btn-sm btn-icon btn-outline-primary me-1"
+                title="Chỉnh sửa"
                 @click="toggleEdit(item.id)"
               >
-                <span class="tf-icons bx bx-edit-alt bx-xs"></span>
+                <i class="fa-solid fa-pen-to-square"></i>
               </button>
               <button
                 type="button"
                 class="btn btn-sm btn-icon btn-outline-success me-1"
+                title="Chỉnh sửa mô tả"
                 @click="
                   () => {
                     id = item.id;
@@ -230,11 +233,12 @@ onBeforeMount(async () => {
                   }
                 "
               >
-                <span class="tf-icons bx bx-edit-alt bx-xs"></span>
+              <i class="fa-solid fa-file-word"></i>
               </button>
               <button
                 type="button"
                 class="btn btn-sm btn-icon btn-outline-secondary me-1"
+                title="Xoá sản phẩm"
                 @click="toggleDelete(item.id)"
               >
                 <span class="tf-icons bx bx-trash-alt bx-xs"></span>

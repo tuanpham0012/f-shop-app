@@ -136,7 +136,7 @@ const changePage = (page) => {
   });
 };
 
-watch(pageSize.value, (newValue, oldValue) => {
+watch(() => pageSize.value, (newValue, oldValue) => {
   changePage(1)
 });
 

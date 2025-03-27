@@ -357,20 +357,6 @@
               />
             </div>
           </div>
-
-          <div class="col-sm-12 h-[250px] mb-32">
-            <label for="exampleFormControlTextarea1" class="form-label"
-              >Thêm mô tả sản phẩm</label
-            >
-            <QuillEditor
-              theme="snow"
-              v-model:content="product.description"
-              contentType="html"
-              toolbar="full"
-              placeholder="Nhập các thông tin chi tiết sản phẩm..."
-            />
-          </div>
-          {{ product.description }}
           <div v-if="product.hasVariants">
             <!-- Thuộc tính sản phẩm -->
             <div class="col-sm-12 mb-3">
@@ -392,8 +378,8 @@
                 :key="i"
                 :class="{ disabled: option.isDeleted }"
               >
-                <div class="d-flex col-6">
-                  <div class="col-sm-6 mb-3 me-2">
+                <div class="d-flex col-4 me-4">
+                  <div class="col-sm-7 mb-3 me-2">
                     <div class="col-sm-12">
                       <label
                         :for="'option-name-' + i"
@@ -415,7 +401,7 @@
                       />
                     </div>
                   </div>
-                  <div class="col-sm-4 mb-3">
+                  <div class="col-sm-5 mb-3">
                     <div class="col-sm-12">
                       <label :for="'option-visual-' + i" class="form-label"
                         >Loại</label
@@ -432,7 +418,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="row col-6">
+                <div class="row col-8">
                   <div class="col-sm-6">
                     <label class="form-label required">Giá trị</label>
                   </div>
@@ -440,7 +426,7 @@
                     <label class="form-label">Nhãn</label>
                   </div>
                   <div
-                    class="d-flex col-sm-12 mb-1 py-2"
+                    class="d-flex col-sm-12 mb-1"
                     v-for="(value, j) in option.optionValues"
                     :key="j"
                     :class="{ disabled: value.isDeleted }"
@@ -634,16 +620,16 @@
                       <th>STT</th>
                       <th>Thuộc tính</th>
                       <th>Giá bán</th>
-                      <!-- <th>Số lượng</th> -->
                       <th>Mã hàng</th>
+                      <th>Hình ảnh</th>
                     </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
                     <tr v-for="(item, index) in product.skus" :key="index">
-                      <td>
+                      <td class="max-w-[50px]">
                         <strong>{{ index + 1 }}</strong>
                       </td>
-                      <td class="max-w-[200px]">
+                      <td class="min-w-[200px]">
                         <strong
                           class="list-variants"
                           v-for="(value, i) in item.variants"
@@ -651,7 +637,7 @@
                           >{{ value.optionValue.label }}</strong
                         >
                       </td>
-                      <td class="w-[180px] input-group input-group-merge">
+                      <td class="min-w-[200px] input-group input-group-merge">
                         <span class="input-group-text">đ</span>
                         <input
                           type="text"
@@ -661,17 +647,8 @@
                           @keypress="isNumber($event)"
                         />
                       </td>
-                      <!-- <td class="w-[150px]">
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                id="name"
-                                                v-model="item.stock"
-                                                @keypress="isNumber($event)"
-                                            />
-                                        </td> -->
 
-                      <td class="text-center">
+                      <td class="min-w-[150px]">
                         <input
                           type="text"
                           class="form-control"
@@ -679,6 +656,27 @@
                           v-model="item.barCode"
                           required
                         />
+                      </td>
+                      <td class="w-[100%]">
+                        <div class="row col-12">
+                          <div class="col-8">
+                            <select-search-user
+                              :firstSelected="true"
+                              :listData="product.images"
+                              placeholder="-- Chọn ảnh --"
+                              src="path"
+                              :preImage="false"
+                              display="fileName"
+                              keyValue="code"
+                              v-model="thumbId"
+                              :search-box="false"
+                              :disabled="product.images.length < 1"
+                            ></select-search-user>
+                          </div>
+                          <div class="col-4">
+                            <img :src="product.images[3].path" class="h-[35px] w-[auto] w" />
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -782,8 +780,8 @@ const newProduct = reactive({
 
 const product = computed<any>(() => productStore.$state.entry ?? newProduct);
 
-const maxOptionValue = ref(10);
-const maxImage = ref(10);
+const maxOptionValue = ref(30);
+const maxImage = ref(30);
 
 const errors = ref<any>(null);
 
@@ -1005,7 +1003,7 @@ const productImage = (event: any) => {
           return;
         }
         let dataImg = await resizeImage(e.target.result, file.type);
-        let imgId = uuidv4()
+        let imgId = uuidv4();
         product.value.images.push({
           id: 0,
           code: imgId,
@@ -1016,11 +1014,10 @@ const productImage = (event: any) => {
           driver: "",
           extension: file.type,
         });
-        
-        if(i == 0 && (thumbId.value == "" || thumbId.value == null)){
-          thumbId.value = imgId
+
+        if (i == 0 && (thumbId.value == "" || thumbId.value == null)) {
+          thumbId.value = imgId;
           console.log(imgId);
-          
         }
       };
       reader.readAsDataURL(file);
@@ -1036,8 +1033,8 @@ const deleteImage = (index: number, isDeleteAll = false) => {
   } else {
     product.value.images.splice(index, 1);
   }
-  if(product.value.images.length < 1){
-    thumbId.value = ""
+  if (product.value.images.length < 1) {
+    thumbId.value = "";
   }
 };
 
@@ -1115,17 +1112,17 @@ watch(
   () => thumbId.value,
   async (newVal) => {
     const img = product.value.images.find((x: any) => x.code == newVal);
-    if(img){
+    if (img) {
       product.value.imageThumb = await resizeImage(
-      img.path,
-      img.extension,
-      250,
-      250
-    );
-    }else{
-      product.value.imageThumb = ""
+        img.path,
+        img.extension,
+        null,
+        null,
+        250
+      );
+    } else {
+      product.value.imageThumb = "";
     }
-    
   }
 );
 

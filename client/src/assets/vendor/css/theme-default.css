@@ -236,7 +236,7 @@ button.list-group-item-primary.active {
   box-shadow: none;
 }
 
-/* .btn-outline-primary {
+.btn-outline-primary {
   color: #696cff;
   border-color: #696cff;
   background: transparent;
@@ -247,7 +247,7 @@ button.list-group-item-primary.active {
   border-color: #5f61e6;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
   transform: translateY(-1px);
-} */
+}
 .btn-check:focus + .btn-outline-primary, .btn-outline-primary:focus {
   color: #fff;
   background-color: #5f61e6;
@@ -279,7 +279,7 @@ button.list-group-item-primary.active {
 .btn-outline-primary.active .badge,
 .show > .btn-outline-primary.dropdown-toggle .badge {
   background: #fff;
-  /* border-color: #fff; */
+  border-color: #fff;
   color: #696cff;
 }
 
