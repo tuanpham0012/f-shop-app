@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('skus', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained();
+            $table->string('name');
+            $table->string('image_code')->nullable();
+            $table->string('image_path')->nullable();
             $table->string('barcode', 24);
             $table->double('price',12,4)->default(0);
-            $table->string('name');
             $table->integer('stock')->default(0);
             $table->timestamps();
         });

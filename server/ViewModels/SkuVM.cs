@@ -4,20 +4,23 @@ namespace ShopAppApi.ViewModels
     {
         public long Id { get; set; }
 
-    public long ProductId { get; set; }
+        public long ProductId { get; set; }
 
-    public string Barcode { get; set; } = null!;
+        public string Barcode { get; set; } = null!;
+        public string? ImageCode { get; set; }
 
-    public double Price { get; set; }
+        public string? ImagePath { get; set; }
 
-    public string Name { get; set; } = null!;
+        public double Price { get; set; }
 
-    public int Stock { get; set; }
+        public string Name { get; set; } = null!;
 
-    // public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
+        public int Stock { get; set; }
 
-    // public virtual ICollection<ProductWarehouse> ProductWarehouses { get; set; } = new List<ProductWarehouse>();
+        // public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
-    public virtual ICollection<VariantVM> Variants { get; set; } = [];
+        // public virtual ICollection<ProductWarehouse> ProductWarehouses { get; set; } = new List<ProductWarehouse>();
+
+        public virtual ICollection<VariantVM> Variants { get; set; } = [];
     }
 }

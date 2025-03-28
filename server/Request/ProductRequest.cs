@@ -25,30 +25,31 @@ namespace ShopAppApi.Request
         public long? Id { get; set; }
         [Required(ErrorMessage = "Mã sản phẩm không được để trống")]
         [ModelUnique("products", "code", "Mã sản phẩm {value} đã được sử dụng.")]
-        public string? Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         [Required(ErrorMessage = "Tên sản phẩm không được để trống")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public double Price { get; set; }
         public string? ImageThumb { get; set; }
         [Required(ErrorMessage = "Mã vạch không được để trống")]
         [ModelUnique("products", "barcode", "Mã vạch {value} đã tồn tại.")]
-        public string? Barcode { get; set; }
+        public string Barcode { get; set; } = string.Empty;
         public string UnitBuy { get; set; } = string.Empty;
         public string UnitSell { get; set; } = string.Empty;
         public bool? HasVariants { get; set; }
         public bool? IsNew { get; set; }
         public bool? IsFeatured { get; set; }
         public short NumberWarning { get; set; }
-        public string? Alias { get; set; }
         [Required(ErrorMessage = "Loại sản phẩm không được để trống")]
         [ModelExists("categories")]
-        public long? CategoryId { get; set; }
+        public long CategoryId { get; set; }
         [Required(ErrorMessage = "Thương hiệu sản phẩm không được để trống")]
         [ModelExists("brands")]
-        public long? BrandId { get; set; }
+        public long BrandId { get; set; }
         [Required]
         [ModelExists("taxes")]
-        public long? TaxId { get; set; }
+        public long TaxId { get; set; }
+        public short ConversionUnit { get; set; }
+        public bool? SoldOut { get; set; }
         public virtual ICollection<OptionsRequest> Options { get; set; } = [];
         public virtual ICollection<SkusRequest> Skus { get; set; } = [];
         public virtual ICollection<ProductImageRequest> Images { get; set; } = [];
@@ -82,6 +83,9 @@ namespace ShopAppApi.Request
         public long? Id { get; set; }
         public long? ProductId { get; set; }
         public string? Barcode { get; set; } = null!;
+        public string? ImageCode { get; set; }
+
+        public string? ImagePath { get; set; }
         [Required]
         public double Price { get; set; }
         public string? Name { get; set; } = null!;

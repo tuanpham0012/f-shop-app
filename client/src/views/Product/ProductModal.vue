@@ -205,11 +205,46 @@
 
             <Feedback :errors="errors?.TaxId" />
           </div>
-          <div class="col-sm-8 row">
-            <div class="col-sm-4 mb-3">
-              <div class="col-sm-12">
-                <label for="" class="form-label"></label>
+          <div class="col-sm-4 mb-3">
+            <div class="col-sm-12">
+              <label for="price" class="form-label required"
+                >Đơn vị quy đổi (Đơn vị mua
+                <i class="fa-solid fa-right-long"></i> Đơn vị bán)</label
+              >
+            </div>
+            <div class="col-sm-12 row">
+              <div class="col-sm-3">
+                <input
+                  type="text"
+                  id="price"
+                  class="form-control"
+                  :value=1
+                  disabled
+                  @keypress="isNumber"
+                />
               </div>
+              <div class="col-sm-1 d-flex justify-center items-center">
+                <i class="fa-solid fa-right-long"></i>
+              </div>
+
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  id="price"
+                  class="form-control"
+                  v-model="product.numberWarning"
+                  @keypress="isNumber"
+                />
+              </div>
+            </div>
+
+            <Feedback :errors="errors?.TaxId" />
+          </div>
+          <div class="col-sm-12 row">
+            <div class="col-sm-3 mb-3">
+              <!-- <div class="col-sm-12">
+                <label for="" class="form-label"></label>
+              </div> -->
               <div class="col-sm-12 mt-3">
                 <input
                   class="form-check-input me-2"
@@ -225,10 +260,7 @@
                             >
                         </div> -->
             </div>
-            <div class="col-sm-4 mb-3">
-              <div class="col-sm-12">
-                <label for="isFeatured" class="form-label"></label>
-              </div>
+            <div class="col-sm-3 mb-3">
               <div class="col-sm-12 mt-3">
                 <input
                   class="form-check-input me-2"
@@ -247,10 +279,7 @@
                             >
                         </div> -->
             </div>
-            <div class="col-sm-4 mb-3">
-              <div class="col-sm-12">
-                <label for="hasVariants" class="form-label"></label>
-              </div>
+            <div class="col-sm-3 mb-3">
               <div class="col-sm-12 mt-3">
                 <input
                   class="form-check-input me-2"
@@ -262,12 +291,19 @@
                   >Sản phẩm có biến thể</label
                 >
               </div>
-              <!-- <div class="col-sm-12">
-                            <label for="outstanding" class="form-label"
-                                >Sản phẩm nổi bật sẽ được hiển thị trong
-                                POS</label
-                            >
-                        </div> -->
+            </div>
+            <div class="col-sm-3 mb-3">
+              <div class="col-sm-12 mt-3">
+                <input
+                  class="form-check-input me-2"
+                  type="checkbox"
+                  id="hasVariants"
+                  v-model="product.hasVariants"
+                />
+                <label for="hasVariants" class="form-label"
+                  >Hết hàng</label
+                >
+              </div>
             </div>
           </div>
           <div class="col-sm-12 mb-3 mt-3">
@@ -618,7 +654,7 @@
                   <thead class="table-light">
                     <tr>
                       <th>STT</th>
-                      <th>Thuộc tính</th>
+                      <th>Phân loại</th>
                       <th>Giá bán</th>
                       <th>Mã hàng</th>
                       <th>Hình ảnh</th>
@@ -668,13 +704,17 @@
                               :preImage="false"
                               display="fileName"
                               keyValue="code"
-                              v-model="thumbId"
+                              v-model="item.imageCode"
+                              @update:modelValue="changeSkuImage(index)"
                               :search-box="false"
                               :disabled="product.images.length < 1"
                             ></select-search-user>
                           </div>
-                          <div class="col-4">
-                            <img :src="product.images[3].path" class="h-[35px] w-[auto] w" />
+                          <div class="col-4" v-if="item.imagePath">
+                            <img
+                              :src="item.imagePath"
+                              class="h-[35px] w-[auto]"
+                            />
                           </div>
                         </div>
                       </td>
@@ -1093,6 +1133,19 @@ const closeCategoryModal = (value: any) => {
   categoryStore.getList({ notUse: false });
   product.value.categoryId = value.id;
 };
+
+const changeSkuImage = async (index:number) => {
+  const ImgCode = product.value.skus[index].imageCode;
+  const img = product.value.images.find((x: any) => x.code == ImgCode);
+  if (img) {
+    product.value.skus[index].imagePath = await resizeImage(
+        img.path,
+        img.extension,
+        null,
+        null,
+        250)
+  }
+}
 
 watch(
   () => fillAll.price,

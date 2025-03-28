@@ -58,8 +58,12 @@ public class ProductVM
     public virtual ICollection<ProductImageVM> Images { get; set; } = new List<ProductImageVM>();
 
     public virtual ICollection<SkuVM> Skus { get; set; } = [];
+    public virtual int SkuCount { get; set; }
 
     public virtual TaxVM Tax { get; set; } = null!;
 
     public virtual ICollection<Variant> Variants { get; set; } = new List<Variant>();
+
+    public short ConversionUnit { get; set; }
+    public bool? SoldOut { get; set; }
 }

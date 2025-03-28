@@ -28,16 +28,18 @@ namespace ShopAppApi.Repositories.Products
                 UnitSell = product.UnitSell,
                 Alias = new SlugHelper().GenerateSlug(product.Name),
                 // Description = product.Description,
-                CategoryId = product.CategoryId ?? throw new ArgumentNullException(nameof(product.CategoryId)),
-                BrandId = product.BrandId ?? throw new ArgumentNullException(nameof(product.BrandId)),
-                TaxId = product.TaxId ?? throw new ArgumentNullException(nameof(product.TaxId)),
+                CategoryId = product.CategoryId,
+                BrandId = product.BrandId,
+                TaxId = product.TaxId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                ImageThumb = await fileHelper.SaveFile(product.ImageThumb),
+                ImageThumb = product.ImageThumb != null ? await fileHelper.SaveFile(product.ImageThumb, "imgThumb") : "",
                 IsNew = product.IsNew,
                 NumberWarning = product.NumberWarning,
                 HasVariants = product.HasVariants,
                 IsFeatured = product.IsFeatured,
+                ConversionUnit = product.ConversionUnit,
+                SoldOut = product.SoldOut,
             };
             _context.Add(entry);
             await _context.SaveChangesAsync();
@@ -49,7 +51,7 @@ namespace ShopAppApi.Repositories.Products
                 {
                     ProductId = entry.Id,
                     Code = image.Code,
-                    Path = await fileHelper.SaveFile(image.Path),
+                    Path = image.Path != null ? await fileHelper.SaveFile(image.Path, "images") : "",
                     Type = image.Type,
                     Driver = driver,
                     Extension = image.Extension,
@@ -76,7 +78,7 @@ namespace ShopAppApi.Repositories.Products
                 }
             }
 
-            if (product.Skus.Count() > 0)
+            if (product.Skus.Count > 0)
             {
                 foreach (var sku in product.Skus)
                 {
@@ -254,7 +256,8 @@ namespace ShopAppApi.Repositories.Products
                     Id = p.Tax.Id,
                     Name = p.Tax.Name,
                     Value = p.Tax.Value
-                }
+                },
+                SkuCount = p.Skus.Count,
             });
             // if (includes != null)
             // {

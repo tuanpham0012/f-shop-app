@@ -43,7 +43,7 @@ namespace ShopAppApi.Helpers
             throw new ArgumentException("Định dạng file không hợp lệ!");
         }
 
-        public async Task<string?> SaveFile(string? fileBase64)
+        public async Task<string> SaveFile(string fileBase64, string subFolder = "")
         {
 
             if (String.IsNullOrEmpty(fileBase64) || !Regex.IsMatch(fileBase64, @"^data:image\/[a-zA-Z]+;base64,"))
@@ -57,9 +57,9 @@ namespace ShopAppApi.Helpers
             return await SaveFile(fileBytes);
         }
 
-        public async Task<string?> SaveFile(byte[] fileBytes)
+        public async Task<string> SaveFile(byte[] fileBytes, string subFolder = "")
         {
-            DirectoryInfo info = GetFileFolder();
+            DirectoryInfo info = GetFileFolder(subFolder);
             if (!info.Exists)
             {
                 info.Create();

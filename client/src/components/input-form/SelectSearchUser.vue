@@ -213,8 +213,6 @@ const dataSelect = ref(
 const searchData = ref("");
 
 const listData = computed(() => {
-  console.log(props.listData);
-
   return props.listData.filter((e) =>
     removeVietnameseTones(e[props.display])
       .toLowerCase()

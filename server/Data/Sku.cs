@@ -9,11 +9,15 @@ public partial class Sku
 
     public long ProductId { get; set; }
 
+    public string Name { get; set; } = null!;
+
+    public string? ImageCode { get; set; }
+
+    public string? ImagePath { get; set; }
+
     public string Barcode { get; set; } = null!;
 
     public double Price { get; set; }
-
-    public string Name { get; set; } = null!;
 
     public int Stock { get; set; }
 

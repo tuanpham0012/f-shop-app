@@ -10,7 +10,6 @@ import ProductModal from "./ProductModal.vue";
 import ProductViewDetail from "./ProductViewDetail.vue";
 import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
 import { displayPrice } from "@/services/utils";
-import { viewFile } from "@/helpers/helpers";
 import ProductDescriptionModal from "./ProductDescriptionModal.vue";
 
 const productStore = useProductStore();
@@ -192,12 +191,12 @@ onBeforeMount(async () => {
             <td class="max-w-[350px]">
               <strong>{{ item.name }}</strong>
               <p class="m-0 text-break overflow-hidden">
-                {{ item.skus.length }} biến thể
+                {{ item.skuCount }} biến thể
               </p>
             </td>
             <td>{{ item.category?.name }}</td>
             <td>{{ item.brand?.name }}</td>
-            <td>{{ displayPrice(item.price) + " đ" }}</td>
+            <td class="text-right">{{ displayPrice(item.price) + " đ" }}</td>
             <td>{{ item.unitBuy }}</td>
             <td>{{ item.unitSell }}</td>
             <td class="text-center">

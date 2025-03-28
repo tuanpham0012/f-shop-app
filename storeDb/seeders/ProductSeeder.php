@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
         for ($i = 0; $i < 40; $i++) {
             $products = [];
             for ($j = 0; $j < 40; $j++) {
-                $name = fake()->name;
+                $name = fake()->firstName . ' ' . fake()->lastName . ' ' . fake()->name;
                 $products[] = [
                     'code' => Str::random(10),
                     'barcode' => (Str::random(17)),

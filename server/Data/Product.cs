@@ -23,6 +23,8 @@ public partial class Product
 
     public string UnitBuy { get; set; } = null!;
 
+    public short ConversionUnit { get; set; }
+
     public string? Description { get; set; }
 
     public string Alias { get; set; } = null!;
@@ -38,6 +40,8 @@ public partial class Product
     public bool? IsFeatured { get; set; }
 
     public bool? IsSale { get; set; }
+
+    public bool? SoldOut { get; set; }
 
     public long BrandId { get; set; }
 

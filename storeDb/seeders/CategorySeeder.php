@@ -15,31 +15,38 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 "name"=> "Rau củ",
-                "code" =>"Vegetable"
+                "code" =>"Vegetable",
+                "is_popular" => 1
             ],
             [
                 "name"=> "Hoa quả",
-                "code" =>"Fruit"
+                "code" =>"Fruit",
+                "is_popular" => 1
             ],
             [
                 "name"=> "Thực phẩm khô",
-                "code" =>"Dry_food"
+                "code" =>"Dry_food",
+                "is_popular" => 1
             ],
             [
                 "name"=> "Thực phẩm đông lạnh",
-                "code" =>"Frozen_food"
+                "code" =>"Frozen_food",
+                "is_popular" => 1
             ],
             [
                 "name"=> "Đồ uống",
-                "code" =>"Beverage"
+                "code" =>"Beverage",
+                "is_popular" => 1
             ],
             [
                 "name"=> "Bánh kẹo",
-                "code" =>"Confectionery"
+                "code" =>"Confectionery",
+                "is_popular" => 1
             ],
             [
                 "name"=> "Gia vị",
-                "code" =>"Spice"
+                "code" =>"Spice",
+                "is_popular" => 1
             ],
         ];
         \DB::table("categories")->insert($categories);
