@@ -1,6 +1,6 @@
 <template lang="">
-  <div class="container mb-6" v-if="brands.length > 0">
-    <h2 class="text-center text-[2.6rem] font-medium mb-4">Thương hiệu</h2>
+  <div class="container mb-5" v-if="brands.length > 0">
+    <h2 class="text-center text-2xl font-medium mb-2">Thương hiệu</h2>
     <div class="cat-blocks-container">
       <swiper-component
         :itemCount="brands.length"
@@ -29,7 +29,7 @@
                 <img
                   :src="item.image"
                   alt="Category image"
-                  class="h-[60px] w-[120px] object-contain"
+                  class="h-[75px] w-[120px] object-contain"
                 />
               </span>
             </figure>

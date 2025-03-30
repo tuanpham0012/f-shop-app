@@ -111,7 +111,7 @@ namespace ShopAppApi.Repositories.Categories
                 Rgt = 0,
                 ParentId = request.ParentId,
                 NotUse = request.NotUse,
-                Image = await fileHelper.SaveFile(request.Image),
+                Image = request.Image != null ? await fileHelper.SaveFile(request.Image) : "",
                 IsPopular = request.IsPopular,
                 HidenMenu = request.HidenMenu,
                 UpdatedAt = DateTime.UtcNow,

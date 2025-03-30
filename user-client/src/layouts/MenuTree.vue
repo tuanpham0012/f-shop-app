@@ -58,7 +58,7 @@ li {
   cursor: pointer;
   > a {
     &.sf-with-ul-children {
-      font-size: 1.6rem;
+      font-size: 1rem;
       font-weight: 400;
       color: #000000;
       > span {

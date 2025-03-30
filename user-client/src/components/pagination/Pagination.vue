@@ -13,8 +13,7 @@
           tabindex="-1"
           aria-disabled="true"
         >
-          <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span
-          >Prev
+          <i class="icon-long-arrow-left"></i>
         </a>
       </li>
       <li
@@ -36,8 +35,8 @@
         @click.prevent="changePage((currentPage += 1))"
       >
         <a class="page-link page-link-next" href="#" aria-label="Next">
-          Next
-          <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+          
+          <i class="icon-long-arrow-right"></i>
         </a>
       </li>
     </ul>

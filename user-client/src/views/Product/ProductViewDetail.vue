@@ -70,7 +70,7 @@
           <h4 class="title text-dark">
             {{ product.name }}
           </h4>
-          <div class="d-flex flex-row my-3 justify-start text-2xl">
+          <div class="d-flex flex-row my-3 justify-start text-base">
             <div class="text-warning mb-1 me-2 border-r pe-2">
               <i class="fa fa-star"></i>
               <span class="ms-1"> 4.5 </span>
@@ -86,15 +86,15 @@
           </div>
 
           <div class="mb-4 bg-gray-100 d-flex gap-3 p-3 rounded-sm">
-            <span class="text-4xl text-red-500 font-medium">{{
+            <span class="text-xl text-red-500 font-medium">{{
               displayPrice(skuSelect?.price ?? product.price) + "đ"
             }}</span>
-            <span class="text-2xl text-gray-400 font-normal line-through">{{
+            <span class="text-base text-gray-400 font-normal line-through">{{
               displayPrice(skuSelect?.price ?? product.price) + "đ"
             }}</span>
           </div>
 
-          <div class="row mt-5 mb-4 text-2xl">
+          <div class="row mt-5 mb-4 text-base">
             <div
               class="row col-12 mb-4 items-start"
               v-for="(option, i) in options"
@@ -143,15 +143,15 @@
                         @click="quantity--"
                         :disabled="quantity <= 1"
                       >
-                        <i class="icon-minus text-2xl"></i>
+                        <i class="icon-minus text-base"></i>
                       </button>
                     </div>
                     <input
                       type="text"
                       style="
                         text-align: center;
-                        font-size: 1.5rem;
-                        height: 45px;
+                        font-size: 1rem;
+                        height: 35px;
                       "
                       class="form-control"
                       v-model="quantity"
@@ -163,7 +163,7 @@
                         type="button"
                         @click="quantity++"
                       >
-                        <i class="icon-plus text-2xl"></i>
+                        <i class="icon-plus text-base"></i>
                       </button>
                     </div>
                   </div>
@@ -174,18 +174,18 @@
           </div>
           <div class="col-12 py-5">
             <div class="grid grid-cols-12 gap-3">
-              <button class="btn btn-icon btn-outline-primary py-4 col-span-5">
-                <span class="text-2xl font-medium"
-                  ><i class="fa-solid fa-cart-plus text-2xl"></i> Thêm vào giỏ hàng</span
+              <button class="btn btn-icon btn-outline-primary py-2 col-span-5">
+                <span class="text-base font-medium"
+                  ><i class="fa-solid fa-cart-plus text-base"></i> Thêm vào giỏ hàng</span
                 >
               </button>
-              <button class="btn btn-icon btn-outline-danger py-4 col-span-5">
-                <span class="text-2xl font-medium"
+              <button class="btn btn-icon btn-outline-danger py-2 col-span-5">
+                <span class="text-base font-medium"
                   >Mua ngay</span
                 >
               </button>
-              <button class="btn btn-icon btn-outline-success py-4 col-span-2">
-                <span class="text-2xl font-medium"
+              <button class="btn btn-icon btn-outline-success py-2 col-span-2">
+                <span class="text-base font-medium"
                   ><i class="fa-solid fa-heart-circle-plus"></i></span
                 >
               </button>
@@ -195,9 +195,9 @@
       </div>
       <div class="container col-12 mt-4 bg-white mb-6">
         <div class="border-b border-gray-200 dark:border-gray-700">
-          <ul class="flex flex-wrap -mb-px text-3xl font-medium text-center text-gray-500 dark:text-gray-400">
-              <li class="me-2" v-for="(item, index) in tabViews" :key="index" @click="tabViewIndex = item.id">
-                  <a href="#" class="tab-view inline-flex gap-2 items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg group" :class="{'active' : tabViewIndex == item.id}">
+          <ul class="flex flex-wrap -mb-px text-xl font-medium text-center text-gray-500 dark:text-gray-400">
+              <li class="me-2 " v-for="(item, index) in tabViews" :key="index" @click="tabViewIndex = item.id">
+                  <a href="#" class="tab-view inline-flex gap-2 items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg group" :class="{'active' : tabViewIndex == item.id}">
                     <i :class="item.icon"></i>{{ item.label }}
                   </a>
               </li>

@@ -7,6 +7,7 @@ import { currencyFormatTenant } from "@/services/utils";
 import BrandView from "./BrandView.vue";
 import CategoryView from "./CategoryView.vue";
 import FeaturedProductView from "./FeaturedProductView.vue";
+import TopProduct from "./TopProduct.vue";
 
 const categoryStore = useCategoryStore();
 
@@ -147,91 +148,7 @@ onBeforeMount(async () => {
 
   <FeaturedProductView />
 
-  <div class="container mb-3" v-for="(category, i) in topCategories" :key="i">
-    <div class="heading heading-flex mb-2">
-      <div class="heading-center">
-        <h2 class="text-center text-[2.8rem] font-medium mb-4">
-          {{ category.name }}
-        </h2>
-        <!-- End .title -->
-      </div>
-      <!-- End .heading-left -->
-
-      <div class="heading-right">
-        <a href="category.html" class="title-link"
-          >Xem thêm <i class="icon-long-arrow-right"></i
-        ></a>
-      </div>
-      <!-- End .heading-right -->
-    </div>
-    <!-- End .heading -->
-
-    <swiper-component
-      :slidesPerView="6"
-      :spaceBetween="15"
-      :itemCount="category.products.length"
-      :navigation="false"
-      :auto-play="false"
-      :delay="4000"
-      class="py-4"
-    >
-      <swiper-slide
-        class="py-2"
-        v-for="(item, j) in category.products"
-        :key="j"
-      >
-        <div class="box-border cursor-pointer my-2">
-          <div
-            class="product d-flex flex-col mt-0 py-1 box-border min-h-[310px] rounded-xl"
-          >
-            <figure
-              class="product-media d-flex items-center bg-gray-50 positon-relative aspect-square mb-3 px-3"
-            >
-              <span
-                class="product-label label-circle label-new"
-                v-if="item.isNew"
-                >New</span
-              >
-              <span
-                class="product-label label-circle label-top"
-                v-if="item.isFeatured"
-                >Top</span
-              >
-              <!-- <span class="product-label label-circle label-sale">Sale</span> -->
-              <a href="product.html">
-                <img
-                  :src="item.imageThumb"
-                  alt="Product image"
-                  class="product-image object-contain"
-                />
-              </a>
-              <div class="product-action">
-                <button
-                  href="#"
-                  class="btn-product btn-cart"
-                  title="Add to cart"
-                >
-                  <span>Thêm vào giỏ hàng</span>
-                </button>
-              </div>
-            </figure>
-            <div
-              class="product-body p-0 px-3 py-2 d-flex flex-col justify-between flex-grow"
-            >
-              <h3 class="product-title text-3xl">
-                {{ item.name }}
-              </h3>
-              <div class="">
-                <span class="text-2xl text-red-500">{{
-                  currencyFormatTenant(item.price) + "đ"
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </swiper-slide>
-    </swiper-component>
-  </div>
+  <TopProduct />
 
   <div class="container newsletter">
     <div

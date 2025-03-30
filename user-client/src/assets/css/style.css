@@ -1,7 +1,7 @@
 ﻿/* @import url("https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800"); */
 
 html {
-    font-size: 62.5%;
+    font-size: 100%;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     font-size-adjust: 100%
@@ -544,6 +544,8 @@ blockquote.text-white cite span {
 }
 
 .header .container,
+.header .container-md,
+.header .container-sm,
 .header .container-fluid {
     position: relative;
     display: flex;
@@ -569,8 +571,8 @@ blockquote.text-white cite span {
 
 .logo {
     display: block;
-    margin-top: 2.55rem;
-    margin-bottom: 2.95rem;
+    margin-top: 1.3rem;
+    margin-bottom: 1.3rem;
     flex-shrink: 0;
     min-height: 25px
 }
@@ -796,10 +798,6 @@ blockquote.text-white cite span {
     letter-spacing: .01em
 }
 
-.header-middle .menu.sf-arrows>li>.sf-with-ul {
-    padding-right: 1.5rem
-}
-
 .cart-dropdown,
 .compare-dropdown {
     display: flex;
@@ -968,24 +966,23 @@ blockquote.text-white cite span {
     padding-left: 2.5rem
 }
 
-.cart-dropdown .dropdown-toggle {
-    font-size: 3.2rem
-}
-
 .cart-dropdown .dropdown-toggle i {
     display: inline-block;
     margin-top: -3px
 }
 
 .cart-dropdown .cart-count {
+    position: absolute;
+    top: -.5rem;
+    right: -1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
+    min-width: 1.2rem;
+    height: 1.2rem;
     border-radius: 50%;
     font-weight: 400;
-    font-size: 1rem;
+    font-size: 0.875rem;
     line-height: 1;
     margin-left: .2rem;
     margin-top: .1rem;
@@ -1111,7 +1108,6 @@ blockquote.text-white cite span {
 .search-toggle {
     position: relative;
     display: block;
-    font-size: 2.4rem;
     line-height: 1;
     min-width: 2.5rem;
     padding: .3rem .2rem;
@@ -1332,7 +1328,7 @@ blockquote.text-white cite span {
     background: transparent;
     color: #666;
     padding: .2rem .25rem;
-    font-size: 2.8rem;
+    font-size: 1.8rem;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -1935,12 +1931,12 @@ blockquote.text-white cite span {
 .menu li>a {
     color: #999999;
     font-weight: 300;
-    font-size: 1.3rem;
+    font-size: 1rem;
     letter-spacing: 0;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-    padding-left: 3rem;
-    padding-right: 3rem
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    padding-left: 1rem;
+    padding-right: 1rem
 }
 
 .menu li>a span:not(.tip) {
@@ -1949,20 +1945,13 @@ blockquote.text-white cite span {
 
 .menu>li>a {
     font-weight: 500;
-    font-size: 1.5rem;
+    font-size: 1rem;
     color: #333;
-
-    letter-spacing: -.01em;
-    padding: 3.95rem 3rem;
     text-transform: uppercase
 }
 
 .menu>li+li {
     margin-left: 0
-}
-
-.menu.sf-arrows>li>.sf-with-ul {
-    padding-right: 2rem
 }
 
 .menu.sf-arrows .sf-with-ul {
@@ -2656,9 +2645,9 @@ blockquote.text-white cite span {
 }
 
 .mobile-menu-container .social-icon {
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1rem;
     background-color: transparent;
     margin-bottom: 0;
     color: rgba(255, 255, 255, 0.45);
@@ -2837,8 +2826,8 @@ blockquote.text-white cite span {
 }
 
 .mobile-search {
-    margin: 1rem 0 1.5rem;
-    padding: 0 2rem;
+    margin: 0;
+    padding: 0 .875rem;
     display: flex;
     align-items: center
 }
@@ -2847,13 +2836,14 @@ blockquote.text-white cite span {
     height: 36px;
     margin-bottom: 0;
     -webkit-appearance: none;
-    font-size: 1.2rem;
+    font-size: 1rem;
     line-height: 1.5;
     padding: .8rem 1.5rem;
     max-width: calc(100% - 36px);
     background-color: #333;
     border-color: rgba(255, 255, 255, 0.1);
-    border-right-width: 0
+    border-right-width: 0;
+    border-radius: 0;
 }
 
 .mobile-search .form-control::placeholder {
@@ -2868,8 +2858,11 @@ blockquote.text-white cite span {
 
 .mobile-search .btn {
     font-size: 1.2rem;
-    min-width: 3.6rem;
-    padding: .8rem .2rem
+    width: 2.1rem;
+    height: 2.1rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0;
 }
 
 .mobile-menu-container .tab-content {
@@ -3066,13 +3059,6 @@ p {
 .header-2 .header-search-extended .btn:focus,
 .header-2 .header-search-extended .btn:active {
     color: #a6c76c;
-    background-color: transparent
-}
-
-.header-2 .btn-primary:not(:disabled):not(.disabled):active,
-.header-2 .btn-primary:not(:disabled):not(.disabled).active,
-.header-2 .show>.btn-primary.dropdown-toggle {
-    color: #c96;
     background-color: transparent
 }
 
@@ -3296,16 +3282,6 @@ p {
     padding: 1rem 2.4rem 1rem .5rem
 }
 
-.header-3 .btn-primary:hover,
-.header-3 .btn-primary:focus,
-.header-3 .btn-primary.focus,
-.header-3 .btn-primary:not(:disabled):not(.disabled):active,
-.header-3 .btn-primary:not(:disabled):not(.disabled).active,
-.header-3 .show>.btn-primary.dropdown-toggle {
-    color: #c96;
-    background-color: transparent
-}
-
 @media screen and (max-width: 991px) {
     .header-3 .header-search-visible .header-search-wrapper {
         border-color: #dadada
@@ -3467,16 +3443,6 @@ p {
     padding-left: 0;
     height: 44px;
     padding: 1rem 2.4rem 1rem .5rem
-}
-
-.header-4 .btn-primary:hover,
-.header-4 .btn-primary:focus,
-.header-4 .btn-primary.focus,
-.header-4 .btn-primary:not(:disabled):not(.disabled):active,
-.header-4 .btn-primary:not(:disabled):not(.disabled).active,
-.header-4 .show>.btn-primary.dropdown-toggle {
-    color: #c96;
-    background-color: transparent
 }
 
 .header-4 .dropdown.category-dropdown .dropdown-toggle:not(:hover):not(:focus) {
@@ -3876,16 +3842,6 @@ p {
     color: #fff
 }
 
-.header-6 .btn-primary:hover,
-.header-6 .btn-primary:focus,
-.header-6 .btn-primary.focus,
-.header-6 .btn-primary:not(:disabled):not(.disabled):active,
-.header-6 .btn-primary:not(:disabled):not(.disabled).active,
-.header-6 .show>.btn-primary.dropdown-toggle {
-    color: #c15454;
-    background-color: transparent
-}
-
 @media screen and (min-width: 992px) {
     .header-6 .logo {
         position: absolute;
@@ -3997,15 +3953,6 @@ p {
     max-width: 270px
 }
 
-.header-7 .header-search-extended .btn-primary {
-    flex: 0 0 40px;
-    max-width: 40px;
-    background-color: transparent;
-    font-size: 2.2rem;
-    color: #666;
-    border-radius: 0
-}
-
 .header-7 .header-search-extended .header-search-wrapper {
     border-radius: 0;
     border: none;
@@ -4019,18 +3966,6 @@ p {
 .header-7 .header-search-extended .form-control {
     padding-left: 1rem;
     padding-bottom: 1rem
-}
-
-.header-7 .btn-primary:hover,
-.header-7 .btn-primary:focus,
-.header-7 .btn-primary.focus,
-.header-7 .btn-primary:not(:disabled):not(.disabled):active,
-.header-7 .btn-primary:not(:disabled):not(.disabled).active,
-.header-7 .show>.btn-primary.dropdown-toggle {
-    color: #fff;
-    background-color: #cc6666;
-    border-color: #cc6666;
-    box-shadow: none
 }
 
 .header-7 .top-menu:not(.top-link-menu) ul {
@@ -6017,7 +5952,7 @@ p {
 }
 
 .breadcrumb-nav {
-    margin-bottom: 4rem;
+    margin: .4rem .8rem;
     border-bottom: 0.1rem solid rgba(235, 235, 235, 0.55)
 }
 
@@ -6046,8 +5981,8 @@ p {
 }
 
 .breadcrumb-item {
-    font-weight: 300;
-    font-size: 1.4rem;
+    font-weight: 400;
+    font-size: 1rem;
     line-height: 1.5;
     letter-spacing: 0;
     text-transform: capitalize
@@ -6088,11 +6023,6 @@ p {
     font-size: 1.1rem;
     vertical-align: middle;
     margin-top: -.1rem
-}
-
-.title {
-    font-size: 2.2rem;
-    letter-spacing: -.03em
 }
 
 .title-lg {
@@ -6173,10 +6103,6 @@ p {
 }
 
 @media screen and (min-width: 768px) {
-    .title {
-        font-size: 2.4rem
-    }
-
     .title-lg {
         font-size: 3rem
     }
@@ -6582,7 +6508,7 @@ p {
 .nav.nav-pills .nav-link {
     color: #777;
     font-weight: 400;
-    font-size: 1.4rem;
+    font-size: 1rem;
     line-height: 1.5;
     letter-spacing: -.01em;
     padding: .45rem 1rem;
@@ -6879,32 +6805,6 @@ p {
     display: inline-block
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #c96;
-    border-color: #c96;
-    box-shadow: none
-}
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary.focus,
-.btn-primary:not(:disabled):not(.disabled):active,
-.btn-primary:not(:disabled):not(.disabled).active,
-.show>.btn-primary.dropdown-toggle {
-    color: #fff;
-    background-color: #a6c76c;
-    border-color: #a6c76c;
-    box-shadow: none
-}
-
-.btn-primary.disabled,
-.btn-primary:disabled {
-    color: #fff;
-    background-color: #c96;
-    border-color: #c96
-}
-
 .btn-secondary {
     color: #fff;
     background-color: #a6c76c;
@@ -6981,32 +6881,6 @@ p {
     color: #333;
     background-color: #fff;
     border-color: #fff
-}
-
-.btn-primary-white {
-    color: #fff;
-    background-color: #c96;
-    border-color: #c96;
-    box-shadow: none
-}
-
-.btn-primary-white:hover,
-.btn-primary-white:focus,
-.btn-primary-white.focus,
-.btn-primary-white:not(:disabled):not(.disabled):active,
-.btn-primary-white:not(:disabled):not(.disabled).active,
-.show>.btn-primary-white.dropdown-toggle {
-    color: #c96;
-    background-color: #fff;
-    border-color: #fff;
-    box-shadow: none
-}
-
-.btn-primary-white.disabled,
-.btn-primary-white:disabled {
-    color: #fff;
-    background-color: #c96;
-    border-color: #c96
 }
 
 .btn-white-primary {
@@ -7478,10 +7352,11 @@ p {
 
 .product {
     position: relative;
-    margin-bottom: 1rem;
     transition: box-shadow .35s ease;
     background-color: #fff;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05)
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ccc;
+    border-radius: .2rem;
 }
 
 .owl-carousel .product {
@@ -7492,6 +7367,7 @@ p {
     box-shadow: 5px 0px 5px 2px rgba(0, 0, 0, 0.1);
     transform: translateY(-5px);
     transition: all .5s ease;
+    border: 0;
 }
 
 .product-media {
@@ -7645,7 +7521,7 @@ p {
 
 .product-body {
     position: relative;
-    padding: .8rem 1.4rem;
+    padding: .6rem 1rem;
     transition: all .35s ease;
     background-color: #fff
 }
@@ -7656,7 +7532,6 @@ p {
 
 .product-title {
     font-weight: 400;
-    /* font-size: 1.6rem; */
     line-height: 1.25;
     letter-spacing: -.01em;
     color: #333333;
@@ -7675,7 +7550,6 @@ p {
 .product-cat {
     color: #777;
     font-weight: 300;
-    font-size: 1.3rem;
     line-height: 1.2;
     letter-spacing: -.01em;
     margin-bottom: .3rem
@@ -7725,10 +7599,10 @@ p {
 .product-label {
     position: absolute;
     z-index: 1;
-    top: 2rem;
-    left: 2rem;
+    top: 1rem;
+    left: 1rem;
     font-weight: 400;
-    font-size: 1.3rem;
+    font-size: .875rem;
     line-height: 1.6rem;
     letter-spacing: -.01em;
     padding: .5rem .9rem;
@@ -7785,8 +7659,8 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 4.6rem;
-    height: 4.6rem;
+    width: 2.3rem;
+    height: 2.3rem;
     min-width: 0;
     border-radius: 50%;
     line-height: 1
@@ -7803,10 +7677,9 @@ p {
 .ratings-container {
     display: flex;
     align-items: center;
-    font-size: 1.3rem;
     line-height: 1;
     white-space: nowrap;
-    margin: 1.2rem 0  ;
+    margin: .25rem 0  ;
 }
 
 .ratings {
@@ -7817,7 +7690,7 @@ p {
 .ratings,
 .ratings-val {
     display: inline-block;
-    font-size: 1.4rem;
+    font-size: .875rem;
     letter-spacing: 0.1em;
     line-height: 1;
     font-family: "molla"
@@ -7825,7 +7698,7 @@ p {
 
 .ratings:before,
 .ratings-val:before {
-    content: "\f318" "\f318" "\f318" "\f318" "\f318"
+    content: "\f318"; /*"\f318" "\f318" "\f318" "\f318" */
 }
 
 .ratings-val {
@@ -7844,7 +7717,7 @@ p {
 .ratings-text {
     color: #cccccc;
     letter-spacing: -.01em;
-    margin-left: .8rem
+    margin-left: .2rem
 }
 
 .ratings-text a {
@@ -7904,7 +7777,7 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
+    font-size: 1rem;
     line-height: 1;
     transition: all .35s ease;
     padding-top: 1.9rem;
@@ -10620,9 +10493,9 @@ small.form-text {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 3rem;
-    height: 4rem;
-    width: 4rem;
+    min-width: 2.2rem;
+    height: 2.2rem;
+    width: 2.2rem;
     font-weight: 400;
     padding: 0 .3rem;
     line-height: 1;
@@ -10633,32 +10506,7 @@ small.form-text {
 }
 
 .page-link i {
-    font-size: 1.5rem
-}
-
-.page-link.page-link-prev {
-    margin-right: 1.7rem
-}
-
-.page-link.page-link-prev i {
-    margin-left: 0;
-    margin-right: 1rem
-}
-
-.page-link.page-link-next {
-    margin-left: 1.8rem
-}
-
-.page-link.page-link-next i {
-    margin-left: 1rem;
-    margin-right: 0
-}
-
-.page-link.page-link-prev,
-.page-link.page-link-next {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    min-width: 70px
+    font-size: 1.2rem
 }
 
 .page-link:hover,
@@ -11227,10 +11075,6 @@ button:focus {
     letter-spacing: -.025em
 }
 
-.nav.nav-pills .nav-link {
-    font-size: 1.6rem
-}
-
 .mt-v3 {
     margin-top: -3rem
 }
@@ -11449,7 +11293,7 @@ button:focus {
 }
 
 .quickView-content .details-filter-row label {
-    font-size: 1.4rem;
+    font-size: 1rem;
     letter-spacing: 0;
     text-transform: uppercase;
     color: #333
@@ -11966,8 +11810,7 @@ button:focus {
 }
 
 .toolbox .select-custom .form-control {
-    font-size: 1.3rem;
-    padding-right: 2rem;
+    padding-right: 1rem;
     max-width: 140px;
     min-width: 140px;
     background-color: #fff;
@@ -11985,7 +11828,6 @@ button:focus {
     color: #999;
     font-weight: 300;
     font-size: 1.2rem;
-    padding: .45rem 1rem;
     height: 30px;
     margin-bottom: 0
 }
@@ -11995,7 +11837,7 @@ button:focus {
 }
 
 .toolbox select.form-control:not([size]):not([multiple]) {
-    height: 30px
+    height: 35px
 }
 
 .toolbox-left,
@@ -12672,9 +12514,8 @@ button:focus {
 
 .details-filter-row label {
     display: inline-block;
-    width: 67px;
     font-weight: 400;
-    font-size: 1.4rem;
+    font-size: 1rem;
     margin-bottom: 0
 }
 
@@ -13786,10 +13627,10 @@ button:focus {
 .widget-title {
     color: #333;
     font-weight: 400;
-    font-size: 1.8rem;
+    font-size: 1.1rem;
     line-height: 1.1;
     letter-spacing: -.01em;
-    margin-bottom: 2rem
+    margin-bottom: 1rem
 }
 
 .widget-search .widget-title {
@@ -16165,8 +16006,8 @@ button:focus {
 .btn.btn-spinner {
     min-width: 0;
     color: #333333;
-    padding: 1.25rem .4rem;
-    font-size: 1rem;
+    padding: .3rem;
+    font-size: .675rem;
     border: none;
     background: none
 }

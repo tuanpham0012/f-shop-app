@@ -10,7 +10,7 @@ namespace ShopAppApi.Helpers
     public class FileHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IFileHelper
     {
         private readonly string driver = configuration["FileStorage:Driver"] ?? "local";
-        private readonly string defaultImage = configuration["FileStorage:DefaultImage"];
+        private readonly string defaultImage = configuration["FileStorage:DefaultImage"] ?? "";
         private readonly string SaveFolder = "Files";
 
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -59,22 +59,27 @@ namespace ShopAppApi.Helpers
 
         public async Task<string> SaveFile(byte[] fileBytes, string subFolder = "")
         {
+
+            string extension = GetFileFormat(fileBytes);
+            string fileName = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "_" + StringHelper.RandomString(16) + "." + extension;
+            SaveFileToStorage(fileBytes, fileName, subFolder);
+            return string.IsNullOrEmpty(subFolder) ?  fileName : $"{subFolder}/{fileName}";
+        }
+
+        private void SaveFileToStorage(byte[] fileBytes, string fileName, string subFolder = "")
+        {
             DirectoryInfo info = GetFileFolder(subFolder);
             if (!info.Exists)
             {
                 info.Create();
             }
-
-            string extension = GetFileFormat(fileBytes);
-            string fileName = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "_" + StringHelper.RandomString(16) + "." + extension;
             string path = Path.Combine(info.FullName, fileName);
             using (MemoryStream memoryStream = new MemoryStream(fileBytes))
             {
                 using Stream streamToWriteTo = File.Open(path, FileMode.Create);
                 memoryStream.Position = 0;
-                await memoryStream.CopyToAsync(streamToWriteTo);
+                memoryStream.CopyTo(streamToWriteTo);
             }
-            return fileName; 
         }
 
         public void DeleteFile(string? fileName)

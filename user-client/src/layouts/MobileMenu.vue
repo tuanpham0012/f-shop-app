@@ -138,7 +138,8 @@ onBeforeMount(() => {});
 }
 
 .sidebar li a:hover {
-  background-color: #98bcff80;
+  background-color: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary-text-emphasis);
 }
 
 .sidebar .submenu {

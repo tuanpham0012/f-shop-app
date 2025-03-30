@@ -9,7 +9,7 @@
     "
   >
     <template #body>
-      <div class="col-sm-12 h-[calc(100vh-350px)] mb-24">
+      <div class="col-sm-12 h-[calc(100vh-350px)] mb-24" v-if="data">
         <TinyEditor
           v-model="data.data"
         />

@@ -1,6 +1,6 @@
 <template lang="">
-  <div class="container mb-6" v-if="popularCategories.length > 0">
-    <h2 class="text-center text-[2.6rem] font-medium mb-2">
+  <div class="container mb-4" v-if="popularCategories.length > 0">
+    <h2 class="text-center text-2xl font-medium mb-2">
       Danh mục phổ biến
     </h2>
     <!-- End .title text-center -->

@@ -22,7 +22,7 @@ export const useProductStore = defineStore("product", {
             },
             entry: null as any,
             errors: null,
-            descriptionProduct: ""
+            descriptionProduct: null as any,
         };
     },
 
@@ -68,13 +68,15 @@ export const useProductStore = defineStore("product", {
         async getDescriptionProductById(id:any) {
             await _show(`${adminUrl}/products/description/${id}`)
                 .then((res) => {
-                    this.descriptionProduct = res.data.data
+                    this.descriptionProduct = res.data
                 })
                 .catch((err) => {
                     console.log(err);
                 });
         },
         async updateDes(id:any, data: any) {
+            console.log(data);
+            
             return await _update(`${adminUrl}/products/description/${id}`, data);
         },
 

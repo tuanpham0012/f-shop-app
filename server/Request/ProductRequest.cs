@@ -64,6 +64,8 @@ namespace ShopAppApi.Request
         public byte Visual { get; set; }
         public byte Order { get; set; }
         public bool? IsDeleted { get; set; }
+        public bool? IsEdited { get; set; } = false;
+
         public virtual ICollection<OptionValuesRequest> OptionValues { get; set; } = [];
     }
 
@@ -77,6 +79,8 @@ namespace ShopAppApi.Request
         public string? Image { get; set; }
         public string? Label { get; set; }
         public bool? IsDeleted { get; set; }
+        public bool? IsEdited { get; set; } = false;
+
     }
     public class SkusRequest
     {
@@ -91,6 +95,7 @@ namespace ShopAppApi.Request
         public string? Name { get; set; } = null!;
         public int Stock { get; set; }
         public virtual ICollection<VariantRequest> Variants { get; set; } = [];
+        public bool? IsEdited { get; set; } = false;
     }
 
     public class VariantRequest

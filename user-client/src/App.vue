@@ -24,12 +24,13 @@ import MobileMenu from "./layouts/MobileMenu.vue";
 <style lang="scss">
 @import url('./assets/css/style.css');
 @import url('./assets/css/bootstrap.min.css');
-@import url('./assets/css/skins/skin-demo-21.css');
+//@import url('./assets/css/skins/skin-demo-21.css');
 @import url('./assets/css/demos/demo-21.css');
 
 :root {
   --slider-connect-bg: #7a7a7a;
   --slider-tooltip-bg: #4b4b4b;
+  --bs-breadcrumb-font-size: .875rem;
 }
 
 .main{
@@ -113,11 +114,8 @@ import MobileMenu from "./layouts/MobileMenu.vue";
   -webkit-box-orient: vertical; /* Định hướng chiều dọc */
   -webkit-line-clamp: 2; /* Giới hạn số dòng hiển thị */
   overflow: hidden; /* Ẩn phần văn bản vượt ra ngoài */
-  line-height: 2rem; /* Chiều cao dòng */
-  max-height: 4em; /* Chiều cao tối đa tương ứng với số dòng */
-}
-.breadcrumb-nav .breadcrumb-item{
-  font-size: 1.6rem;
-  font-weight: 400
+  line-height: 1.1rem; /* Chiều cao dòng */
+  height: 2.2rem; /* Chiều cao tối đa tương ứng với số dòng */
+  padding-bottom: .2rem;
 }
 </style>

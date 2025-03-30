@@ -4,11 +4,6 @@
     height: 68vh
 }
 
-.logo {
-    margin-top: 3rem;
-    margin-bottom: 3rem
-}
-
 .top-menu li+li {
     margin-left: 2.6rem
 }
@@ -25,24 +20,8 @@
     border-bottom: none
 }
 
-.header-middle .menu>li>a {
-    padding: 3.2rem 3.2rem
-}
-
-.header-middle .menu.sf-arrows>li>.sf-with-ul {
-    padding-right: 1.8rem
-}
-
 .header-middle .header-right>div>a>i {
     color: #333
-}
-
-.header-middle .header-right .mobile-menu-toggler a i {
-    font-size: 2.6rem
-}
-
-.header-middle .header-right .header-search a i {
-    font-size: 2.4rem
 }
 
 .header-middle .header-right .icon-heart-o {
@@ -67,27 +46,24 @@
 }
 
 .wishlist .wishlist-count {
+    position: absolute;
+    top: -.25rem;
+    right: -.15rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
+    min-width: 1.2rem;
+    height: 1.2rem;
     border-radius: 50%;
     font-weight: 400;
-    font-size: 1rem;
+    font-size: 0.875rem;
     line-height: 1;
-    margin-left: .2rem;
-    margin-top: .1rem;
     color: #fff;
     background-color: #66f
 }
 
 .cart-dropdown {
     padding-left: 1.5rem
-}
-
-.cart-dropdown .dropdown-toggle {
-    font-size: 2.6rem
 }
 
 .cart-dropdown .cart-count {
@@ -342,7 +318,7 @@
 }
 
 .col-pd1 .content h3 {
-    font-size: 3.4rem;
+    font-size: 1.4rem;
     font-weight: 700;
     letter-spacing: -.025em;
     line-height: 1em;
@@ -385,14 +361,6 @@
     text-decoration: none
 }
 
-.btn-primary {
-    color: #fff;
-    font-size: 1.4rem;
-    background-color: #66f;
-    border-color: #66f;
-    box-shadow: none
-}
-
 .banner-title a {
     color: #fff
 }
@@ -418,7 +386,7 @@
     color: #333333;
     border: 1px solid #333333;
     transition: all 0.3s;
-    padding: 1.5rem 4rem 1.5rem 4rem;
+    padding: 1rem 2rem 1rem 2rem;
     margin-bottom: 3rem
 }
 
@@ -498,12 +466,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
+    font-size: 1rem;
     line-height: 1;
     transition: all .35s ease;
-    padding-top: .7rem;
-    padding-bottom: .7rem;
-    margin: 1rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    margin: .4rem;
     flex-grow: 1;
     flex-basis: 0;
     border: 1px solid #66f;
@@ -513,7 +481,7 @@
 .btn-product span {
     color: #66f;
     font-weight: 400;
-    font-size: 1.3rem;
+    font-size: .875rem;
     letter-spacing: -.01em;
     transition: all .35s ease
 }
@@ -749,7 +717,7 @@
 }
 
 .category-banner .banner-content .category {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 700;
     letter-spacing: -.01em;
     margin-top: 0rem;
@@ -807,7 +775,7 @@
 .nav.nav-pills .nav-item .nav-link.active {
     color: #fff;
     border: none;
-    background-color: #66f
+    background-color: var(--bs-primary);
 }
 
 .newsletter .background {

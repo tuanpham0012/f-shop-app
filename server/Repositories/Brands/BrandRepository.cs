@@ -57,7 +57,7 @@ namespace ShopAppApi.Repositories.Products
             {
                 Name = request.Name,
                 Code = request.Code,
-                Image = await fileHelper.SaveFile(request.Image),
+                Image = request.Image != null ? await fileHelper.SaveFile(request.Image) : "",
                 NotUse = request.NotUse,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

@@ -5,6 +5,7 @@ using ShopAppApi.Request;
 using ShopAppApi.Response;
 using ShopAppApi.ViewModels;
 using Slugify;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -68,14 +69,7 @@ namespace ShopAppApi.Repositories.Products
             foreach (var option in product.Options)
             {
                 option.ProductId = entry.Id;
-                var _option = await this.CreateOrUpdateOption(option);
-
-                foreach (var value in option.OptionValues)
-                {
-                    value.OptionId = _option.Id;
-                    value.ProductId = entry.Id;
-                    var _value = await this.CreateOrUpdateOptionValue(value);
-                }
+                CreateOrUpdateOption(option);
             }
 
             if (product.Skus.Count > 0)
@@ -83,22 +77,9 @@ namespace ShopAppApi.Repositories.Products
                 foreach (var sku in product.Skus)
                 {
                     sku.ProductId = entry.Id;
-                    var _sku = await this.CreateOrUpdateSku(sku);
+                    CreateOrUpdateSku(sku);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
-
-                    foreach (var variant in sku.Variants)
-                    {
-                        var optionValue = _context.OptionValues.AsNoTracking().FirstOrDefault(x => x.Code == variant.Code);
-                        if (optionValue != null)
-                        {
-                            variant.ProductId = entry.Id;
-                            variant.OptionValueId = optionValue.Id;
-                            variant.OptionId = optionValue.OptionId;
-                            variant.SkuId = _sku.Id;
-                            var _variant = await this.CreateOrUpdateVariant(variant);
-                        }
-                    }
                 }
             }
             else
@@ -110,7 +91,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = entry.Price,
                     Barcode = entry.Code,
                 };
-                var _sku = await this.CreateOrUpdateSku(sku);
+                CreateOrUpdateSku(sku);
                 minPrice = sku.Price;
             }
 
@@ -149,25 +130,6 @@ namespace ShopAppApi.Repositories.Products
                 BrandId = p.BrandId,
                 CategoryId = p.CategoryId,
                 TaxId = p.TaxId,
-
-                // Options = p.Options.Select(o => new OptionVM
-                // {
-                //     Id = o.Id,
-                //     Code = o.Code,
-                //     ProductId = o.ProductId,
-                //     Name = o.Name,
-                //     Visual = o.Visual,
-                //     Order = o.Order,
-                //     OptionValues = o.OptionValues.Select(v => new OptionValueVM
-                //     {
-                //         Id = v.Id,
-                //         Code = v.Code,
-                //         ProductId = v.ProductId,
-                //         OptionId = v.OptionId,
-                //         Value = v.Value,
-                //         Label = v.Label
-                //     }).ToList(),
-                // }).ToList(),
                 Images = p.ProductImages.Select(i => new ProductImageVM
                 {
                     Id = i.Id,
@@ -180,38 +142,7 @@ namespace ShopAppApi.Repositories.Products
                     Extension = i.Extension,
                     FileName = i.FileName
                 }).ToList(),
-                // Skus = p.Skus.Select(s => new SkuVM
-                // {
-                //     Id = s.Id,
-                //     ProductId = s.ProductId,
-                //     Barcode = s.Barcode,
-                //     Price = s.Price,
-                //     Name = s.Name,
-                //     Stock = s.Stock,
-                //     Variants = s.Variants.Select(v => new VariantVM
-                //     {
-                //         Id = v.Id,
-                //         ProductId = v.ProductId,
-                //         SkuId = v.SkuId,
-                //         OptionId = v.OptionId,
-                //         OptionValueId = v.OptionValueId,
-                //         OptionValue = new OptionValueVM
-                //         {
-                //             Id = v.OptionValue.Id,
-                //             Code = v.OptionValue.Code,
-                //             Value = v.OptionValue.Value,
-                //             Label = v.OptionValue.Label,
-                //         }
-                //     }).ToList(),
-                // }).ToList()
             });
-            // if (Includes != null)
-            // {
-            //     foreach (var include in Includes)
-            //     {
-            //         query = query.Include(include);
-            //     }
-            // }
             return await query.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Id) ?? throw new ArgumentException("Product does not exists!");
         }
 
@@ -323,12 +254,15 @@ namespace ShopAppApi.Repositories.Products
                 if (item.IsDeleted == true)
                 {
                     var delImg = await _context.ProductImages.SingleOrDefaultAsync(x => x.Id == item.Id);
-                    fileHelper.DeleteFile(delImg.Path);
-                    _context.ProductImages.Remove(delImg);
+                    if (delImg != null)
+                    {
+                        fileHelper.DeleteFile(delImg.Path);
+                        _context.ProductImages.Remove(delImg);
+                    }
                 }
                 else if (item.Id == 0)
                 {
-                    var saveImg = await fileHelper.SaveFile(item.Path);
+                    var saveImg = await fileHelper.SaveFile(item.Path, "images");
                     var newImg = new ProductImage
                     {
                         ProductId = _product.Id,
@@ -372,7 +306,7 @@ namespace ShopAppApi.Repositories.Products
             if (!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !product.ImageThumb.Contains(_product.ImageThumb)))
             {
                 fileHelper.DeleteFile(_product.ImageThumb);
-                _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb);
+                _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb, "imgThumb");
             }
             _product.IsNew = product.IsNew;
             _product.NumberWarning = product.NumberWarning;
@@ -383,54 +317,29 @@ namespace ShopAppApi.Repositories.Products
             int maxStock = Int32.MinValue;
             foreach (var option in product.Options)
             {
-                if (option.IsDeleted == true)
+                if (option.IsDeleted == true && option.Id != null)
                 {
-                    await DeleteOption((long)option.Id);
+                    DeleteOption((long)option.Id);
                     continue;
                 }
                 option.ProductId = _product.Id;
-                var _option = await CreateOrUpdateOption(option);
-
-                foreach (var value in option.OptionValues)
-                {
-                    if (value.IsDeleted == true)
-                    {
-                        await DeleteOptionValue((long)value.Id);
-                        continue;
-                    }
-                    value.OptionId = _option.Id;
-                    value.ProductId = _product.Id;
-                    await CreateOrUpdateOptionValue(value);
-                }
+                CreateOrUpdateOption(option);
             }
 
-            if (product.NewSkus == true)
+            if (product.NewSkus == true && product.Id != null)
             {
-                await DeleteSkus((long)product.Id);
+                DeleteSkus((long)product.Id);
             }
 
-            if (product.Skus.Count() > 0)
+            if (product.Skus.Count > 0)
             {
                 foreach (var sku in product.Skus)
                 {
                     sku.ProductId = _product.Id;
                     sku.Barcode = sku.Barcode ?? _product.Barcode;
-                    var _sku = await CreateOrUpdateSku(sku);
+                    CreateOrUpdateSku(sku);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
-
-                    foreach (var variant in sku.Variants)
-                    {
-                        var optionValue = _context.OptionValues.AsNoTracking().FirstOrDefault(x => x.Code == variant.Code);
-                        if (optionValue != null)
-                        {
-                            variant.ProductId = _product.Id;
-                            variant.OptionValueId = optionValue.Id;
-                            variant.OptionId = optionValue.OptionId;
-                            variant.SkuId = _sku.Id;
-                            await CreateOrUpdateVariant(variant);
-                        }
-                    }
                 }
             }
             else
@@ -442,7 +351,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = _product.Price,
                     Barcode = _product.Barcode
                 };
-                var _sku = await CreateOrUpdateSku(sku);
+                CreateOrUpdateSku(sku);
                 minPrice = sku.Price;
                 maxStock = sku.Stock;
             }
@@ -453,171 +362,193 @@ namespace ShopAppApi.Repositories.Products
 
         }
 
-        public async Task<Sku> CreateOrUpdateSku(SkusRequest sku)
+        private void CreateOrUpdateSku(SkusRequest sku)
         {
-            var _sku = new Sku
+            var _sku = new Sku();
+            if (sku.Id != null && sku.IsEdited == true)
             {
-                ProductId = (long)sku.ProductId,
-                Name = sku.Name,
-                Price = sku.Price,
-                Barcode = sku.Barcode,
-                Stock = sku.Stock,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-            };
-
-            if (sku.Id != null)
-            {
-                _sku = _context.Skus.FirstOrDefault(sk => sk.Id == sku.Id) ?? _sku;
+                _sku = new Sku
+                {
+                    Id = sku.Id ?? 0,
+                    ProductId = (long)sku.ProductId,
+                    Name = sku.Name,
+                    Price = sku.Price,
+                    Barcode = sku.Barcode,
+                    Stock = sku.Stock,
+                    UpdatedAt = DateTime.UtcNow,
+                };
+                _context.Skus.Update(_sku);
             }
-
-            if (_sku.Id != 0)
+            else if (sku.Id == null)
             {
-                _sku.ProductId = (long)sku.ProductId;
-                _sku.Name = sku.Name;
-                _sku.Price = sku.Price;
-                _sku.Barcode = sku.Barcode;
-                _sku.Stock = sku.Stock;
-                _sku.UpdatedAt = DateTime.UtcNow;
-            }
-            else
-            {
+                _sku = new Sku
+                {
+                    ProductId = (long)sku.ProductId,
+                    Name = sku.Name,
+                    Price = sku.Price,
+                    Barcode = sku.Barcode,
+                    Stock = sku.Stock,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                };
                 _context.Add(_sku);
+                _context.SaveChanges();
+                CreateOrUpdateVariant(sku.Variants, _sku);
             }
-            await _context.SaveChangesAsync();
-            return _sku;
         }
 
-        public async Task<Option> CreateOrUpdateOption(OptionsRequest option)
+        private void CreateOrUpdateOption(OptionsRequest option)
         {
-            var _option = new Option
-            {
-                ProductId = (long)option.ProductId,
-                Code = option.Code,
-                Name = option.Name,
-                Order = option.Order,
-                Visual = option.Visual,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-            };
+            var _option = new Option { };
 
-            if (option.Id != null)
+            if (option.Id != null && option.IsEdited == true)
             {
-                _option = _context.Options.FirstOrDefault(op => op.Id == option.Id) ?? _option;
+                _option = new Option
+                {
+                    Id = option.Id ?? 0,
+                    ProductId = (long)option.ProductId,
+                    Code = option.Code,
+                    Name = option.Name,
+                    Order = option.Order,
+                    Visual = option.Visual,
+                    UpdatedAt = DateTime.UtcNow,
+                };
+                _context.Options.Update(_option);
             }
-            if (_option.Id != 0)
+            else if (option.Id == null)
             {
-                _option.ProductId = (long)option.ProductId;
-                _option.Code = option.Code;
-                _option.Name = option.Name;
-                _option.Order = option.Order;
-                _option.Visual = option.Visual;
-                _option.UpdatedAt = DateTime.UtcNow;
-            }
-            else
-            {
+                _option = new Option
+                {
+                    ProductId = (long)option.ProductId,
+                    Code = option.Code,
+                    Name = option.Name,
+                    Order = option.Order,
+                    Visual = option.Visual,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.UtcNow,
+                };
                 _context.Add(_option);
             }
-            await _context.SaveChangesAsync();
-            return _option;
+            _context.SaveChanges();
+            CreateOrUpdateOptionValue(option.OptionValues, _option);
         }
 
-        public async Task<OptionValue> CreateOrUpdateOptionValue(OptionValuesRequest optionValue)
+        private void CreateOrUpdateOptionValue(ICollection<OptionValuesRequest> optionValues, Option option)
         {
-            var img = await fileHelper.SaveFile(optionValue.Image);
-            var _optionValue = new OptionValue
+            foreach (var optionValue in optionValues)
             {
-                OptionId = (long)optionValue.OptionId,
-                ProductId = (long)optionValue.ProductId,
-                Code = optionValue.Code,
-                Image = img,
-                Label = optionValue.Label,
-                Value = optionValue.Value,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-            };
-            if (optionValue.Id != null)
-            {
-                _optionValue = _context.OptionValues.FirstOrDefault(op => op.Id == optionValue.Id) ?? _optionValue;
-            }
+                if (optionValue.IsDeleted == true && optionValue.Id != null)
+                {
+                    DeleteOptionValue((long)optionValue.Id);
+                    continue;
+                }
+                optionValue.OptionId = option.Id;
+                optionValue.ProductId = option.ProductId;
+                CreateOrUpdateOptionValue(optionValue);
+                _context.SaveChanges();
 
-            if (_optionValue.Id != 0)
-            {
-                _optionValue.OptionId = (long)optionValue.OptionId;
-                _optionValue.ProductId = (long)optionValue.ProductId;
-                _optionValue.Code = optionValue.Code;
-                _optionValue.Image = optionValue.Image;
-                _optionValue.Label = optionValue.Label;
-                _optionValue.Value = optionValue.Value;
-                _optionValue.UpdatedAt = DateTime.UtcNow;
             }
-            else
+        }
+
+        private void CreateOrUpdateOptionValue(OptionValuesRequest optionValue)
+        {
+            if (optionValue.Id != null && optionValue.IsEdited == true)
             {
+                var updatedOptionValue = new OptionValue
+                {
+                    Id = optionValue.Id ?? 0,
+                    OptionId = optionValue.OptionId ?? 0,
+                    ProductId = optionValue.ProductId ?? 0,
+                    Code = optionValue.Code,
+                    Label = optionValue.Label,
+                    Value = optionValue.Value,
+                    Image = optionValue.Image,
+                };
+                _context.OptionValues.Update(updatedOptionValue);
+            }
+            else if (optionValue.Id == null)
+            {
+                var _optionValue = new OptionValue
+                {
+                    OptionId = optionValue.OptionId != null ? (long)optionValue.OptionId : 0,
+                    ProductId = optionValue.ProductId != null ? (long)optionValue.ProductId : 0,
+                    Code = optionValue.Code,
+                    Label = optionValue.Label,
+                    Value = optionValue.Value,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.UtcNow,
+                };
+
                 _context.Add(_optionValue);
             }
-            await _context.SaveChangesAsync();
-            return _optionValue;
+            // _context.SaveChanges();
         }
 
-        public async Task<Variant> CreateOrUpdateVariant(VariantRequest variant)
+        public void CreateOrUpdateVariant(ICollection<VariantRequest> variants, Sku sku)
+        {
+            foreach (var variant in variants)
+            {
+                if (variant.Id != null)
+                {
+                    continue;
+                }
+                var optionValue = _context.OptionValues.AsNoTracking().FirstOrDefault(x => x.Code == variant.Code);
+                if (optionValue != null)
+                {
+                    variant.OptionValueId = optionValue.Id;
+                    variant.OptionId = optionValue.OptionId;
+                }
+                variant.ProductId = sku.ProductId;
+                variant.SkuId = sku.Id;
+                CreateOrUpdateVariant(variant);
+                _context.SaveChanges();
+
+            }
+        }
+
+        public void CreateOrUpdateVariant(VariantRequest variant)
         {
             var _variant = new Variant
             {
-                OptionId = (long)variant.OptionId,
-                OptionValueId = (long)variant.OptionValueId,
-                ProductId = (long)variant.ProductId,
-                SkuId = (long)variant.SkuId,
+                OptionId = variant.OptionId ?? 0,
+                OptionValueId = variant.OptionValueId ?? 0,
+                ProductId = variant.ProductId ?? 0,
+                SkuId = variant.SkuId ?? 0,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
             };
-            if (variant.Id != null)
-            {
-                _variant = _context.Variants.FirstOrDefault(x => x.Id == variant.Id) ?? _variant;
-            }
-            if (_variant.Id != 0)
-            {
-                _variant.OptionId = (long)variant.OptionId;
-                _variant.OptionValueId = (long)variant.OptionValueId;
-                _variant.ProductId = (long)variant.ProductId;
-                _variant.SkuId = (long)variant.SkuId;
-                _variant.UpdatedAt = DateTime.UtcNow;
-            }
-            else
-            {
-                _context.Add(_variant);
-            }
-            await _context.SaveChangesAsync();
-            return _variant;
+            _context.Add(_variant);
+
         }
 
-        public async Task DeleteOption(long Id)
+        public void DeleteOption(long Id)
         {
-            var option = await _context.Options.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Id);
+            var option = _context.Options.SingleOrDefault(x => x.Id == Id);
             if (option != null)
             {
                 _context.Options.Remove(option);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
         }
 
-        public async Task DeleteOptionValue(long? Id)
+        public void DeleteOptionValue(long Id)
         {
-            var optionValue = await _context.OptionValues.AsNoTracking().SingleOrDefaultAsync(x => x.Id == Id);
+            var optionValue = _context.OptionValues.SingleOrDefault(x => x.Id == Id);
             if (optionValue != null)
             {
                 fileHelper.DeleteFile(optionValue.Image);
                 _context.OptionValues.Remove(optionValue);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
 
         }
 
-        public async Task DeleteSkus(long? ProductId)
+        public void DeleteSkus(long ProductId)
         {
-            var skus = _context.Skus.AsNoTracking().Where(x => x.ProductId == ProductId);
-            _context.Skus.RemoveRange(skus);
-            await _context.SaveChangesAsync();
-
+            // var skus = _context.Skus.Where(x => x.ProductId == ProductId);
+            // _context.Skus.RemoveRange(skus);
+            // _context.SaveChanges();
+            _context.Database.ExecuteSqlRaw("DELETE FROM Skus WHERE product_id = {0}", ProductId);
         }
 
         public async Task<PaginatedList<ProductVM>> GetFeaturedProduct(ProductRequest request)
@@ -791,41 +722,10 @@ namespace ShopAppApi.Repositories.Products
                     Name = p.Category.Name,
                     Code = p.Category.Code,
                 },
-                // Options = p.Options.Select(o => new OptionVM
-                // {
-                //     Id = o.Id,
-                //     Code = o.Code,
-                //     Name = o.Name,
-                //     Visual = o.Visual,
-                //     Order = o.Order,
-                //     OptionValues = o.OptionValues.Select(v => new OptionValueVM
-                //     {
-                //         Id = v.Id,
-                //         Code = v.Code,
-                //         OptionId = v.OptionId,
-                //         Value = v.Value,
-                //         Label = v.Label
-                //     }).ToList(),
-                // }).ToList(),
                 Images = p.ProductImages.Select(i => new ProductImageVM
                 {
                     Path = fileHelper.GetLink(i.Path),
                 }).ToList(),
-                // Skus = p.Skus.Select(s => new SkuVM
-                // {
-                //     Id = s.Id,
-                //     Barcode = s.Barcode,
-                //     Price = s.Price,
-                //     Name = s.Name,
-                //     Stock = s.Stock,
-                //     Variants = s.Variants.Select(v => new VariantVM
-                //     {
-                //         Id = v.Id,
-                //         SkuId = v.SkuId,
-                //         OptionId = v.OptionId,
-                //         OptionValueId = v.OptionValueId,
-                //     }).ToList(),
-                // }).ToList()
             }).SingleOrDefaultAsync(x => x.Alias.Equals(Alias)) ?? throw new ArgumentException("Product does not exists!");
 
             return query;
@@ -844,23 +744,23 @@ namespace ShopAppApi.Repositories.Products
         public async Task<ProductVM> GetSkuProduct(long Id)
         {
             var options = await _context.Options.Where(o => o.ProductId == Id).Select(o => new OptionVM
+            {
+                Id = o.Id,
+                Code = o.Code,
+                ProductId = o.ProductId,
+                Name = o.Name,
+                Visual = o.Visual,
+                Order = o.Order,
+                OptionValues = o.OptionValues.Select(v => new OptionValueVM
                 {
-                    Id = o.Id,
-                    Code = o.Code,
-                    ProductId = o.ProductId,
-                    Name = o.Name,
-                    Visual = o.Visual,
-                    Order = o.Order,
-                    OptionValues = o.OptionValues.Select(v => new OptionValueVM
-                    {
-                        Id = v.Id,
-                        Code = v.Code,
-                        ProductId = v.ProductId,
-                        OptionId = v.OptionId,
-                        Value = v.Value,
-                        Label = v.Label
-                    }).ToList(),
-                }).ToListAsync();
+                    Id = v.Id,
+                    Code = v.Code,
+                    ProductId = v.ProductId,
+                    OptionId = v.OptionId,
+                    Value = v.Value,
+                    Label = v.Label
+                }).ToList(),
+            }).ToListAsync();
 
             var skus = await _context.Skus.Where(o => o.ProductId == Id).Select(s => new SkuVM
             {
@@ -877,6 +777,7 @@ namespace ShopAppApi.Repositories.Products
                     SkuId = v.SkuId,
                     OptionId = v.OptionId,
                     OptionValueId = v.OptionValueId,
+                    Code = v.OptionValue.Code,
                     OptionValue = new OptionValueVM
                     {
                         Id = v.OptionValue.Id,

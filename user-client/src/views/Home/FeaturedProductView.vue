@@ -3,7 +3,7 @@
     <hr class="mb-5 mt-8" />
 
     <div class="heading heading-center mb-3">
-      <h2 class="text-center text-[2.6rem] font-medium mb-4">
+      <h2 class="text-center text-2xl font-medium mb-4">
         Sản phẩm nổi bật
       </h2>
       <!-- End .title -->
@@ -43,7 +43,7 @@
         aria-labelledby="arrivals-all-link"
       >
         <div
-          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-3 lg:gap-4 xl:gap-5"
         >
           <div
             class="box-border cursor-pointer"
@@ -83,15 +83,15 @@
                 </div>
               </figure>
               <div class="product-body p-0 px-3 py-2">
-                <h3 class="product-title">
+                <p class="product-title text-base">
                   {{ item.name }}
-                </h3>
-                <div class="product-cat">
+                </p>
+                <div class="product-cat text-sm">
                   {{ item.category?.name }}
                 </div>
 
                 <div class="">
-                  <span class="text-3xl text-red-500">{{
+                  <span class="text-base text-red-500">{{
                     currencyFormatTenant(item.price) + "đ"
                   }}</span>
                 </div>
@@ -104,7 +104,7 @@
     <!-- End .tab-content -->
     <div class="text-center">
       <button href="category.html" class="btn btn-viewMore">
-        <span class="text-2xl">Xem thêm</span>
+        <span class="text-xl">Xem thêm</span>
         <i class="icon-long-arrow-right"></i>
       </button>
     </div>
@@ -121,7 +121,7 @@ const categoryStore = useCategoryStore();
 const productStore = useProductStore();
 
 const featuredProductQuery = reactive({
-  pageSize: 20,
+  pageSize: 10,
   page: 1,
   categoryId: null,
 });

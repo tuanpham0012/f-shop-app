@@ -17,6 +17,8 @@ namespace ShopAppApi.ViewModels
 
         public int Stock { get; set; }
 
+        public bool? IsEdited { get; set; } = false;
+
         // public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
         // public virtual ICollection<ProductWarehouse> ProductWarehouses { get; set; } = new List<ProductWarehouse>();

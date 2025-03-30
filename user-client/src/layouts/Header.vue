@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header-top" v-if="false">
-      <div class="container">
+      <div class="container-md">
         <div class="header-left">
           <div class="header-dropdown">
             <a href="#">Usd</a>
@@ -59,7 +59,7 @@
     <!-- End .header-top -->
 
     <div class="header-middle sticky-header">
-      <div class="container">
+      <div class="container-md">
         <div class="header-left">
           <button class="mobile-menu-toggler">
             <span class="sr-only">Toggle mobile menu</span>
@@ -96,7 +96,7 @@
         <div class="header-right">
           <div class="header-search">
             <a href="#" class="search-toggle" role="button" title="Search"
-              ><i class="icon-search"></i
+              ><i class="icon-search text-3xl"></i
             ></a>
             <form action="#" method="get">
               <div class="header-search-wrapper">
@@ -114,15 +114,15 @@
             </form>
           </div>
           <!-- End .header-search -->
-          <div class="wishlist">
+          <div class="wishlist relative px-3">
             <a href="wishlist.html" title="Wishlist">
-              <i class="icon-heart-o"></i>
+              <i class="fa-regular fa-heart text-2xl"></i>
               <span class="wishlist-count">3</span>
             </a>
           </div>
           <!-- End .compare-dropdown -->
 
-          <div class="dropdown cart-dropdown">
+          <div class="dropdown cart-dropdown ps-2 pe-4">
             <a
               href="#"
               class="dropdown-toggle"
@@ -132,7 +132,7 @@
               aria-expanded="false"
               data-display="static"
             >
-              <i class="icon-shopping-cart"></i>
+            <i class="fa-solid fa-cart-shopping text-2xl"></i>
               <span class="cart-count">2</span>
             </a>
 

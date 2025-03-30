@@ -1,6 +1,6 @@
 <template lang="">
   <!-- <div class="description" id="reset-this-root" v-html="description"></div> -->
-  <div class="relative">
+  <div class="relative" v-if="description">
     <iframe
       v-if="description"
       :srcdoc="description"
@@ -11,10 +11,10 @@
       @load="setIframeHeight"
     ></iframe>
     <div class="show more d-flex justify-center items-center" v-if="!showMore">
-      <a class="text-3xl cursor-pointer" @click="toggleShowMore"> Xem thêm </a>
+      <a class="text-base cursor-pointer" @click="toggleShowMore"> Xem thêm </a>
     </div>
     <div class="show less d-flex justify-center items-center" v-if="showMore">
-      <a class="text-3xl cursor-pointer" @click="toggleShowMore"> Rút gọn </a>
+      <a class="text-base cursor-pointer" @click="toggleShowMore"> Rút gọn </a>
     </div>
   </div>
 </template>
@@ -99,7 +99,7 @@ onBeforeMount(async () => {
   }
   a {
     background-color: rgb(248, 248, 248);
-    padding: 1rem 2rem;
+    padding: .5rem 1rem;
     color: black;
     border: 1px solid rgb(192, 192, 192);
     border-radius: 3rem;

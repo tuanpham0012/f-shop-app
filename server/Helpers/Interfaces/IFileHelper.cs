@@ -11,7 +11,7 @@ namespace ShopAppApi.Helpers.Interfaces
 
         void DeleteFile(string? fileName);
 
-        Task<byte[]> Download(string fileName);
+        Task<byte[]?> Download(string fileName);
 
         string GetLink(string? FileName);
         Task<string> GetPostContentAsync(string slug);

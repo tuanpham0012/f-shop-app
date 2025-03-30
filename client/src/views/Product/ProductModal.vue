@@ -218,7 +218,7 @@
                   type="text"
                   id="price"
                   class="form-control"
-                  :value=1
+                  :value="1"
                   disabled
                   @keypress="isNumber"
                 />
@@ -232,7 +232,7 @@
                   type="text"
                   id="price"
                   class="form-control"
-                  v-model="product.numberWarning"
+                  v-model="myArray[0].count"
                   @keypress="isNumber"
                 />
               </div>
@@ -300,9 +300,7 @@
                   id="hasVariants"
                   v-model="product.hasVariants"
                 />
-                <label for="hasVariants" class="form-label"
-                  >Hết hàng</label
-                >
+                <label for="hasVariants" class="form-label">Hết hàng</label>
               </div>
             </div>
           </div>
@@ -429,6 +427,7 @@
                         class="form-control"
                         :id="'option-name-' + i"
                         v-model="option.name"
+                        @change="dataChanged(i, 'options')"
                         :class="{
                           'is-invalid': optionErrors.find(
                             (x) => x == 'option-' + i
@@ -479,7 +478,7 @@
                             (x) => x == `value-${i}${j}`
                           ),
                         }"
-                        aria-describedby="validationServer03Feedback"
+                        @change="dataChanged(i, 'options', j, 'optionValues')"
                       />
                       <div v-else class="d-flex align-items-center">
                         <input
@@ -487,17 +486,20 @@
                           class="form-control me-2"
                           v-model="value.value"
                           disabled
+                          @change="dataChanged(i, 'options', j, 'optionValues')"
                         />
                         <input
                           class="rounded box-content p-1"
                           type="color"
                           v-model="value.value"
+                          @change="dataChanged(i, 'options', j, 'optionValues')"
                         />
                       </div>
                       <input
                         class="form-control w-50"
                         type="text"
                         v-model="value.label"
+                        @change="dataChanged(i, 'options', j, 'optionValues')"
                       />
                       <input
                         class="form-control"
@@ -681,6 +683,7 @@
                           id="name"
                           v-model="item.price"
                           @keypress="isNumber($event)"
+                          @change="dataChanged(index, 'skus')"
                         />
                       </td>
 
@@ -690,6 +693,7 @@
                           class="form-control"
                           id="name"
                           v-model="item.barCode"
+                          @change="dataChanged(index, 'skus')"
                           required
                         />
                       </td>
@@ -762,6 +766,7 @@ import { randomPassword, resizeImage, isNumber } from "@/helpers/helpers";
 import TaxModal from "../Tax/TaxModal.vue";
 import BrandModal from "../Brand/BrandModal.vue";
 import CategoryModal from "../Category/CategoryModal.vue";
+// import _ from "lodash";
 
 const props = defineProps({
   id: {
@@ -847,10 +852,12 @@ const toggleAddOption = () => {
     ],
   };
   product.value.options.push(option);
+
   editing.value = true;
 };
 
 const changeOptionType = (index: any) => {
+  dataChanged(index, "options");
   product.value.options[index].optionValues = [
     {
       code: uuidv4(),
@@ -1134,18 +1141,28 @@ const closeCategoryModal = (value: any) => {
   product.value.categoryId = value.id;
 };
 
-const changeSkuImage = async (index:number) => {
+const changeSkuImage = async (index: number) => {
   const ImgCode = product.value.skus[index].imageCode;
   const img = product.value.images.find((x: any) => x.code == ImgCode);
   if (img) {
     product.value.skus[index].imagePath = await resizeImage(
-        img.path,
-        img.extension,
-        null,
-        null,
-        250)
+      img.path,
+      img.extension,
+      null,
+      null,
+      250
+    );
   }
-}
+  dataChanged(index, 'skus');
+};
+
+const dataChanged = (index: number, type: string, index2 = null, type2 = null) => {
+  console.log(index, type);
+  if(index2 != null && type2 != null) {
+    product.value[type][index][type2][index2].isEdited = true;
+  }
+  product.value[type][index].isEdited = true;
+};
 
 watch(
   () => fillAll.price,
@@ -1187,6 +1204,44 @@ watch(
 );
 
 watch(
+  product.value.options,
+  (newValue, oldValue) => {
+    console.log("Mảng đã thay đổi!");
+    console.log("Giá trị mới:", JSON.stringify(newValue)); // Dùng JSON để xem giá trị thực sự, tránh tham chiếu
+    console.log("Giá trị cũ:", JSON.stringify(oldValue));
+  },
+  { deep: true }
+);
+
+const myArray = ref([
+  { id: 1, name: 'Item 1', count: 10 },
+  { id: 2, name: 'Item 2', count: 20 },
+  { id: 3, name: 'Item 3', count: 30 },
+]);
+
+// Watch toàn bộ mảng với deep: true
+watch(myArray, (newValue, oldValue) => {
+  console.log('Mảng đã thay đổi!');
+  console.log('Giá trị mới:', JSON.parse(JSON.stringify(newValue))); // Dùng JSON để xem giá trị thực sự, tránh tham chiếu
+  console.log('Giá trị cũ:', JSON.parse(JSON.stringify(oldValue)));
+
+  // Tại đây, bạn cần logic để xác định phần tử nào đã thay đổi
+  // Ví dụ đơn giản: so sánh từng phần tử (có thể không hiệu quả với mảng lớn)
+  newValue.forEach((newItem, index) => {
+    const oldItem = oldValue[index];
+    // So sánh sâu hơn nếu cần (ví dụ: so sánh từng thuộc tính của object)
+    if (JSON.stringify(newItem) !== JSON.stringify(oldItem)) {
+       console.log(`Phần tử tại index ${index} đã thay đổi:`, newItem);
+       // Thực hiện hành động tương ứng...
+    }
+  });
+
+  // Lưu ý: Việc tìm ra chính xác phần tử nào thay đổi trong deep watch có thể phức tạp
+  // và oldValue có thể không hoàn toàn như mong đợi trong một số trường hợp mutation phức tạp.
+
+}, { deep: true });
+
+watch(
   () => product.value.skus,
   (newVal, oldVal) => {
     newVal.forEach((value: any, index: any) => {
@@ -1208,7 +1263,8 @@ watch(
       product.value.options = [];
       product.value.skus = [];
     } else {
-      if (product.value.options.length == 0) toggleAddOption();
+      if (product.value.options.length == 0 && product.value.id == null)
+        toggleAddOption();
     }
   }
 );
