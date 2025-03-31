@@ -232,7 +232,7 @@
                   type="text"
                   id="price"
                   class="form-control"
-                  v-model="myArray[0].count"
+                  v-model="product.conversionUnit"
                   @keypress="isNumber"
                 />
               </div>
@@ -821,6 +821,7 @@ const newProduct = reactive({
   isNew: false,
   isFeatured: false,
   imageThumb: "",
+  conversionUnit: 1
 });
 
 const product = computed<any>(() => productStore.$state.entry ?? newProduct);
@@ -1212,34 +1213,6 @@ watch(
   },
   { deep: true }
 );
-
-const myArray = ref([
-  { id: 1, name: 'Item 1', count: 10 },
-  { id: 2, name: 'Item 2', count: 20 },
-  { id: 3, name: 'Item 3', count: 30 },
-]);
-
-// Watch toàn bộ mảng với deep: true
-watch(myArray, (newValue, oldValue) => {
-  console.log('Mảng đã thay đổi!');
-  console.log('Giá trị mới:', JSON.parse(JSON.stringify(newValue))); // Dùng JSON để xem giá trị thực sự, tránh tham chiếu
-  console.log('Giá trị cũ:', JSON.parse(JSON.stringify(oldValue)));
-
-  // Tại đây, bạn cần logic để xác định phần tử nào đã thay đổi
-  // Ví dụ đơn giản: so sánh từng phần tử (có thể không hiệu quả với mảng lớn)
-  newValue.forEach((newItem, index) => {
-    const oldItem = oldValue[index];
-    // So sánh sâu hơn nếu cần (ví dụ: so sánh từng thuộc tính của object)
-    if (JSON.stringify(newItem) !== JSON.stringify(oldItem)) {
-       console.log(`Phần tử tại index ${index} đã thay đổi:`, newItem);
-       // Thực hiện hành động tương ứng...
-    }
-  });
-
-  // Lưu ý: Việc tìm ra chính xác phần tử nào thay đổi trong deep watch có thể phức tạp
-  // và oldValue có thể không hoàn toàn như mong đợi trong một số trường hợp mutation phức tạp.
-
-}, { deep: true });
 
 watch(
   () => product.value.skus,

@@ -1,13 +1,13 @@
 <template lang="">
-  <div class="product d-flex flex-col cursor-pointer" v-if="item">
-    <figure class="product-media bg-gray-100 aspect-square d-flex items-center">
+  <div class="product flex flex-col cursor-pointer" v-if="item">
+    <figure class="product-media bg-gray-100 flex aspect-square items-center px-2">
       <img :src="item.imageThumb" alt="Product image" class="product-image" />
       <div class="product-action">
         <a href="#" class="btn-product btn-cart"><span>Thêm vào giỏ hàng</span></a>
       </div>
     </figure>
 
-    <div class="product-body d-flex flex-col justify-between">
+    <div class="product-body flex flex-col justify-between">
       <div>
         <p class="product-title text-base">
           {{ item.name }}

@@ -1,7 +1,7 @@
 <template>
-  <div class="container" v-if="product">
-    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-      <div class="container">
+  <div class="container-md" v-if="product">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      <div class="container-md">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Sản phẩm</a></li>
           <li class="breadcrumb-item">
@@ -15,8 +15,8 @@
       <!-- End .container -->
     </nav>
 
-    <div class="row gx-5">
-      <div class="col-lg-6 bg-white">
+    <div class="grid grid-cols-12 gap-0 mb-4">
+      <div class="col-span-12 lg:col-span-6 bg-white">
         <swiper
           :style="{
             '--swiper-navigation-color': '#fff',
@@ -65,24 +65,31 @@
           </swiper-slide>
         </swiper>
       </div>
-      <div class="col-lg-6 bg-white">
+      <div class="col-span-12 lg:col-span-6 bg-white px-4 lg:px-0">
         <div class="ps-lg-3 pt-4">
           <h4 class="title text-dark">
             {{ product.name }}
           </h4>
-          <div class="d-flex flex-row my-3 justify-start text-base">
-            <div class="text-warning mb-1 me-2 border-r pe-2">
+          <div class="flex flex-row my-3 justify-start text-base">
+            <div
+              class="flex justify-center items-center text-warning me-2 border-r pe-2"
+            >
               <i class="fa fa-star"></i>
               <span class="ms-1"> 4.5 </span>
             </div>
-            <span class="text-muted border-r me-2 pe-2"
-              ><i class="fas fa-shopping-basket fa-sm mx-1"></i>Đã bán 154</span
+            <span
+              class="flex justify-center items-center gap-1 text-muted border-r me-2 pe-2"
+              ><i class="fas fa-shopping-basket fa-sm mx-1"></i>154
+              <span class="hidden sm:block">đã bán</span></span
             >
-            <span class="text-muted border-r me-2 pe-2"
-              ><i class="fa-solid fa-comment-dots fa-sm mx-1"></i>154 Đánh
-              giá</span
+            <span
+              class="flex justify-center items-center gap-1 text-muted border-r me-2 pe-2"
+              ><i class="fa-solid fa-comment-dots fa-sm mx-1"></i
+              ><span class="hidden sm:block">đánh giá</span>154</span
             >
-            <span class="text-success">Còn hàng</span>
+            <span class="flex justify-center items-center text-success"
+              >Còn hàng</span
+            >
           </div>
 
           <div class="mb-4 bg-gray-100 d-flex gap-3 p-3 rounded-sm">
@@ -148,11 +155,7 @@
                     </div>
                     <input
                       type="text"
-                      style="
-                        text-align: center;
-                        font-size: 1rem;
-                        height: 35px;
-                      "
+                      style="text-align: center; font-size: 1rem; height: 35px"
                       class="form-control"
                       v-model="quantity"
                     />
@@ -175,38 +178,51 @@
           <div class="col-12 py-5">
             <div class="grid grid-cols-12 gap-3">
               <button class="btn btn-icon btn-outline-primary py-2 col-span-5">
-                <span class="text-base font-medium"
-                  ><i class="fa-solid fa-cart-plus text-base"></i> Thêm vào giỏ hàng</span
+                <span
+                  class="flex justify-center items-center gap-2 flex-nowrap text-base font-medium"
+                  ><i class="fa-solid fa-cart-plus text-base"></i>
+                  <span class="hidden sm:block">Thêm vào giỏ hàng</span></span
                 >
               </button>
               <button class="btn btn-icon btn-outline-danger py-2 col-span-5">
-                <span class="text-base font-medium"
-                  >Mua ngay</span
-                >
+                <span class="text-base font-medium">Mua ngay</span>
               </button>
               <button class="btn btn-icon btn-outline-success py-2 col-span-2">
                 <span class="text-base font-medium"
-                  ><i class="fa-solid fa-heart-circle-plus"></i></span
-                >
+                  ><i class="fa-solid fa-heart-circle-plus"></i
+                ></span>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="container col-12 mt-4 bg-white mb-6">
-        <div class="border-b border-gray-200 dark:border-gray-700">
-          <ul class="flex flex-wrap -mb-px text-xl font-medium text-center text-gray-500 dark:text-gray-400">
-              <li class="me-2 " v-for="(item, index) in tabViews" :key="index" @click="tabViewIndex = item.id">
-                  <a href="#" class="tab-view inline-flex gap-2 items-center justify-center p-3 border-b-2 border-transparent rounded-t-lg group" :class="{'active' : tabViewIndex == item.id}">
-                    <i :class="item.icon"></i>{{ item.label }}
-                  </a>
-              </li>
-              
+      <div class="container-md col-span-12 mt-4 bg-white mb-6">
+        <div class="product-details-tab">
+          <ul class="nav nav-pills justify-center" role="tablist">
+            <li
+              class="nav-item cursor-pointer"
+              v-for="(item, index) in tabViews"
+              :key="index"
+              @click="tabViewIndex = item.id"
+            >
+              <a
+                class="nav-link inline-flex gap-2 items-center justify-center p-3"
+                :class="{ 'active': tabViewIndex == item.id }"
+                ><i :class="item.icon"></i>{{ item.label }}</a
+              >
+            </li>
           </ul>
-        </div>
-        <div class="p-5">
-          <ProductDescription :alias="$route.params.productCode" v-if="tabViewIndex == 1" />
-          <div class="Comment" v-if="tabViewIndex == 2">this is comment tab</div>
+          <div class="tab-content">
+            <div class="p-5">
+              <ProductDescription
+                :alias="$route.params.productCode"
+                v-if="tabViewIndex == 1"
+              />
+              <div class="Comment" v-if="tabViewIndex == 2">
+                this is comment tab
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -214,8 +230,6 @@
   <div class="w-[100%] h-[80vh]" v-else>
     <LoadingComponent />
   </div>
-  
-
 </template>
 <script lang="ts" setup>
 import { reactive, ref, onBeforeMount, computed, watch } from "vue";
@@ -250,20 +264,20 @@ const skuSelect = ref<any>(null);
 
 const quantity = ref(1);
 
-const tabViewIndex = ref(1)
+const tabViewIndex = ref(1);
 
 const tabViews = reactive([
   {
     id: 1,
     label: "Thông tin sản phẩm",
-    icon: 'fa-solid fa-circle-info'
+    icon: "fa-solid fa-circle-info",
   },
   {
     id: 2,
     label: "Đánh giá",
-    icon: 'fa-solid fa-comment-dots'
+    icon: "fa-solid fa-comment-dots",
   },
-])
+]);
 
 const setThumbsSwiper = (swiper: any) => {
   thumbsSwiper.value = swiper;
@@ -332,10 +346,10 @@ onBeforeMount(async () => {
   font-size: 3rem;
   font-weight: 500;
 }
-li{
-  .tab-view{
+li {
+  .tab-view {
     color: var(--bs-secondary);
-    &:hover{
+    &:hover {
       border-bottom-color: var(--bs-info);
       color: var(--bs-info);
     }

@@ -11,7 +11,7 @@
         'sf-with-ul-children': depth > 1,
       }"
     >
-      <span class="d-flex gap-2"
+      <span class="flex gap-2"
         ><div v-html="menu.icon"></div>
         {{ menu.title }}
       </span></a

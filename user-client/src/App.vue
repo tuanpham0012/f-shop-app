@@ -1,7 +1,4 @@
 <script setup>
-// import './assets/js/bootstrap.bundle.min.js'
-// import './assets/js/jquery.plugin.min.js'
-
 
 import { RouterLink, RouterView } from "vue-router";
 import Header from "./layouts/Header.vue";
@@ -72,14 +69,14 @@ import MobileMenu from "./layouts/MobileMenu.vue";
         position: absolute;
         bottom: -0.2rem;
         left: 45%;
-        width: 105%;
+        width: 100%;
         margin-left: -45%;
-        height: 0.3rem;
+        height: 0.2rem;
         border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(49, 49, 49, 0.3);
         transition: all 0.35s ease;
         filter: blur(3px);
-        opacity: 0.5;
+        opacity: 0.3;
       }
     }
   }

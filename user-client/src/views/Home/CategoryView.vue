@@ -15,32 +15,28 @@
             slidesPerView: 2,
             spaceBetween: 10,
           },
-          '640': {
+          '768': {
             slidesPerView: 4,
             spaceBetween: 20,
           },
-          '768': {
-            slidesPerView: 6,
+          '1200': {
+            slidesPerView: 5,
             spaceBetween: 30,
           },
         }"
       >
         <swiper-slide v-for="(item, index) in popularCategories" :key="index">
-          <div class="">
             <router-link
               :to="'/danh-muc/' + item.code"
-              class="cat-block"
             >
-              <figure>
-                <img
-                  :src="item.image"
-                  alt="Category image"
-                  class="w-[125px] h-[auto] object-contain"
-                />
-              </figure>
-              <!-- <h3 :title="item.name" class="cat-block-title d-none d-lg-block whitespace-nowrap max-w-[100%] overflow-hidden text-ellipsis">{{ item.name }}</h3> -->
+              <BrandCardComponent
+                :srcImage="item.image"
+                :label="item.name"
+                width="140px"
+                height="60px"
+                textLabel="sm"
+              ></BrandCardComponent>
             </router-link>
-          </div>
         </swiper-slide>
       </swiper-component>
     </div>
@@ -49,6 +45,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from "vue";
 import { useCategoryStore } from "@/stores/category";
+import BrandCardComponent from "@/components/BrandCardComponent.vue";
 const categoryStore = useCategoryStore();
 const popularCategories = computed<any>(
   () => categoryStore.$state.popularCategory.data

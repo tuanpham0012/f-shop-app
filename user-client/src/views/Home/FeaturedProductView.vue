@@ -50,53 +50,10 @@
             v-for="(item, index) in featuredProducts.products"
             :key="index"
           >
-            <div class="product mt-0 py-1 box-border h-[100%] rounded-xl">
-              <figure
-                class="product-media d-flex items-center bg-gray-50 positon-relative aspect-square mb-1 px-3"
-              >
-                <span
-                  class="product-label label-circle label-new"
-                  v-if="item.isNew"
-                  >New</span
-                >
-                <span
-                  class="product-label label-circle label-top"
-                  v-if="item.isFeatured"
-                  >Top</span
-                >
-                <!-- <span class="product-label label-circle label-sale">Sale</span> -->
-                <a href="product.html">
-                  <img
-                    :src="item.imageThumb"
-                    alt="Product image"
-                    class="product-image object-contain"
-                  />
-                </a>
-                <div class="product-action">
-                  <button
-                    href="#"
-                    class="btn-product btn-cart"
-                    title="Add to cart"
-                  >
-                    <span>Thêm vào giỏ hàng</span>
-                  </button>
-                </div>
-              </figure>
-              <div class="product-body p-0 px-3 py-2">
-                <p class="product-title text-base">
-                  {{ item.name }}
-                </p>
-                <div class="product-cat text-sm">
-                  {{ item.category?.name }}
-                </div>
-
-                <div class="">
-                  <span class="text-base text-red-500">{{
-                    currencyFormatTenant(item.price) + "đ"
-                  }}</span>
-                </div>
-              </div>
-            </div>
+          <ProductCardComponent
+                  :item="item"
+                  @click="viewDetail(item.alias)"
+                />
           </div>
         </div>
       </div>
@@ -113,12 +70,14 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, reactive, watch } from "vue";
 import { useCategoryStore } from "@/stores/category";
-
+import ProductCardComponent from "@/components/ProductCardComponent.vue";
 import { useProductStore } from "@/stores/product";
 import { currencyFormatTenant } from "@/services/utils";
+import { useRouter } from "vue-router";
 const categoryStore = useCategoryStore();
 
 const productStore = useProductStore();
+const router = useRouter();
 
 const featuredProductQuery = reactive({
   pageSize: 10,
@@ -132,6 +91,11 @@ const featuredProducts = computed<any>(() => {
     categories: categoryStore.$state.featuredProductCategory.data,
   };
 });
+
+const viewDetail = (alias: string) => {
+  router.push({ name: "ProductDetail", params: { productCode: alias } });
+};
+
 watch(
   () => featuredProductQuery.categoryId,
   async () => {

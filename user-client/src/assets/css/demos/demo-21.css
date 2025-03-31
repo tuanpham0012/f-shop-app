@@ -1,8 +1,5 @@
 /* @import url("https://fonts.googleapis.com/css?family=Poppins:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800"); */
 
-.menu .megamenu.demo {
-    height: 68vh
-}
 
 .top-menu li+li {
     margin-left: 2.6rem
@@ -318,8 +315,8 @@
 }
 
 .col-pd1 .content h3 {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 600;
     letter-spacing: -.025em;
     line-height: 1em;
     margin-bottom: .5rem;
@@ -328,7 +325,7 @@
 }
 
 .col-pd1 .action a {
-    padding: .5rem 1.8rem;
+    padding: .3rem 1rem;
     min-width: unset
 }
 
@@ -367,13 +364,13 @@
 
 .btn-demoprimary {
     color: #fff;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     background-color: transparent;
     border-color: #fff;
     box-shadow: none;
     transition: all 0.3s;
-    padding-top: 5px;
-    padding-bottom: 5px
+    padding-top: 3px;
+    padding-bottom: 3px
 }
 
 .btn-demoprimary:hover,
@@ -392,9 +389,9 @@
 
 .btn-viewMore:hover,
 .btn-viewMore:focus {
-    color: #fff;
-    background-color: #66f;
-    border-color: #66f
+    color: var(--bs-text-white);
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary)
 }
 
 .heading .title {
@@ -458,44 +455,6 @@
 .btn-addtolist:focus:before {
     content: '\f233';
     font-family: 'molla'
-}
-
-.btn-product {
-    color: #66f;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    line-height: 1;
-    transition: all .35s ease;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-    margin: .4rem;
-    flex-grow: 1;
-    flex-basis: 0;
-    border: 1px solid #66f;
-    transition: all .35s ease
-}
-
-.btn-product span {
-    color: #66f;
-    font-weight: 400;
-    font-size: .875rem;
-    letter-spacing: -.01em;
-    transition: all .35s ease
-}
-
-.btn-product:hover,
-.btn-product:focus {
-    background-color: #66f;
-    color: #fff
-}
-
-.btn-product:hover span,
-.btn-product:focus span {
-    color: #fff;
-    box-shadow: 0 0px 0 0 white
 }
 /* 
 .product-action {
@@ -769,13 +728,6 @@
 .new-arrivals .btn-viewMore:hover,
 .new-arrivals .btn-viewMore:focus {
     border-color: #66f
-}
-
-.nav.nav-pills .nav-item.show .nav-link.active,
-.nav.nav-pills .nav-item .nav-link.active {
-    color: #fff;
-    border: none;
-    background-color: var(--bs-primary);
 }
 
 .newsletter .background {

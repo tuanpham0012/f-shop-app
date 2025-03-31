@@ -12,28 +12,28 @@
             slidesPerView: 2,
             spaceBetween: 10,
           },
-          '640': {
-            slidesPerView: 4,
-            spaceBetween: 20,
-          },
           '768': {
-            slidesPerView: 6,
+            slidesPerView: 4,
+            spaceBetween: 30,
+          },
+          '1200': {
+            slidesPerView: 5,
             spaceBetween: 30,
           },
         }"
       >
         <swiper-slide v-for="(item, index) in brands" :key="index">
-          <a href="category.html" class="cat-block">
-            <figure>
-              <span>
-                <img
-                  :src="item.image"
-                  alt="Category image"
-                  class="h-[75px] w-[120px] object-contain"
-                />
-              </span>
-            </figure>
-          </a>
+          <router-link
+              :to="'/thuong-hieu/' + item.code"
+            >
+            <BrandCardComponent
+              :srcImage="item.image"
+              :label="item.name"
+              width="140px"
+              height="60px"
+              textLabel="sm"
+            ></BrandCardComponent>
+          </router-link>
         </swiper-slide>
       </swiper-component>
     </div>
@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from "vue";
 import { useBrandStore } from "@/stores/brand";
+import BrandCardComponent from "@/components/BrandCardComponent.vue";
 const brandStore = useBrandStore();
 
 const brands = computed<any>(() => brandStore.$state.brands.data);

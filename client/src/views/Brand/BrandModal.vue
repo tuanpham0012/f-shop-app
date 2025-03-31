@@ -120,11 +120,10 @@ const errors = ref<any>(null);
 const productImage = (event: any) => {
   // Reference to the DOM input element
   const file = event.target.files[0];
-  console.log(file);
   if (file) {
     const reader = new FileReader();
     reader.onload = async (e: any) => {
-      brand.value.Image = await resizeImage(e.target.result, file.type);
+      brand.value.image = await resizeImage(e.target.result, file.type, null, null, 250);
     };
     reader.readAsDataURL(file);
   }

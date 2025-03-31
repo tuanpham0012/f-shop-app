@@ -30,7 +30,6 @@ export const useProductStore = defineStore("product", {
         async getList(query: any) {
             await _getList(`${adminUrl}/products`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.entries = res.data
                 })
                 .catch((err) => {
@@ -117,7 +116,6 @@ export const useCategoryStore = defineStore("category", {
         async getList(query: any) {
             await _getList(`${adminUrl}/categories`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.entries = res.data;
                 })
                 .catch((err) => {
@@ -127,7 +125,6 @@ export const useCategoryStore = defineStore("category", {
         async getListTree(query: any) {
             await _getList(`${adminUrl}/categories/get-tree`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.listTree = res.data;
                 })
                 .catch((err) => {
@@ -178,7 +175,6 @@ export const useBrandStore = defineStore("brand", {
         async getList(query: any) {
             await _getList(`${adminUrl}/brands`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.entries = res.data;
                 })
                 .catch((err) => {
@@ -194,7 +190,6 @@ export const useBrandStore = defineStore("brand", {
         async show(id: any) {
             await _show(`${adminUrl}/brands/${id}`)
                 .then((res) => {
-                    console.log(res.data);
                     this.entry = res.data.data;
                 })
                 .catch((err) => {

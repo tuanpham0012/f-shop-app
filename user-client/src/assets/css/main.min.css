@@ -92,15 +92,8 @@
     content: '\f318'
 }
 
-html {
-    font-size: 10px
-}
-
 body {
     font-family: 'Poppins';
-    font-size: 1.3rem;
-    line-height: 2.5rem;
-    color: #666;
     margin: 0
 }
 

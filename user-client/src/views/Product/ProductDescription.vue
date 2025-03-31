@@ -10,11 +10,17 @@
       ref="iframe"
       @load="setIframeHeight"
     ></iframe>
-    <div class="show more d-flex justify-center items-center" v-if="!showMore">
-      <a class="text-base cursor-pointer" @click="toggleShowMore"> Xem thêm </a>
-    </div>
-    <div class="show less d-flex justify-center items-center" v-if="showMore">
-      <a class="text-base cursor-pointer" @click="toggleShowMore"> Rút gọn </a>
+    <div v-if="showBtn">
+      <div class="show more flex justify-center items-center" v-if="!showMore">
+        <a class="text-base cursor-pointer" @click="toggleShowMore">
+          Xem thêm
+        </a>
+      </div>
+      <div class="show less flex justify-center items-center" v-if="showMore">
+        <a class="text-base cursor-pointer" @click="toggleShowMore">
+          Rút gọn
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -33,15 +39,19 @@ const iframe = ref<any>(null);
 
 const showMore = ref(false);
 
+const showBtn = ref(false);
+
 const description = computed(() => productStore.$state.descriptionProduct);
 
 const setIframeHeight = () => {
   let count = 0;
   let intervalId = setInterval(() => {
     if (iframe.value) {
-      //   const contentHeight =
-      //     iframe.value.contentWindow.document.body.scrollHeight + 50;
-      //   iframe.value.style.height = contentHeight + "px";
+      const contentHeight =
+        iframe.value.contentWindow.document.body.scrollHeight + 50;
+      if (contentHeight > 600) {
+        showBtn.value = true;
+      }
       iframe.value.contentWindow.document.body.style.overflow = "hidden";
     }
     count++;
@@ -99,7 +109,7 @@ onBeforeMount(async () => {
   }
   a {
     background-color: rgb(248, 248, 248);
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     color: black;
     border: 1px solid rgb(192, 192, 192);
     border-radius: 3rem;

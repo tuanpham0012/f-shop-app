@@ -26,7 +26,7 @@ http.interceptors.request.use(
 )
 
 http.interceptors.response.use(response => {
-    console.log("success: ", response);
+    // console.log("success: ", response);
     document.body.classList.remove("loading");
     return response;
 }, error => {
