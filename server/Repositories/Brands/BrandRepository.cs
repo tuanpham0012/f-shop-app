@@ -57,7 +57,7 @@ namespace ShopAppApi.Repositories.Products
             {
                 Name = request.Name,
                 Code = request.Code,
-                Image = request.Image != null ? await fileHelper.SaveFile(request.Image) : "",
+                Image = request.Image != null ? fileHelper.SaveFile(request.Image) : "",
                 NotUse = request.NotUse,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -81,7 +81,7 @@ namespace ShopAppApi.Repositories.Products
                 if (!string.IsNullOrEmpty(request.Image) && (brand.Image == null || !request.Image.Contains(brand.Image)))
                 {
                     fileHelper.DeleteFile(brand.Image);
-                    brand.Image = await fileHelper.SaveFile(request.Image);
+                    brand.Image = fileHelper.SaveFile(request.Image);
                 }
                 brand.NotUse = request.NotUse;
                 brand.CreatedAt = DateTime.UtcNow;

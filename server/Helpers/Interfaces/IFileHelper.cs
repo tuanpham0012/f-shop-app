@@ -4,10 +4,10 @@ namespace ShopAppApi.Helpers.Interfaces
     {
         string GetFileFormat(byte[] fileBytes);
 
-        Task<string> SaveFile(string fileBase64, string subFolder = "");
+        string SaveFile(string fileBase64, string subFolder = "");
         void SaveHtmlFile(string content, string fileName);
 
-        Task<string> SaveFile(byte[] fileBytes, string subFolder   = "");
+        string SaveFile(byte[] fileBytes, string subFolder   = "");
 
         void DeleteFile(string? fileName);
 

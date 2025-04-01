@@ -230,7 +230,6 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="price"
                   class="form-control"
                   v-model="product.conversionUnit"
                   @keypress="isNumber"
@@ -298,7 +297,7 @@
                   class="form-check-input me-2"
                   type="checkbox"
                   id="hasVariants"
-                  v-model="product.hasVariants"
+                  v-model="product.soldOut"
                 />
                 <label for="hasVariants" class="form-label">Hết hàng</label>
               </div>
@@ -594,10 +593,7 @@
                 Tạo biến thể
               </button>
 
-              <div
-                class="table-responsive text-nowrap table-scroll h-[70vh]"
-                v-if="product.skus.length > 0"
-              >
+              <div class="" v-if="product.skus.length > 0">
                 <h4 class="card-header">Danh sách biến thể của sản phẩm</h4>
 
                 <div class="d-flex align-items-center col-sm-12 mb-3 gap-3">
@@ -652,79 +648,83 @@
                     </button>
                   </div>
                 </div>
-                <table class="table">
-                  <thead class="table-light">
-                    <tr>
-                      <th>STT</th>
-                      <th>Phân loại</th>
-                      <th>Giá bán</th>
-                      <th>Mã hàng</th>
-                      <th>Hình ảnh</th>
-                    </tr>
-                  </thead>
-                  <tbody class="table-border-bottom-0">
-                    <tr v-for="(item, index) in product.skus" :key="index">
-                      <td class="max-w-[50px]">
-                        <strong>{{ index + 1 }}</strong>
-                      </td>
-                      <td class="min-w-[200px]">
-                        <strong
-                          class="list-variants"
-                          v-for="(value, i) in item.variants"
-                          :key="i"
-                          >{{ value.optionValue.label }}</strong
-                        >
-                      </td>
-                      <td class="min-w-[200px] input-group input-group-merge">
-                        <span class="input-group-text">đ</span>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="name"
-                          v-model="item.price"
-                          @keypress="isNumber($event)"
-                          @change="dataChanged(index, 'skus')"
-                        />
-                      </td>
+                <div class="table-responsive text-nowrap table-scroll h-[70vh]">
+                  <table
+                    class="table table-responsive text-nowrap table-scroll h-[70vh]"
+                  >
+                    <thead class="table-light">
+                      <tr>
+                        <th>STT</th>
+                        <th>Phân loại</th>
+                        <th>Giá bán</th>
+                        <th>Mã hàng</th>
+                        <th>Hình ảnh</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                      <tr v-for="(item, index) in product.skus" :key="index">
+                        <td class="max-w-[50px]">
+                          <strong>{{ index + 1 }}</strong>
+                        </td>
+                        <td class="min-w-[200px]">
+                          <strong
+                            class="list-variants"
+                            v-for="(value, i) in item.variants"
+                            :key="i"
+                            >{{ value.optionValue.label }}</strong
+                          >
+                        </td>
+                        <td class="min-w-[200px] input-group input-group-merge">
+                          <span class="input-group-text">đ</span>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="name"
+                            v-model="item.price"
+                            @keypress="isNumber($event)"
+                            @change="dataChanged(index, 'skus')"
+                          />
+                        </td>
 
-                      <td class="min-w-[150px]">
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="name"
-                          v-model="item.barCode"
-                          @change="dataChanged(index, 'skus')"
-                          required
-                        />
-                      </td>
-                      <td class="w-[100%]">
-                        <div class="row col-12">
-                          <div class="col-8">
-                            <select-search-user
-                              :firstSelected="true"
-                              :listData="product.images"
-                              placeholder="-- Chọn ảnh --"
-                              src="path"
-                              :preImage="false"
-                              display="fileName"
-                              keyValue="code"
-                              v-model="item.imageCode"
-                              @update:modelValue="changeSkuImage(index)"
-                              :search-box="false"
-                              :disabled="product.images.length < 1"
-                            ></select-search-user>
+                        <td class="min-w-[150px]">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="name"
+                            v-model="item.barCode"
+                            @change="dataChanged(index, 'skus')"
+                            required
+                          />
+                        </td>
+                        <td class="w-[100%]">
+                          <div class="row col-12">
+                            <div class="col-8">
+                              <select-search-user
+                                :firstSelected="true"
+                                :listData="product.images"
+                                placeholder="-- Chọn ảnh --"
+                                src="path"
+                                :preImage="false"
+                                display="fileName"
+                                keyValue="code"
+                                v-model="item.imageCode"
+                                @update:modelValue="changeSkuImage(index)"
+                                :search-box="false"
+                                :disabled="product.images.length < 1"
+                              ></select-search-user>
+                            </div>
+                            <div class="col-4" v-if="item.imagePath">
+                              <img
+                                :src="item.imagePath"
+                                class="h-[35px] w-[auto]"
+                              />
+                            </div>
                           </div>
-                          <div class="col-4" v-if="item.imagePath">
-                            <img
-                              :src="item.imagePath"
-                              class="h-[35px] w-[auto]"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -821,13 +821,15 @@ const newProduct = reactive({
   isNew: false,
   isFeatured: false,
   imageThumb: "",
-  conversionUnit: 1
+  conversionUnit: 1,
+  soldOut: false,
 });
 
 const product = computed<any>(() => productStore.$state.entry ?? newProduct);
 
 const maxOptionValue = ref(30);
 const maxImage = ref(30);
+const changeVariantCount = ref(0);
 
 const errors = ref<any>(null);
 
@@ -1154,12 +1156,17 @@ const changeSkuImage = async (index: number) => {
       250
     );
   }
-  dataChanged(index, 'skus');
+  dataChanged(index, "skus");
 };
 
-const dataChanged = (index: number, type: string, index2 = null, type2 = null) => {
+const dataChanged = (
+  index: number,
+  type: string,
+  index2 = null,
+  type2 = null
+) => {
   console.log(index, type);
-  if(index2 != null && type2 != null) {
+  if (index2 != null && type2 != null) {
     product.value[type][index][type2][index2].isEdited = true;
   }
   product.value[type][index].isEdited = true;
@@ -1205,16 +1212,6 @@ watch(
 );
 
 watch(
-  product.value.options,
-  (newValue, oldValue) => {
-    console.log("Mảng đã thay đổi!");
-    console.log("Giá trị mới:", JSON.stringify(newValue)); // Dùng JSON để xem giá trị thực sự, tránh tham chiếu
-    console.log("Giá trị cũ:", JSON.stringify(oldValue));
-  },
-  { deep: true }
-);
-
-watch(
   () => product.value.skus,
   (newVal, oldVal) => {
     newVal.forEach((value: any, index: any) => {
@@ -1232,12 +1229,30 @@ watch(
 watch(
   () => product.value.hasVariants,
   (newVal, oldVal) => {
-    if (!newVal) {
-      product.value.options = [];
-      product.value.skus = [];
+    if (product.value.id == null) {
+      if (!newVal) {
+        product.value.options = [];
+        product.value.skus = [];
+      } else {
+        if (product.value.options.length == 0)
+          // && product.value.id == null
+          toggleAddOption();
+      }
     } else {
-      if (product.value.options.length == 0 && product.value.id == null)
-        toggleAddOption();
+      if (!newVal) {
+        product.value.options.forEach((option: any, index: number) => {
+          product.value.options[index].isDeleted = true;
+        });
+        product.value.newSkus = true;
+      } else {
+        product.value.newSkus = false;
+        product.value.options.forEach((option: any, index: number) => {
+          product.value.options[index].isDeleted = false;
+          if(product.value.options[index].id == null)
+            product.value.newSkus = true;
+        });
+        
+      }
     }
   }
 );

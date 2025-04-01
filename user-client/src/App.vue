@@ -89,7 +89,7 @@ import MobileMenu from "./layouts/MobileMenu.vue";
   }
   &:hover {
     img {
-      transform: translateY(-9px);
+      transform: translateY(-1px);
     }
     figure span:after {
       opacity: 1;

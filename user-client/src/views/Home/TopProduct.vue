@@ -1,8 +1,8 @@
 <template lang="">
   <div class="container mb-3" v-for="(category, i) in topCategories" :key="i">
-    <div class="heading heading-flex mb-2">
+    <div class="heading heading-flex mb-1">
       <div class="heading-center">
-        <h2 class="text-center text-2xl font-medium mb-4">
+        <h2 class="text-center text-2xl font-medium">
           {{ category.name }}
         </h2>
         <!-- End .title -->
@@ -38,7 +38,7 @@
         },
         '992': {
           slidesPerView: 5,
-          spaceBetween: 30,
+          spaceBetween: 10,
         },
       }"
       class="p-2 bg-white"

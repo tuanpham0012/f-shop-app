@@ -8,6 +8,7 @@ import { viewFile } from "@/helpers/helpers";
 import Pagination from "@/components/pagination/Pagination.vue";
 import Slider from "@vueform/slider";
 import ProductCardComponent from "@/components/ProductCardComponent.vue";
+import BrandCardComponent from "@/components/BrandCardComponent.vue";
 
 const productStore = useProductStore();
 const brandStore = useBrandStore();
@@ -200,19 +201,13 @@ onBeforeMount(async () => {
                 class="collapsed hidden xl:grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-2 my-3 justify-items-center"
               >
                 <div
-                  class="w-[100%] max-w-[95px] h-[45px] border-1 border-solid d-flex justify-center items-center rounded-lg cursor-pointer"
+                  class="w-[100%] max-w-[100px] h-[50px] cursor-pointer"
                   v-for="(item, index) in brands"
                   :key="index"
                   @click="setBrandCode(item.code)"
-                  :class="{ 'brand-active': query.brandCode == item.code }"
+                  :class="{ 'active': query.brandCode == item.code }"
                 >
-                  <img
-                    :src="item.image"
-                    @error="errorImg($event, index)"
-                    class="w-[80px] h-[40px] object-contain"
-                    v-if="item.imagePreview == null"
-                  />
-                  <span class="text-sm" v-else>{{ item.name }}</span>
+                  <BrandCardComponent :src-image="item.image" :label="item.name" width="90px" height="40px" />
                 </div>
               </div>
             </div>

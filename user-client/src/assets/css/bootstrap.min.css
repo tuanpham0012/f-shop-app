@@ -8,8 +8,8 @@
 :root,
 [data-bs-theme=light] {
 
-    --bs-primary: #c96;
-    --bs-primary-rgb: 204, 153, 102;
+    --bs-primary: #00A99D;
+    --bs-primary-rgb: 0, 169, 157;
     --bs-primary-text-emphasis: #ffffff;
     --bs-primary-bg-subtle: #cfe2ff;
     --bs-primary-border-subtle: #fec19e;
@@ -24,11 +24,11 @@
     --bs-secondary-bg: #e9ecef;
     --bs-secondary-bg-rgb: 233, 236, 239;
 
-    --bs-link-color: #c96;
-    --bs-link-color-rgb: 204, 153, 102;
+    --bs-link-color: rgb(0, 169, 157);
+    --bs-link-color-rgb: 0, 169, 157;
     --bs-link-decoration: underline;
-    --bs-link-hover-color: #be7e3e;
-    --bs-link-hover-color-rgb: 190, 126, 62;
+    --bs-link-hover-color: #00A99D;
+    --bs-link-hover-color-rgb: 0, 169, 157;
 
     --bs-text-white: #fff;
     --bs-text-dark: #505050d7;
@@ -387,7 +387,6 @@ sup {
 
 a {
     color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
-    /* text-decoration: underline */
 }
 
 a:hover {
@@ -4369,7 +4368,6 @@ fieldset:disabled .btn {
 }
 
 .nav-link {
-    display: block;
     padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
     font-size: var(--bs-nav-link-font-size);
     font-weight: var(--bs-nav-link-font-weight);

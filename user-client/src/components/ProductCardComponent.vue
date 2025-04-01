@@ -1,6 +1,6 @@
 <template lang="">
   <div class="product flex flex-col cursor-pointer" v-if="item">
-    <figure class="product-media bg-gray-100 flex aspect-square items-center px-2">
+    <figure class="product-media bg-gray-100 flex aspect-square items-center px-1">
       <img :src="item.imageThumb" alt="Product image" class="product-image" />
       <div class="product-action">
         <a href="#" class="btn-product btn-cart"><span>Thêm vào giỏ hàng</span></a>
@@ -21,10 +21,7 @@
           {{ displayPrice(item.price) }}đ
         </div>
         <div class="ratings-container">
-          <div class="ratings">
-            <div class="ratings-val" style="width: 20%"></div>
-          </div>
-          <span class="ratings-text">( 2 Reviews )</span>
+          <span class="ratings-text"><i class="fa fa-star text-sm text-yellow-300"></i> 2</span>
         </div>
       </div>
     </div>

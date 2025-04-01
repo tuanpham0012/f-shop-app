@@ -1,9 +1,9 @@
 <template lang="">
   <div class="container">
-    <hr class="mb-5 mt-8" />
+    <hr class="mb-4 mt-4" />
 
-    <div class="heading heading-center mb-3">
-      <h2 class="text-center text-2xl font-medium mb-4">
+    <div class="heading heading-center mb-2">
+      <h2 class="text-center text-2xl font-medium mb-2">
         Sản phẩm nổi bật
       </h2>
       <!-- End .title -->
@@ -43,7 +43,7 @@
         aria-labelledby="arrivals-all-link"
       >
         <div
-          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-3 lg:gap-4 xl:gap-5"
+          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 lg:gap-3"
         >
           <div
             class="box-border cursor-pointer"

@@ -133,6 +133,8 @@ namespace ShopAppApi.Request
         public virtual ICollection<SkusRequest> Skus { get; set; } = [];
         public virtual ICollection<ProductImageRequest> Images { get; set; } = [];
         public bool? NewSkus { get; set; }
+        public short ConversionUnit { get; set; }
+        public bool? SoldOut { get; set; }
     }
 
     public partial class ProductImageRequest

@@ -114,7 +114,7 @@
             </form>
           </div>
           <!-- End .header-search -->
-          <div class="wishlist relative px-3">
+          <div class="wishlist relative ps-3 pe-4">
             <a href="wishlist.html" title="Wishlist">
               <i class="fa-regular fa-heart text-2xl"></i>
               <span class="wishlist-count">3</span>
@@ -136,83 +136,7 @@
               <span class="cart-count">2</span>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-cart-products">
-                <div class="product">
-                  <div class="product-cart-details">
-                    <h4 class="product-title">
-                      <a href="product.html"
-                        >Beige knitted elastic runner shoes</a
-                      >
-                    </h4>
-
-                    <span class="cart-product-info">
-                      <span class="cart-product-qty">1</span>
-                      x $84.00
-                    </span>
-                  </div>
-                  <!-- End .product-cart-details -->
-
-                  <figure class="product-image-container">
-                    <a href="product.html" class="product-image">
-                      <img
-                        src="../assets/images/products/cart/product-1.jpg"
-                        alt="product"
-                      />
-                    </a>
-                  </figure>
-                  <a href="#" class="btn-remove" title="Remove Product"
-                    ><i class="icon-close"></i
-                  ></a>
-                </div>
-                <!-- End .product -->
-
-                <div class="product">
-                  <div class="product-cart-details">
-                    <h4 class="product-title">
-                      <a href="product.html"
-                        >Blue utility pinafore denim dress</a
-                      >
-                    </h4>
-
-                    <span class="cart-product-info">
-                      <span class="cart-product-qty">1</span>
-                      x $76.00
-                    </span>
-                  </div>
-                  <!-- End .product-cart-details -->
-
-                  <figure class="product-image-container">
-                    <a href="product.html" class="product-image">
-                      <img
-                        src="../assets/images/products/cart/product-2.jpg"
-                        alt="product"
-                      />
-                    </a>
-                  </figure>
-                  <a href="#" class="btn-remove" title="Remove Product"
-                    ><i class="icon-close"></i
-                  ></a>
-                </div>
-                <!-- End .product -->
-              </div>
-              <!-- End .cart-product -->
-
-              <div class="dropdown-cart-total">
-                <span>Total</span>
-
-                <span class="cart-total-price">$160.00</span>
-              </div>
-              <!-- End .dropdown-cart-total -->
-
-              <div class="dropdown-cart-action">
-                <a href="cart.html" class="btn btn-primary">View Cart</a>
-                <a href="checkout.html" class="btn btn-outline-primary-2"
-                  ><span>Checkout</span><i class="icon-long-arrow-right"></i
-                ></a>
-              </div>
-              <!-- End .dropdown-cart-total -->
-            </div>
+            <CartModal />
             <!-- End .dropdown-menu -->
           </div>
           <!-- End .cart-dropdown -->
@@ -231,6 +155,7 @@ import { useCategoryStore } from "@/stores/category";
 import { useMenuStore } from "@/stores/menu";
 import CategoryTree from "./CategoryTree.vue";
 import MenuTree from "./MenuTree.vue";
+import CartModal from "@/components/CartModal.vue";
 
 const categoryStore = useCategoryStore();
 const menuStore = useMenuStore();
@@ -262,14 +187,14 @@ onBeforeMount(async () => {
 }
 
 .product {
-  padding: 0.5rem 1rem;
-  display: flex;
-  align-items: center;
+  // padding: 0.5rem 1rem;
+  // display: flex;
+  // align-items: center;
   cursor: pointer;
 
-  &:hover {
-    background-color: aliceblue;
-  }
+  // &:hover {
+  //   background-color: aliceblue;
+  // }
 }
 
 .dropdown-menu {

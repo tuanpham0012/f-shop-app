@@ -45,7 +45,7 @@
 .wishlist .wishlist-count {
     position: absolute;
     top: -.25rem;
-    right: -.15rem;
+    right: -.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,7 +56,8 @@
     font-size: 0.875rem;
     line-height: 1;
     color: #fff;
-    background-color: #66f
+    
+    background-color: var(--bs-primary)
 }
 
 .cart-dropdown {
@@ -64,17 +65,11 @@
 }
 
 .cart-dropdown .cart-count {
-    background-color: #66f
+    background-color: var(--bs-primary)
 }
 
 .search-toggle {
     color: #666
-}
-
-@media screen and (max-width: 991px) {
-    .header-middle .header-right>div:nth-child(3) {
-        padding: 0
-    }
 }
 
 @media screen and (max-width: 767px) {

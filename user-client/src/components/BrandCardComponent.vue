@@ -1,15 +1,14 @@
 <template lang="">
   <a :class="{ 'cat-block': loadStatus, 'cat-block-error': !loadStatus }">
     <figure>
-      <span v-if="loadStatus">
-        <img
-          :src="srcImage"
-          @error="errorImg($event, index)"
-          class="object-contain"
-          :style="{ width: width, height: height }"
-          loading="lazy"
-        />
-      </span>
+      <img
+        :src="srcImage"
+        @error="errorImg($event, index)"
+        class="object-contain"
+        :style="{ width: width, height: height }"
+        loading="lazy"
+        v-if="loadStatus"
+      />
       <span class="lable-text" :class="`text-[${textLabel}]`" v-else>{{
         label
       }}</span>
@@ -49,20 +48,19 @@ const errorImg = () => {
 };
 </script>
 <style lang="scss" scoped>
-.cat-block-error figure {
+figure {
   display: inline-flex;
   align-items: center;
   align-content: center;
   justify-content: center;
   height: 100%;
   width: 100%;
+  padding: 0;
   position: relative;
   flex: 1;
   margin: 0;
-  padding: 1rem;
   border: 1px solid #b3b3b3;
   border-radius: 0.475rem;
-  box-sizing: border-box;
   span {
     color: #6e6e6e;
     font-weight: 500;
@@ -75,6 +73,7 @@ const errorImg = () => {
     line-height: 1.5rem; /* Chiều cao dòng */
     height: 1.5rem; /* Chiều cao tối đa tương ứng với số dòng */
     padding-bottom: 0.2rem;
+    margin: 1rem 0 1rem;
     &::after {
       content: "";
       display: block;
@@ -91,12 +90,29 @@ const errorImg = () => {
       opacity: 0.4;
     }
   }
+  img {
+    margin: 0.2rem 0;
+  }
   &:hover {
     background-color: var(--bs-primary);
+    border: 0;
     outline: 0;
     span {
-      color: var(--bs-primary-text-emphasis);
-      transform: translateY(-4px);
+      color: var(--bs-text-white);
+      transform: translateY(-1px);
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.active {
+  figure{
+    border-color: var(--bs-primary);
+    background-color: var(--bs-primary);
+    span {
+      color: var(--bs-text-white);
       &::after {
         opacity: 1;
       }

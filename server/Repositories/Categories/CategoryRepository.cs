@@ -111,7 +111,7 @@ namespace ShopAppApi.Repositories.Categories
                 Rgt = 0,
                 ParentId = request.ParentId,
                 NotUse = request.NotUse,
-                Image = request.Image != null ? await fileHelper.SaveFile(request.Image) : "",
+                Image = request.Image != null ? fileHelper.SaveFile(request.Image) : "",
                 IsPopular = request.IsPopular,
                 HidenMenu = request.HidenMenu,
                 UpdatedAt = DateTime.UtcNow,
@@ -138,7 +138,7 @@ namespace ShopAppApi.Repositories.Categories
                 if (!string.IsNullOrEmpty(request.Image) && (category.Image == null || !request.Image.Contains(category.Image)))
                 {
                     fileHelper.DeleteFile(category.Image);
-                    category.Image = await fileHelper.SaveFile(request.Image);
+                    category.Image = fileHelper.SaveFile(request.Image);
                 }
                 category.IsPopular = request.IsPopular;
                 category.HidenMenu = request.HidenMenu;

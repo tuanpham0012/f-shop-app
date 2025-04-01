@@ -1,6 +1,6 @@
 <template>
   <div class="container-md" v-if="product">
-    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <nav aria-label="breadcrumb" class="hidden lg:block breadcrumb-nav">
       <div class="container-md">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Sản phẩm</a></li>
@@ -14,9 +14,13 @@
       </div>
       <!-- End .container -->
     </nav>
+    <div class="block sm:hidden">
+      <button class="btn btn-icon"><i class="icon-long-arrow-left text-2xl"></i></button>
+
+    </div>
 
     <div class="grid grid-cols-12 gap-0 mb-4">
-      <div class="col-span-12 lg:col-span-6 bg-white">
+      <div class="col-span-12 lg:col-span-6 bg-white aspect-square">
         <swiper
           :style="{
             '--swiper-navigation-color': '#fff',
@@ -58,15 +62,15 @@
         >
           <swiper-slide v-for="(img, index) in product.images" :key="index">
             <img
-              class="w-[75px] h-[75px] object-contain border p-1 rounded-sm"
+              class="w-[75px] h-[75px] object-contain border p-1 rounded-sm cursor-pointer"
               loading="lazy"
               :src="img.path"
             />
           </swiper-slide>
         </swiper>
       </div>
-      <div class="col-span-12 lg:col-span-6 bg-white px-4 lg:px-0">
-        <div class="ps-lg-3 pt-4">
+      <div class="col-span-12 lg:col-span-6 bg-white px-4">
+        <div class="lg:px-3 pt-2 ">
           <h4 class="title text-dark">
             {{ product.name }}
           </h4>
@@ -87,13 +91,16 @@
               ><i class="fa-solid fa-comment-dots fa-sm mx-1"></i
               ><span class="hidden sm:block">đánh giá</span>154</span
             >
-            <span class="flex justify-center items-center text-success"
+            <span class="flex justify-center items-center text-success" v-if="!product.soldOut"
               >Còn hàng</span
+            >
+            <span class="flex justify-center items-center text-danger" v-else
+              >Hết hàng</span
             >
           </div>
 
-          <div class="mb-4 bg-gray-100 d-flex gap-3 p-3 rounded-sm">
-            <span class="text-xl text-red-500 font-medium">{{
+          <div class="mb-2 bg-gray-100 flex gap-3 p-3 rounded-sm">
+            <span class="text-xl text-primary font-medium">{{
               displayPrice(skuSelect?.price ?? product.price) + "đ"
             }}</span>
             <span class="text-base text-gray-400 font-normal line-through">{{
@@ -101,22 +108,22 @@
             }}</span>
           </div>
 
-          <div class="row mt-5 mb-4 text-base">
+          <div class="row mt-2 mb-2 text-base">
             <div
-              class="row col-12 mb-4 items-start"
+              class="row col-12 mb-2 items-start"
               v-for="(option, i) in options"
               :key="i"
             >
               <div class="col-3">
                 <label class="py-2 font-medium">{{ option.name }}:</label>
               </div>
-              <div class="d-flex gap-2 flex-wrap col-9">
+              <div class="flex gap-x-1 gap-y-2 flex-wrap col-9">
                 <div
-                  class="p-[4px] mx-2 border rounded-md cursor-pointer text-gray-800 font-semibold"
+                  class="p-[4px] border rounded-md cursor-pointer text-gray-800 font-semibold"
                   v-for="(value, j) in option.optionValues"
                   :key="j"
                   :class="{
-                    'border-danger text-danger shadow-2xl shadow-cyan-800/30':
+                    'border-primary text-primary shadow-2xl shadow-cyan-800/30':
                       selected.findIndex((x:any) => x.optionValueId == value.id) >=
                       0,
                   }"
@@ -206,7 +213,7 @@
               @click="tabViewIndex = item.id"
             >
               <a
-                class="nav-link inline-flex gap-2 items-center justify-center p-3"
+                class="inline-flex gap-3 items-center justify-center p-3 nav-link"
                 :class="{ 'active': tabViewIndex == item.id }"
                 ><i :class="item.icon"></i>{{ item.label }}</a
               >

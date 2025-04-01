@@ -43,7 +43,7 @@ namespace ShopAppApi.Helpers
             throw new ArgumentException("Định dạng file không hợp lệ!");
         }
 
-        public async Task<string> SaveFile(string fileBase64, string subFolder = "")
+        public string SaveFile(string fileBase64, string subFolder = "")
         {
 
             if (String.IsNullOrEmpty(fileBase64) || !Regex.IsMatch(fileBase64, @"^data:image\/[a-zA-Z]+;base64,"))
@@ -54,10 +54,10 @@ namespace ShopAppApi.Helpers
             string newImgData = Regex.Replace(fileBase64, @"^data:image\/[a-zA-Z]+;base64,", string.Empty);
 
             byte[] fileBytes = Convert.FromBase64String(newImgData);
-            return await SaveFile(fileBytes);
+            return SaveFile(fileBytes);
         }
 
-        public async Task<string> SaveFile(byte[] fileBytes, string subFolder = "")
+        public string SaveFile(byte[] fileBytes, string subFolder = "")
         {
 
             string extension = GetFileFormat(fileBytes);

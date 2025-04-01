@@ -34,7 +34,7 @@ namespace ShopAppApi.Repositories.Products
                 TaxId = product.TaxId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                ImageThumb = product.ImageThumb != null ? await fileHelper.SaveFile(product.ImageThumb, "imgThumb") : "",
+                ImageThumb = product.ImageThumb != null ? fileHelper.SaveFile(product.ImageThumb, "imgThumb") : "",
                 IsNew = product.IsNew,
                 NumberWarning = product.NumberWarning,
                 HasVariants = product.HasVariants,
@@ -52,7 +52,7 @@ namespace ShopAppApi.Repositories.Products
                 {
                     ProductId = entry.Id,
                     Code = image.Code,
-                    Path = image.Path != null ? await fileHelper.SaveFile(image.Path, "images") : "",
+                    Path = image.Path != null ? fileHelper.SaveFile(image.Path, "images") : "",
                     Type = image.Type,
                     Driver = driver,
                     Extension = image.Extension,
@@ -130,6 +130,8 @@ namespace ShopAppApi.Repositories.Products
                 BrandId = p.BrandId,
                 CategoryId = p.CategoryId,
                 TaxId = p.TaxId,
+                ConversionUnit = p.ConversionUnit,
+                SoldOut = p.SoldOut,
                 Images = p.ProductImages.Select(i => new ProductImageVM
                 {
                     Id = i.Id,
@@ -159,7 +161,6 @@ namespace ShopAppApi.Repositories.Products
                 ImageThumb = fileHelper.GetLink(p.ImageThumb),
                 UnitSell = p.UnitSell,
                 UnitBuy = p.UnitBuy,
-                // Description = p.Description,
                 Alias = p.Alias,
                 CanEdit = p.CanEdit,
                 CanDelete = p.CanDelete,
@@ -170,6 +171,8 @@ namespace ShopAppApi.Repositories.Products
                 BrandId = p.BrandId,
                 CategoryId = p.CategoryId,
                 TaxId = p.TaxId,
+                ConversionUnit = p.ConversionUnit,
+                SoldOut = p.SoldOut,
                 Brand = new BrandVM
                 {
                     Id = p.Brand.Id,
@@ -246,9 +249,6 @@ namespace ShopAppApi.Repositories.Products
 
             var _product = await _context.Products.SingleOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Product does not exists!");
 
-            //string[] arrImg = [];
-
-
             foreach (var item in product.Images)
             {
                 if (item.IsDeleted == true)
@@ -262,7 +262,7 @@ namespace ShopAppApi.Repositories.Products
                 }
                 else if (item.Id == 0)
                 {
-                    var saveImg = await fileHelper.SaveFile(item.Path, "images");
+                    var saveImg = fileHelper.SaveFile(item.Path, "images");
                     var newImg = new ProductImage
                     {
                         ProductId = _product.Id,
@@ -297,6 +297,8 @@ namespace ShopAppApi.Repositories.Products
             _product.BrandId = product.BrandId ?? _product.BrandId;
             _product.TaxId = product.TaxId ?? _product.TaxId;
             _product.UpdatedAt = DateTime.UtcNow;
+            _product.ConversionUnit = product.ConversionUnit;
+            _product.SoldOut = product.SoldOut;
 
             // if(!string.IsNullOrEmpty(product.Description))
             // {
@@ -306,7 +308,7 @@ namespace ShopAppApi.Repositories.Products
             if (!string.IsNullOrEmpty(product.ImageThumb) && (_product.ImageThumb == null || !product.ImageThumb.Contains(_product.ImageThumb)))
             {
                 fileHelper.DeleteFile(_product.ImageThumb);
-                _product.ImageThumb = await fileHelper.SaveFile(product.ImageThumb, "imgThumb");
+                _product.ImageThumb = fileHelper.SaveFile(product.ImageThumb, "imgThumb");
             }
             _product.IsNew = product.IsNew;
             _product.NumberWarning = product.NumberWarning;
@@ -336,7 +338,7 @@ namespace ShopAppApi.Repositories.Products
                 foreach (var sku in product.Skus)
                 {
                     sku.ProductId = _product.Id;
-                    sku.Barcode = sku.Barcode ?? _product.Barcode;
+                    sku.Barcode ??= _product.Barcode;
                     CreateOrUpdateSku(sku);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
@@ -367,29 +369,38 @@ namespace ShopAppApi.Repositories.Products
             var _sku = new Sku();
             if (sku.Id != null && sku.IsEdited == true)
             {
-                _sku = new Sku
+                _sku = _context.Skus.SingleOrDefault(x => x.Id == sku.Id);
+                if (_sku == null)
                 {
-                    Id = sku.Id ?? 0,
-                    ProductId = (long)sku.ProductId,
-                    Name = sku.Name,
-                    Price = sku.Price,
-                    Barcode = sku.Barcode,
-                    Stock = sku.Stock,
-                    UpdatedAt = DateTime.UtcNow,
-                };
-                _context.Skus.Update(_sku);
+                    return;
+                }
+                if (!string.IsNullOrEmpty(sku.ImagePath) && (_sku.ImagePath == null || !sku.ImagePath.Contains(_sku.ImagePath)))
+                {
+                    fileHelper.DeleteFile(_sku.ImagePath);
+                    _sku.ImagePath = fileHelper.SaveFile(sku.ImagePath, "imgThumb");
+                }
+                    _sku.ProductId = sku.ProductId ?? 0;
+                    _sku.Name = sku.Name ?? "";
+                    _sku.Price = sku.Price;
+                    _sku.Barcode = sku.Barcode ?? "";
+                    _sku.Stock = sku.Stock;
+                    _sku.UpdatedAt = DateTime.UtcNow;
+                    _sku.ImageCode = sku.ImageCode ?? "";
+                    _context.SaveChanges();
             }
             else if (sku.Id == null)
             {
                 _sku = new Sku
                 {
-                    ProductId = (long)sku.ProductId,
-                    Name = sku.Name,
+                    ProductId = sku.ProductId ?? 0,
+                    Name = sku.Name ?? "",
                     Price = sku.Price,
-                    Barcode = sku.Barcode,
+                    Barcode = sku.Barcode ?? "",
                     Stock = sku.Stock,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
+                    ImageCode = sku.ImageCode ?? "",
+                    ImagePath = sku.ImagePath ?? "",
                 };
                 _context.Add(_sku);
                 _context.SaveChanges();
@@ -406,9 +417,9 @@ namespace ShopAppApi.Repositories.Products
                 _option = new Option
                 {
                     Id = option.Id ?? 0,
-                    ProductId = (long)option.ProductId,
+                    ProductId = option.ProductId ?? 0,
                     Code = option.Code,
-                    Name = option.Name,
+                    Name = option.Name ?? "",
                     Order = option.Order,
                     Visual = option.Visual,
                     UpdatedAt = DateTime.UtcNow,
@@ -419,9 +430,9 @@ namespace ShopAppApi.Repositories.Products
             {
                 _option = new Option
                 {
-                    ProductId = (long)option.ProductId,
+                    ProductId = option.ProductId ?? 0,
                     Code = option.Code,
-                    Name = option.Name,
+                    Name = option.Name ?? "",
                     Order = option.Order,
                     Visual = option.Visual,
                     UpdatedAt = DateTime.UtcNow,
@@ -777,7 +788,7 @@ namespace ShopAppApi.Repositories.Products
                     SkuId = v.SkuId,
                     OptionId = v.OptionId,
                     OptionValueId = v.OptionValueId,
-                    Code = v.OptionValue.Code,
+                    Code = v.OptionValue.Code ?? "",
                     OptionValue = new OptionValueVM
                     {
                         Id = v.OptionValue.Id,

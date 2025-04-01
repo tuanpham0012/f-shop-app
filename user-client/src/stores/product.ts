@@ -67,6 +67,7 @@ export const useProductStore = defineStore("product", {
         },
 
         async getProductByAlias(alias:any) {
+            this.product = null
             this.getDescriptionProductByAlias(alias);
             await _show(`${apiUrl}/products/find/${alias}`)
                 .then( async (res) => {
@@ -79,6 +80,7 @@ export const useProductStore = defineStore("product", {
         },
 
         async getDescriptionProductByAlias(alias:any) {
+            this.descriptionProduct = ""
             await _show(`${apiUrl}/products/description/${alias}`)
                 .then((res) => {
                     this.descriptionProduct = res.data.data
