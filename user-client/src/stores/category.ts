@@ -52,7 +52,6 @@ export const useCategoryStore = defineStore("category", {
         async getListPopularCategory() {
             await _getList(`${url}/categories/popular-category`, null)
                 .then((res) => {
-                    console.log(res.data);
                     this.popularCategory = res.data;
                 })
                 .catch((err) => {
@@ -62,7 +61,6 @@ export const useCategoryStore = defineStore("category", {
         async getListTopCategoryWithProduct() {
             await _getList(`${url}/categories/top-category`, null)
                 .then((res) => {
-                    console.log(res.data);
                     this.topCategory = res.data;
                 })
                 .catch((err) => {
@@ -72,7 +70,6 @@ export const useCategoryStore = defineStore("category", {
         async getListCategoryHasFeaturedProduct() {
             await _getList(`${url}/categories/featured-product-category`, null)
                 .then((res) => {
-                    console.log(res.data);
                     this.featuredProductCategory = res.data;
                 })
                 .catch((err) => {

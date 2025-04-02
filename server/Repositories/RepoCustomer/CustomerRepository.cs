@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
+using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
 using System.Net;
@@ -9,7 +10,7 @@ using System.Numerics;
 
 namespace ShopAppApi.Repositories.RepoCustomer
 {
-    public class CustomerRepository(ShopAppContext context) : ICustomerRepository
+    public class CustomerRepository(ShopAppContext context, IStringHelper stringHelper) : ICustomerRepository
     {
         private readonly ShopAppContext _context = context;
         public Boolean Delete(int id)
@@ -79,7 +80,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
         public async Task Create(StoreCustomerRequest customer)
         {
             using var transaction = _context.Database.BeginTransaction();
-            HashSalt hash = StringHelper.EncryptPassword(customer.Password);
+            HashSalt hash = stringHelper.EncryptPassword(customer.Password);
             var entry = new Customer
             {
                 Name = customer.Name,
@@ -87,7 +88,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
                 Phone = customer.Phone ?? "",
                 Address = customer.Address ?? "",
                 Password = hash.Hash,
-                Salt = hash.Salt?.ToString(),
+                Salt = hash.Salt,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 Status = customer.Status,

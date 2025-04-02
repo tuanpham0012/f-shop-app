@@ -4,6 +4,7 @@ import {successMessage, errorMessage} from './toast'
 const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'Authorization': `Bearer ${import.meta.env.VITE_VUE_APP_TOKEN}`
 }
 const axiosDefaults = {
     headers

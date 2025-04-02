@@ -71,7 +71,7 @@
             class="logo"
           >
             <img
-              src="../assets/images/demos/demo-21/logo.png"
+              src="../assets/images/demos/demo-20/logo.png"
               alt="Molla Logo"
               width="100"
               height="25"
@@ -132,11 +132,11 @@
               aria-expanded="false"
               data-display="static"
             >
-            <i class="fa-solid fa-cart-shopping text-2xl"></i>
-              <span class="cart-count">2</span>
+              <i class="fa-solid fa-cart-shopping text-2xl"></i>
+              <span class="cart-count">{{ carts.length }}</span>
             </a>
 
-            <CartModal />
+            <CartModal :carts="carts" />
             <!-- End .dropdown-menu -->
           </div>
           <!-- End .cart-dropdown -->
@@ -157,11 +157,22 @@ import CategoryTree from "./CategoryTree.vue";
 import MenuTree from "./MenuTree.vue";
 import CartModal from "@/components/CartModal.vue";
 
+import { useCartStore } from "@/stores/cart";
+const cartStore = useCartStore();
+const addToCart = async () => {
+  await cartStore.addToCart({
+    skuId: skuSelect.value.id,
+    quantity: quantity.value,
+  });
+};
+
 const categoryStore = useCategoryStore();
 const menuStore = useMenuStore();
 
 const categories = computed(() => categoryStore.$state.listTree.data);
 const menu = computed(() => menuStore.$state.menu.data);
+
+const carts = computed(() => cartStore.$state.carts.data);
 
 onBeforeMount(async () => {
   window.onscroll = function () {
@@ -177,6 +188,7 @@ onBeforeMount(async () => {
 
   // await categoryStore.getListCategory({ notUse: false });
   await menuStore.getMenu({ notUse: false });
+  await cartStore.getList()
 });
 </script>
 <style lang="scss" scoped>

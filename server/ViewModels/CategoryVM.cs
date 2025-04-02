@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ShopAppApi.ViewModels;
 
-namespace ShopAppApi.Data;
+namespace ShopAppApi.ViewModels;
 
 public partial class CategoryVM
 {

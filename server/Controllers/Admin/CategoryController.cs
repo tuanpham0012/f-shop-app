@@ -4,6 +4,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Repositories.Categories;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.Admin
 {

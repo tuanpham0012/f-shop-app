@@ -19,7 +19,6 @@ export const useTaxStore = defineStore("tax", {
         async getList(query: any) {
             await _getList(`${apiUrl}/taxes`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.entries = res.data;
                 })
                 .catch((err) => {
@@ -35,7 +34,6 @@ export const useTaxStore = defineStore("tax", {
         async show(id: any) {
             await _show(`${apiUrl}/taxes/${id}`)
                 .then((res) => {
-                    console.log(res.data);
                     this.entry = res.data.data;
                 })
                 .catch((err) => {

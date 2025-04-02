@@ -1,3 +1,4 @@
+namespace ShopAppApi.ViewModels;
 public partial class MenuTree
 {
     public long Id { get; set; }

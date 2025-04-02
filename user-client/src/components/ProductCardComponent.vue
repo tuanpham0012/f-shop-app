@@ -1,9 +1,13 @@
 <template lang="">
   <div class="product flex flex-col cursor-pointer" v-if="item">
-    <figure class="product-media bg-gray-100 flex aspect-square items-center px-1">
+    <figure
+      class="product-media bg-gray-100 flex aspect-square items-center px-1"
+    >
       <img :src="item.imageThumb" alt="Product image" class="product-image" />
       <div class="product-action">
-        <a href="#" class="btn-product btn-cart"><span>Thêm vào giỏ hàng</span></a>
+        <a href="#" class="btn-product btn-cart" @click="addToCart(1)"
+          ><span>Thêm vào giỏ hàng</span></a
+        >
       </div>
     </figure>
 
@@ -21,7 +25,9 @@
           {{ displayPrice(item.price) }}đ
         </div>
         <div class="ratings-container">
-          <span class="ratings-text"><i class="fa fa-star text-sm text-yellow-300"></i> 2</span>
+          <span class="ratings-text"
+            ><i class="fa fa-star text-sm text-yellow-300"></i> 2</span
+          >
         </div>
       </div>
     </div>
@@ -30,6 +36,9 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { displayPrice } from "@/services/utils";
+import { useCartStore } from "@/stores/cart";
+
+const cartStore = useCartStore();
 
 const props = defineProps({
   item: {
@@ -41,5 +50,12 @@ const props = defineProps({
     default: true,
   },
 });
+
+const addToCart = async (skuId: number) => {
+  await cartStore.addToCart({
+    skuId: skuId,
+    quantity: 1,
+  });
+};
 </script>
 <style lang=""></style>

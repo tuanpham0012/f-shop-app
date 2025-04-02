@@ -1042,9 +1042,8 @@ blockquote.text-white cite span {
     align-items: flex-end;
     font-size: 1rem;
     font-weight: 400;
-    text-transform: uppercase;
     color: #666;
-    margin-bottom: 1.1rem
+    margin-bottom: 1rem
 }
 
 .dropdown-cart-total .cart-total-price {

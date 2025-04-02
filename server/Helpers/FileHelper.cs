@@ -7,7 +7,7 @@ using Slugify;
 
 namespace ShopAppApi.Helpers
 {
-    public class FileHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IFileHelper
+    public class FileHelper(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IStringHelper stringHelper) : IFileHelper
     {
         private readonly string driver = configuration["FileStorage:Driver"] ?? "local";
         private readonly string defaultImage = configuration["FileStorage:DefaultImage"] ?? "";
@@ -61,7 +61,7 @@ namespace ShopAppApi.Helpers
         {
 
             string extension = GetFileFormat(fileBytes);
-            string fileName = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "_" + StringHelper.RandomString(16) + "." + extension;
+            string fileName = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString() + "_" + stringHelper.RandomString(16) + "." + extension;
             SaveFileToStorage(fileBytes, fileName, subFolder);
             return string.IsNullOrEmpty(subFolder) ?  fileName : $"{subFolder}/{fileName}";
         }

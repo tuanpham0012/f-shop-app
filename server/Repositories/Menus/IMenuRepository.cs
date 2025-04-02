@@ -1,6 +1,7 @@
 using ShopAppApi.Data;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Menus
 {

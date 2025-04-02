@@ -15,8 +15,9 @@
       <!-- End .container -->
     </nav>
     <div class="block sm:hidden">
-      <button class="btn btn-icon"><i class="icon-long-arrow-left text-2xl"></i></button>
-
+      <button class="btn btn-icon">
+        <i class="icon-long-arrow-left text-2xl"></i>
+      </button>
     </div>
 
     <div class="grid grid-cols-12 gap-0 mb-4">
@@ -70,7 +71,7 @@
         </swiper>
       </div>
       <div class="col-span-12 lg:col-span-6 bg-white px-4">
-        <div class="lg:px-3 pt-2 ">
+        <div class="lg:px-3 pt-2">
           <h4 class="title text-dark">
             {{ product.name }}
           </h4>
@@ -91,7 +92,9 @@
               ><i class="fa-solid fa-comment-dots fa-sm mx-1"></i
               ><span class="hidden sm:block">đánh giá</span>154</span
             >
-            <span class="flex justify-center items-center text-success" v-if="!product.soldOut"
+            <span
+              class="flex justify-center items-center text-success"
+              v-if="!product.soldOut"
               >Còn hàng</span
             >
             <span class="flex justify-center items-center text-danger" v-else
@@ -184,12 +187,11 @@
           </div>
           <div class="col-12 py-5">
             <div class="grid grid-cols-12 gap-3">
-              <button class="btn btn-icon btn-outline-primary py-2 col-span-5">
-                <span
-                  class="flex justify-center items-center gap-2 flex-nowrap text-base font-medium"
-                  ><i class="fa-solid fa-cart-plus text-base"></i>
-                  <span class="hidden sm:block">Thêm vào giỏ hàng</span></span
-                >
+              <button class="cart-button col-span-5" ref="addToCartBtn" @click="addToCart()">
+                <span class="add-to-cart">Add to cart</span>
+                <span class="added">Added</span>
+                <i class="fas fa-shopping-cart"></i>
+                <i class="fas fa-box"></i>
               </button>
               <button class="btn btn-icon btn-outline-danger py-2 col-span-5">
                 <span class="text-base font-medium">Mua ngay</span>
@@ -214,7 +216,7 @@
             >
               <a
                 class="inline-flex gap-3 items-center justify-center p-3 nav-link"
-                :class="{ 'active': tabViewIndex == item.id }"
+                :class="{ active: tabViewIndex == item.id }"
                 ><i :class="item.icon"></i>{{ item.label }}</a
               >
             </li>
@@ -245,18 +247,15 @@ import { useRoute, useRouter } from "vue-router";
 import { errorMessage } from "@/helpers/toast";
 import { isNumber } from "@/helpers/helpers";
 import { displayPrice } from "@/services/utils";
-
 import { Swiper, SwiperSlide } from "swiper/vue";
-
-// Import Swiper styles
 import "swiper/css";
-
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import ProductDescription from "./ProductDescription.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
+import { useCartStore } from "@/stores/cart";
 
 const modules = ref([FreeMode, Navigation, Thumbs]);
 
@@ -266,12 +265,16 @@ const route = useRoute();
 
 const productStore = useProductStore();
 
+const cartStore = useCartStore();
+
 const selected = ref<any>([]);
 const skuSelect = ref<any>(null);
 
 const quantity = ref(1);
 
 const tabViewIndex = ref(1);
+
+const addToCartBtn = ref<any>(null)
 
 const tabViews = reactive([
   {
@@ -285,6 +288,17 @@ const tabViews = reactive([
     icon: "fa-solid fa-comment-dots",
   },
 ]);
+
+const addToCart = async () => {
+  addToCartBtn.value.classList.add('clicked')
+  setTimeout( () => {
+    addToCartBtn.value.classList.remove('clicked')
+  }, 1600)
+  await cartStore.addToCart({
+    skuId: skuSelect.value.id,
+    quantity: quantity.value,
+  });
+};
 
 const setThumbsSwiper = (swiper: any) => {
   thumbsSwiper.value = swiper;
@@ -341,6 +355,15 @@ watch(
   }
 );
 
+watch(
+  () => skus.value,
+  (newValue) => {
+    console.log(skus.value);
+    if (skus.value.length == 1) skuSelect.value = skus.value[0];
+  },
+  { deep: true }
+);
+
 onBeforeMount(async () => {
   if (route.params.productCode != null)
     await productStore.getProductByAlias(route.params.productCode);
@@ -365,6 +388,122 @@ li {
       color: var(--bs-primary);
       pointer-events: none;
     }
+  }
+}
+
+.cart-button {
+  position: relative;
+  padding: 10px;
+  width: 200px;
+  height: 45px;
+  border: 0;
+  border-radius: 6px;
+  border: 1px solid var(--bs-primary);
+  outline: none;
+  cursor: pointer;
+  color: var(--bs-primary) !important;
+  transition: 0.3s ease-in-out;
+  overflow: hidden;
+  .add-to-cart{
+    color: var(--bs-primary);
+  }
+}
+.cart-button:hover {
+  background-color: var(--bs-primary);
+  .add-to-cart{
+    color: var(--bs-text-white);
+  }
+}
+.cart-button:active {
+  transform: scale(0.9);
+}
+
+.cart-button .fa-shopping-cart {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: -10%;
+  font-size: 2em;
+  transform: translate(-50%, -50%);
+}
+.cart-button .fa-box {
+  position: absolute;
+  z-index: 3;
+  top: -20%;
+  left: 52%;
+  font-size: 1.2em;
+  transform: translate(-50%, -50%);
+}
+.cart-button span {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  font-size: 1.2em;
+  color: #fff;
+  transform: translate(-50%, -50%);
+}
+.cart-button span.add-to-cart {
+  opacity: 1;
+}
+.cart-button span.added {
+  opacity: 0;
+}
+
+.cart-button.clicked .fa-shopping-cart {
+  animation: cart 1.5s ease-in-out forwards;
+}
+.cart-button.clicked .fa-box {
+  animation: box 1.5s ease-in-out forwards;
+}
+.cart-button.clicked span.add-to-cart {
+  animation: txt1 1.5s ease-in-out forwards;
+}
+.cart-button.clicked span.added {
+  animation: txt2 1.5s ease-in-out forwards;
+}
+@keyframes cart {
+  0% {
+    left: -10%;
+  }
+  40%,
+  60% {
+    left: 50%;
+  }
+  100% {
+    left: 110%;
+  }
+}
+@keyframes box {
+  0%,
+  40% {
+    top: -20%;
+  }
+  60% {
+    top: 40%;
+    left: 52%;
+  }
+  100% {
+    top: 40%;
+    left: 112%;
+  }
+}
+@keyframes txt1 {
+  0% {
+    opacity: 1;
+  }
+  20%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes txt2 {
+  0%,
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 </style>

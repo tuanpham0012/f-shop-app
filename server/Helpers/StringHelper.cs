@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
+using ShopAppApi.Helpers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -7,13 +8,13 @@ using System.Text.RegularExpressions;
 
 namespace ShopAppApi.Helpers
 {
-    public static class StringHelper
+    public class StringHelper : IStringHelper
     {
-        private static readonly Random random = new();
+        private readonly Random random = new();
 
-        public static HashSalt EncryptPassword(string password)
+        public HashSalt EncryptPassword(string password)
         {
-            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // Generate a 128-bit salt using a secure PRNG
+            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
@@ -22,21 +23,21 @@ namespace ShopAppApi.Helpers
                 password: password,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA1,
-            iterationCount: 10000,
+                iterationCount: 10000,
                 numBytesRequested: 256 / 8
             ));
             return new HashSalt
             {
                 Hash = encryptedPassw,
-                Salt = salt
+                Salt = Convert.ToBase64String(salt)
             };
         }
 
-        public static bool VerifyPassword(string enteredPassword, byte[] salt, string storedPassword)
+        public bool VerifyPassword(string enteredPassword, string salt, string storedPassword)
         {
             string encryptedPassw = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: enteredPassword,
-                salt: salt,
+                salt: Convert.FromBase64String(salt),
                 prf: KeyDerivationPrf.HMACSHA1,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8
@@ -44,7 +45,7 @@ namespace ShopAppApi.Helpers
             return encryptedPassw == storedPassword;
         }
 
-        public static string RandomString(int length)
+        public string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
@@ -54,8 +55,8 @@ namespace ShopAppApi.Helpers
 
     public class HashSalt
     {
-        public string? Hash { get; set; }
+        public string Hash { get; set; } = string.Empty;
 
-        public byte[]? Salt { get; set; }
+        public string Salt { get; set; } = string.Empty;
     }
 }

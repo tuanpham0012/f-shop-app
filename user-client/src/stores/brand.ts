@@ -30,7 +30,6 @@ export const useBrandStore = defineStore("brand", {
         async getList() {
             await _getList(`${apiUrl}/brands`, null)
                 .then((res) => {
-                    console.log(res.data);
                     this.brands = res.data;
                 })
                 .catch((err) => {
@@ -40,7 +39,6 @@ export const useBrandStore = defineStore("brand", {
         async getListBrandByCategory(query: any) {
             await _getList(`${apiUrl}/brands/brand-by-category`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.brandByCategory = res.data;
                 })
                 .catch((err) => {

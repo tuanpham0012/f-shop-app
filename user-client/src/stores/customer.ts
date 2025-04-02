@@ -50,7 +50,6 @@ export const useCustomerStore = defineStore('customer', {
         getList(query: any) {
             _getList(`${apiUrl}/customers`, query)
             .then( res => {
-                console.log(res.data);
                 this.customers = res.data
             }).catch(err => {
                 console.log(err);
