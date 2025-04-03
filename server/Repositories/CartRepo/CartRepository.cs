@@ -1,4 +1,5 @@
 
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
@@ -39,7 +40,8 @@ namespace ShopAppApi.Repositories.CartRepo
 
         public async Task<List<CartVM>> GetCart(long CustomerId)
         {
-            var getCart = await context.Carts.Where(x => x.CustomerId == CustomerId).Select(x => new CartVM
+            var getCart = await context.Carts.Where(x => x.CustomerId == CustomerId)
+            .Select(x => new CartVM
             {
                 Id = x.Id,
                 CustomerId = x.CustomerId,
@@ -57,6 +59,8 @@ namespace ShopAppApi.Repositories.CartRepo
                 {
                     Id = x.Sku.Id,
                     Barcode = x.Sku.Barcode,
+                    ImageCode = x.Sku.ImageCode,
+                    ImagePath = string.IsNullOrWhiteSpace(x.Sku.ImagePath) ? fileHelper.GetLink(x.Product.ImageThumb) : fileHelper.GetLink(x.Sku.ImagePath),
                     Price = x.Sku.Price,
                     Name = x.Sku.Name,
                     Stock = x.Sku.Stock,
@@ -75,8 +79,7 @@ namespace ShopAppApi.Repositories.CartRepo
                     }).ToList()
                 },
                 TotalPrice = (long)(x.Quantity * x.Sku.Price)
-            }).ToListAsync();
-
+            }).OrderBy(x => x.ProductId).ToListAsync();
             return getCart;
         }
     }

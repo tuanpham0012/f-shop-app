@@ -18,6 +18,12 @@ const routes = [
     component: () => import('../views/Product/ProductViewDetail.vue')
     
   },
+  {
+    path: '/gio-hang',
+    name: 'Cart',
+    component: () => import('../views/CheckOut/Cart.vue')
+    
+  },
 ]
 
 const router = createRouter({

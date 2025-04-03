@@ -19,16 +19,15 @@
         <i class="icon-long-arrow-left text-2xl"></i>
       </button>
     </div>
-
-    <div class="grid grid-cols-12 gap-0 mb-4">
-      <div class="col-span-12 lg:col-span-6 bg-white aspect-square">
+    <div class="grid grid-cols-12 gap-0 mb-4 mt-1">
+      <div class="col-span-12 lg:col-span-6 bg-white h-100 px-2">
         <swiper
           :style="{
             '--swiper-navigation-color': '#fff',
             '--swiper-pagination-color': '#fff',
           }"
           :spaceBetween="10"
-          :navigation="true"
+          :navigation="false"
           :centeredSlides="true"
           :thumbs="{ swiper: thumbsSwiper }"
           :modules="modules"
@@ -36,7 +35,7 @@
         >
           <swiper-slide v-for="(img, index) in product.images"
             ><div
-              class="rounded-3 d-flex justify-content-center w-[100] h-auto aspect-square d-flex justify-center items-center p-4 box-border"
+              class="rounded-3 d-flex justify-content-center w-[100] h-[auto] aspect-square d-flex justify-center items-center p-4 box-border"
             >
               <a
                 data-fslightbox="mygalley"
@@ -113,14 +112,14 @@
 
           <div class="row mt-2 mb-2 text-base">
             <div
-              class="row col-12 mb-2 items-start"
+              class="grid grid-cols-12 mb-2 items-start"
               v-for="(option, i) in options"
               :key="i"
             >
-              <div class="col-3">
+              <div class="col-span-3">
                 <label class="py-2 font-medium">{{ option.name }}:</label>
               </div>
-              <div class="flex gap-x-1 gap-y-2 flex-wrap col-9">
+              <div class="flex gap-x-1 gap-y-2 flex-wrap col-span-9">
                 <div
                   class="p-[4px] border rounded-md cursor-pointer text-gray-800 font-semibold"
                   v-for="(value, j) in option.optionValues"
@@ -145,12 +144,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 mt-2">
-              <div class="details-filter-row details-row-size">
-                <div class="col-3">
+            <div class="grid grid-cols-12 mt-2">
+                <div class="col-span-3">
                   <label for="qty">Số lượng:</label>
                 </div>
-                <div class="col-9 product-details-quantity">
+                <div class="col-span-9 product-details-quantity">
                   <div class="relative">
                     <div class="absolute left-0 top-0">
                       <button
@@ -180,16 +178,14 @@
                       </button>
                     </div>
                   </div>
-                </div>
-                <!-- End .product-details-quantity -->
               </div>
             </div>
           </div>
           <div class="col-12 py-5">
             <div class="grid grid-cols-12 gap-3">
               <button class="cart-button col-span-5" ref="addToCartBtn" @click="addToCart()">
-                <span class="add-to-cart">Add to cart</span>
-                <span class="added">Added</span>
+                <span class="add-to-cart"><i class="inline-block lg:hidden fa-solid fa-cart-plus"></i> <span class="hidden lg:inline-block">Thêm vào giỏ hàng</span></span>
+                <span class="added">Đã thêm</span>
                 <i class="fas fa-shopping-cart"></i>
                 <i class="fas fa-box"></i>
               </button>
@@ -293,7 +289,7 @@ const addToCart = async () => {
   addToCartBtn.value.classList.add('clicked')
   setTimeout( () => {
     addToCartBtn.value.classList.remove('clicked')
-  }, 1600)
+  }, 2000)
   await cartStore.addToCart({
     skuId: skuSelect.value.id,
     quantity: quantity.value,
@@ -394,17 +390,19 @@ li {
 .cart-button {
   position: relative;
   padding: 10px;
-  width: 200px;
+  width: 100%;
   height: 45px;
   border: 0;
   border-radius: 6px;
   border: 1px solid var(--bs-primary);
   outline: none;
+  font-size: 1rem;
   cursor: pointer;
   color: var(--bs-primary) !important;
   transition: 0.3s ease-in-out;
   overflow: hidden;
   .add-to-cart{
+    width: 100%;
     color: var(--bs-primary);
   }
 }
@@ -413,17 +411,23 @@ li {
   .add-to-cart{
     color: var(--bs-text-white);
   }
+  i{
+    color: var(--bs-text-white);
+  }
 }
 .cart-button:active {
   transform: scale(0.9);
+  i{
+    color: var(--bs-text-white);
+  }
 }
 
 .cart-button .fa-shopping-cart {
   position: absolute;
   z-index: 2;
   top: 50%;
-  left: -10%;
-  font-size: 2em;
+  left: -15%;
+  font-size: 1.2rem;
   transform: translate(-50%, -50%);
 }
 .cart-button .fa-box {
@@ -431,7 +435,7 @@ li {
   z-index: 3;
   top: -20%;
   left: 52%;
-  font-size: 1.2em;
+  font-size: .875rem;
   transform: translate(-50%, -50%);
 }
 .cart-button span {
@@ -439,8 +443,10 @@ li {
   z-index: 3;
   left: 50%;
   top: 50%;
-  font-size: 1.2em;
-  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%;
+  // color: #fff;
   transform: translate(-50%, -50%);
 }
 .cart-button span.add-to-cart {
@@ -505,5 +511,14 @@ li {
   100% {
     opacity: 1;
   }
+}
+
+.swiper-button-prev, .swiper-rtl .swiper-button-next {
+    left: var(--swiper-navigation-sides-offset, -10px);
+    right: auto;
+}
+.swiper-button-next, .swiper-rtl .swiper-button-prev {
+    right: var(--swiper-navigation-sides-offset, -10px);
+    left: auto;
 }
 </style>

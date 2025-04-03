@@ -82,6 +82,11 @@ const toggleShowMore = () => {
     iframe.value.style.height = contentHeight + "px";
   } else {
     iframe.value.style.height = "600px";
+    iframe.value.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "center", // 'start', 'center', 'end', hoặc 'nearest'
+    });
   }
 };
 
@@ -98,15 +103,14 @@ onBeforeMount(async () => {
     width: 100%;
     height: 8rem;
     background: rgb(195, 195, 195);
-    background: linear-gradient(
-      0deg,
-      rgba(195, 195, 195, 0.9051995798319328) 0%,
-      rgba(217, 217, 217, 0.6222864145658263) 30%,
-      rgba(245, 245, 245, 0.14049369747899154) 72%,
-      rgba(255, 255, 255, 0.04245448179271705) 87%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(0deg,
+        rgba(195, 195, 195, 0.9051995798319328) 0%,
+        rgba(217, 217, 217, 0.6222864145658263) 30%,
+        rgba(245, 245, 245, 0.14049369747899154) 72%,
+        rgba(255, 255, 255, 0.04245448179271705) 87%,
+        rgba(255, 255, 255, 0) 100%);
   }
+
   a {
     background-color: rgb(248, 248, 248);
     padding: 0.5rem 1rem;
