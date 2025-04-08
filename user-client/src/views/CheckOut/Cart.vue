@@ -52,9 +52,9 @@
                             class="w-100 h-100 object-contain"
                           />
                         </figure>
-                        <div class="grid grid-cols-12">
+                        <div class="grid grid-cols-12 gap-1">
                           <a
-                            class="col-span-8 text-neutral-700 text-[1.1rem] hover:text-[var(--bs-primary)]"
+                            class="col-span-8 text-neutral-600 text-[1.05rem] hover:text-[var(--bs-primary)]"
                             href="#"
                             >{{ item.product.name }}</a
                           >
@@ -123,33 +123,6 @@
                   </tr>
                 </tbody>
               </table>
-              <div class="cart-bottom">
-                <div class="cart-discount">
-                  <form action="#">
-                    <div class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        required=""
-                        placeholder="coupon code"
-                      />
-                      <div class="input-group-append">
-                        <button
-                          class="btn btn-outline-primary-2 rounded-none"
-                          type="submit"
-                        >
-                          <i class="icon-long-arrow-right"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-
-                <a href="#" class="btn btn-outline-dark-2"
-                  ><span>UPDATE CART</span><i class="icon-refresh"></i
-                ></a>
-              </div>
-              <!-- End .cart-bottom -->
             </div>
             <!-- End .col-lg-9 -->
             <aside class="col-span-12 lg:col-span-3">
@@ -236,7 +209,6 @@
                     <tr class="summary-shipping">
                       <td colspan="2">Phương thức thanh toán:</td>
                     </tr>
-
                     <tr class="summary-shipping-row">
                       <td colspan="2">
                         <div class="radio-container">
@@ -306,12 +278,32 @@
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <td colspan="2" class="text-center">
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            class="form-control"
+                            required=""
+                            placeholder="Mã giảm giá"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-outline-primary-2 rounded-none"
+                              type="submit"
+                            >
+                              <i class="icon-long-arrow-right"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
 
                     <tr class="summary-shipping">
                       <td colspan="2">Thông tin nhận hàng:</td>
                     </tr>
                     <tr class="summary-shipping">
-                      <td colspan="2">+80000000000, số 12 Hà nội</td>
+                      <td colspan="2">+80000000000, số 12 Hà nội\ ?</td>
                     </tr>
                     <tr class="summary-subtotal">
                       <td>Giá sản phẩm:</td>
@@ -414,8 +406,8 @@ onBeforeMount(async () => {
 </script>
 <style lang="scss" scoped>
 .table td {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
 }
 
 .btn {

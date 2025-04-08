@@ -15,7 +15,6 @@ namespace ShopAppApi.Repositories.Products
         {
             
             string cacheKey = $"{Constants.BrandCache}:GetAll-request-" + cache.ReplaceString(JsonSerializer.Serialize(request));
-            Console.WriteLine(cacheKey);
             var cacheData = await cache.GetOrCreateAsync(cacheKey, async () =>
             {
                 var query = context.Brands.AsNoTracking().AsQueryable();
@@ -125,7 +124,6 @@ namespace ShopAppApi.Repositories.Products
                     ProductCount = x.Products.Count
                 }).OrderByDescending(x => x.Id).ToListAsync();
             });
-
             return cacheData ?? [];
         }
     }

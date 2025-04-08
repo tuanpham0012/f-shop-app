@@ -67,6 +67,7 @@ namespace ShopAppApi.Repositories.Auth
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                 new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
+                new Claim("ID", customer.Id.ToString()),
                 new Claim(ClaimTypes.Name, customer.Name),
             };
 

@@ -25,7 +25,8 @@ class CustomerSeeder extends Seeder
                     'status' => rand(0, 2),
                     'gender' => rand(0, 2),
                     'phone' => fake()->phoneNumber(),
-                    'password' => Hash::make('password'),
+                    'password' => 'yX9/jUw4mRFUQ61jxD0OuAuN+3+DaGz44M4UvMYzL94=', // password@123A
+                    'salt' => 'Kjv8o96q8DLYYidCFlmQgA==',
                     'remember_token' => Str::random(15),
                     'created_at' => now(),
                     'updated_at' => now(),

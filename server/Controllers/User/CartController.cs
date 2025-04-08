@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using ShopAppApi.Data;
 using ShopAppApi.Repositories.CartRepo;
 using ShopAppApi.Repositories.Products;
@@ -34,7 +35,7 @@ namespace ShopAppApi.Controllers.User
         public async Task<IActionResult> GetCart()
         {
             long CustomerId = 0;
-            if (long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var customerId))
+            if (long.TryParse(User.FindFirstValue("ID"), out var customerId))
             {
                 CustomerId = customerId;
             }
