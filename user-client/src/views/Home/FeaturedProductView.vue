@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="container">
+  <div class="container-lg">
     <hr class="mb-4 mt-4" />
 
     <div class="heading heading-center mb-2">
@@ -35,7 +35,7 @@
     </div>
     <!-- End .heading -->
 
-    <div class="tab-content tab-content-carousel p-2 mb-3">
+    <div class="tab-content tab-content-carousel p-2 mb-2">
       <div
         class="p-0"
         id="arrivals-all-tab"
@@ -46,7 +46,7 @@
           class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 lg:gap-3"
         >
           <div
-            class="box-border cursor-pointer"
+            class="box-border cursor-pointer [&:nth-child(2n+1)]:hidden md:[&:nth-child(n+10)]:hidden lg:[&:nth-child(n+9)]:hidden lg:nth-9]:hidden"
             v-for="(item, index) in featuredProducts.products"
             :key="index"
           >
@@ -80,7 +80,7 @@ const productStore = useProductStore();
 const router = useRouter();
 
 const featuredProductQuery = reactive({
-  pageSize: 10,
+  pageSize: 20,
   page: 1,
   categoryId: null,
 });

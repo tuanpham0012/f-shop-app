@@ -60,10 +60,6 @@
     background-color: var(--bs-primary)
 }
 
-.cart-dropdown {
-    padding-left: 1.5rem
-}
-
 .cart-dropdown .cart-count {
     background-color: var(--bs-primary)
 }
@@ -379,7 +375,8 @@
     border: 1px solid #333333;
     transition: all 0.3s;
     padding: 1rem 2rem 1rem 2rem;
-    margin-bottom: 3rem
+    margin-bottom: 1rem;
+    background-color: #fff;
 }
 
 .btn-viewMore:hover,

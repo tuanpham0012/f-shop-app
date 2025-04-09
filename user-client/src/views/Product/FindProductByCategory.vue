@@ -179,8 +179,8 @@ onBeforeMount(async () => {
 <template>
   <div class="page-content">
     <!-- End .breadcrumb-nav -->
-    <div class="container-md">
-      <nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container-lg">
+      <nav aria-label="breadcrumb" class="breadcrumb-nav m-2">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Sản phẩm</a></li>
           <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
@@ -192,7 +192,7 @@ onBeforeMount(async () => {
       </nav>
       <div class="grid grid-cols-12 gap-0">
         <aside
-          class="hidden xl:block col-span-2 min-w-[200px] px-2 box-border order-lg-first bg-white pt-4 border-1 rounded-md"
+          class="hidden xl:block col-span-2 min-w-[180px] px-2 box-border order-lg-first bg-white pt-1 border-1 rounded-md z-40"
         >
           <div class="sidebar sidebar-shop">
             <div class="widget-collapsible mb-4">
@@ -205,9 +205,14 @@ onBeforeMount(async () => {
                   v-for="(item, index) in brands"
                   :key="index"
                   @click="setBrandCode(item.code)"
-                  :class="{ 'active': query.brandCode == item.code }"
+                  :class="{ active: query.brandCode == item.code }"
                 >
-                  <BrandCardComponent :src-image="item.image" :label="item.name" width="90px" height="40px" />
+                  <BrandCardComponent
+                    :src-image="item.image"
+                    :label="item.name"
+                    width="90px"
+                    height="40px"
+                  />
                 </div>
               </div>
             </div>
@@ -270,140 +275,141 @@ onBeforeMount(async () => {
             </div>
           </div>
         </aside>
-        <div
-          class="col-span-12 xl:col-span-10 bg-white border-1 rounded-lg px-3 ms-2 xxl:ms-3 pt-2"
-        >
-          <div class="toolbox">
-            <div class="toolbox-right ms-5">
-              <div class="toolbox-sort text-base">
-                <label for="sortby">Sắp xếp theo giá:</label>
-                <div class="select-custom">
-                  <select
-                    name="sortby"
-                    id="sortby"
-                    class="form-control"
-                    v-model="query.orderBy"
-                  >
-                    <option :value="null">Không</option>
-                    <option :value="1">Giá thấp đến cao</option>
-                    <option :value="2">Giá cao đến thấp</option>
-                  </select>
-                </div>
-                <div class="block xl:hidden">
-                  <button
-                    class="btn btn-icon"
-                    type="button"
-                    @click="showMore('filter-brand')"
-                  >
-                    <i class="fa fa-filter"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- End .toolbox-sort -->
-            </div>
-            <!-- End .toolbox-right -->
-          </div>
-
-          <aside
-            class="col-12 hidden filter-brand collapsed px-3 box-border bg-white border-1 rounded-md"
-          >
-            <div class="">
-              <div class="widget-collapsible mb-3">
-                <h3 class="widget-title mb-4 py-4 border-b border-gray-400">
-                  <a class="cursor-pointer" @click="showMore('filter-brand')"
-                    >Bộ lọc tìm kiếm</a
-                  >
-                </h3>
-                <p class="text-base font-medium mb-4">Lựa chọn hãng</p>
-                <div
-                  class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3 my-3 justify-items-center border-b border-gray-400 pb-4"
-                >
-                  <div
-                    class="w-[100%] max-w-[95px] h-[45px] border-1 border-solid d-flex justify-center items-center rounded-lg cursor-pointer"
-                    v-for="(item, index) in brands"
-                    :key="index"
-                    @click="setBrandCode(item.code)"
-                    :class="{
-                      'brand-active': query.brandCode == item.code,
-                    }"
-                  >
-                    <img
-                      :src="item.image"
-                      @error="errorImg($event, index)"
-                      class="w-[80px] h-[40px] object-contain"
-                      v-if="item.imagePreview == null"
-                    />
-                    <span class="text-sm" v-else>{{ item.name }}</span>
+        <div class="col-span-12 xl:col-span-10 ms-1 xxl:ms-3">
+          <div class="bg-white border-1 rounded-lg">
+            <div class="toolbox justify-between px-2">
+              <div class="toolbox-right justify-end">
+                <div class="toolbox-sort text-base">
+                  <label for="sortby" class="me-1">Sắp xếp theo giá:</label>
+                  <div class="select-custom">
+                    <select
+                      name="sortby"
+                      id="sortby"
+                      class="form-control"
+                      v-model="query.orderBy"
+                    >
+                      <option :value="null">Không</option>
+                      <option :value="1">Giá thấp đến cao</option>
+                      <option :value="2">Giá cao đến thấp</option>
+                    </select>
+                  </div>
+                  <div class="block xl:hidden">
+                    <button
+                      class="btn btn-icon"
+                      type="button"
+                      @click="showMore('filter-brand')"
+                    >
+                      <i class="fa fa-filter"></i>
+                    </button>
                   </div>
                 </div>
+
+                <!-- End .toolbox-sort -->
               </div>
+              <!-- End .toolbox-right -->
+            </div>
 
-              <div class="widget widget-collapsible mb-3">
-                <p class="text-base font-medium">Mức giá</p>
-                <div class="border-b border-gray-400 pb-2">
-                  <div class="widget-body p-0">
-                    <div class="filter-price pb-0">
-                      <div class="filter-price-text">
-                        <ul class="flex flex-col gap-2">
-                          <li
-                            v-for="(item, index) in selectFilterPrice"
-                            :key="index"
+            <aside
+              class="col-12 hidden filter-brand collapsed px-2 box-border border-1 rounded-md"
+            >
+              <div class="">
+                <div class="widget-collapsible mb-2">
+                  <h3 class="widget-title mb-1 py-3 border-b border-gray-400">
+                    <a class="cursor-pointer" @click="showMore('filter-brand')"
+                      >Bộ lọc tìm kiếm</a
+                    >
+                  </h3>
+                  <p class="text-base font-medium mb-1">Lựa chọn hãng</p>
+                  <div
+                    class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3 my-3 justify-items-center border-b border-gray-400 pb-2"
+                  >
+                    <div
+                      class="w-[100%] max-w-[100px] h-[50px] cursor-pointer"
+                      v-for="(item, index) in brands"
+                      :key="index"
+                      @click="setBrandCode(item.code)"
+                      :class="{ active: query.brandCode == item.code }"
+                    >
+                      <BrandCardComponent
+                        :src-image="item.image"
+                        :label="item.name"
+                        width="90px"
+                        height="40px"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="widget widget-collapsible mb-1">
+                  <p class="text-base font-medium">Mức giá</p>
+                  <div class="border-b border-gray-400 pb-1">
+                    <div class="widget-body pt-0 pb-0">
+                      <div class="filter-price pb-0">
+                        <div class="filter-price-text">
+                          <ul class="flex flex-col gap-2">
+                            <li
+                              v-for="(item, index) in selectFilterPrice"
+                              :key="index"
+                            >
+                              <div>
+                                <input
+                                  :id="'selectPrice' + index"
+                                  type="checkbox"
+                                  class="form-checkbox me-2"
+                                  @click="selectOptionPrice = index"
+                                  :checked="index == selectOptionPrice"
+                                /><label
+                                  :for="'selectPrice' + index"
+                                  class="text-sm font-medium"
+                                  >{{ item.label }}
+                                </label>
+                              </div>
+                            </li>
+                          </ul>
+                          <div
+                            class="grid grid-cols-12 gap-3 mb-2 justify-items-center"
                           >
-                            <div>
+                            <div class="col-span-3 col-end-4">
                               <input
-                                :id="'selectPrice' + index"
-                                type="checkbox"
-                                class="form-checkbox me-2"
-                                @click="selectOptionPrice = index"
-                                :checked="index == selectOptionPrice"
-                              /><label
-                                :for="'selectPrice' + index"
-                                class="text-sm font-medium"
-                                >{{ item.label }}
-                              </label>
+                                class="form-control"
+                                disabled
+                                type="text"
+                                :value="
+                                  currencyFormatTenant(priceRange[0]) + 'đ'
+                                "
+                              />
                             </div>
-                          </li>
-                        </ul>
-                        <div
-                          class="grid grid-cols-12 gap-3 mb-4 justify-items-center"
-                        >
-                          <div class="col-span-3 col-end-4">
-                            <input
-                              class="form-control"
-                              disabled
-                              type="text"
-                              :value="currencyFormatTenant(priceRange[0]) + 'đ'"
-                            />
-                          </div>
 
-                          <div class="col-span-3 col-start-4">
-                            <input
-                              class="form-control"
-                              disabled
-                              type="text"
-                              :value="currencyFormatTenant(priceRange[1]) + 'đ'"
+                            <div class="col-span-3 col-start-4">
+                              <input
+                                class="form-control"
+                                disabled
+                                type="text"
+                                :value="
+                                  currencyFormatTenant(priceRange[1]) + 'đ'
+                                "
+                              />
+                            </div>
+                          </div>
+                          <div class="max-w-[80%] m-auto">
+                            <Slider
+                              v-model="priceRange"
+                              :max="10000000"
+                              :tooltips="false"
                             />
                           </div>
-                        </div>
-                        <div class="max-w-[80%] m-auto">
-                          <Slider
-                            v-model="priceRange"
-                            :max="10000000"
-                            :tooltips="false"
-                          />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </aside>
+            </aside>
+          </div>
           <!-- End .toolbox -->
           <div class="products min-h-[calc(100vh-320px)] my-3">
             <div
-              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3"
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2"
             >
               <div class="" v-for="(item, index) in products" :key="index">
                 <ProductCardComponent
@@ -437,7 +443,7 @@ onBeforeMount(async () => {
   background-color: rgb(247, 255, 255);
 }
 .form-control {
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 400;
 }
 .btn {

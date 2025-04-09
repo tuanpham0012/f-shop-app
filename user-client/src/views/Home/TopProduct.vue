@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="container mb-3" v-for="(category, i) in topCategories" :key="i">
+  <div class="container-lg mb-2" v-for="(category, i) in topCategories" :key="i">
     <div class="heading heading-flex mb-1">
       <div class="heading-center">
         <h2 class="text-center text-2xl font-medium">
@@ -41,7 +41,7 @@
           spaceBetween: 10,
         },
       }"
-      class="p-2 bg-white"
+      class="p-2"
     >
       <swiper-slide
         class="py-2"
@@ -75,6 +75,6 @@ onBeforeMount(async () => {
 </script>
 <style lang="scss" scoped>
 .product {
-  height: 360px;
+  // height: 360px;
 }
 </style>

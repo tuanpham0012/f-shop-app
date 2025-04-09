@@ -60,7 +60,7 @@ figure {
   flex: 1;
   margin: 0;
   border: 1px solid #b3b3b3;
-  border-radius: 0.475rem;
+  border-radius: 0.175rem;
   span {
     color: #6e6e6e;
     font-weight: 500;
@@ -108,7 +108,7 @@ figure {
 }
 
 .active {
-  figure{
+  figure {
     border-color: var(--bs-primary);
     background-color: var(--bs-primary);
     span {

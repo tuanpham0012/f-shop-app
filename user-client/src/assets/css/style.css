@@ -12,12 +12,13 @@ body {
 }
 
 body {
-    font: normal 300 sans-serif;
+    /* font: normal 300 sans-serif; */
     color: rgba(44, 44, 44, 0.952);
     background-color: var(--bs-body-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden
+    overflow-x: hidden;
+    font-family: 'Roboto', sans-serif !important;
 }
 
 ::-moz-selection {
@@ -202,7 +203,7 @@ a {
 
 a:hover,
 a:focus {
-    color: #bf8040;
+    color: var(--bs-link-color);
     text-decoration: none
 }
 
@@ -544,6 +545,7 @@ blockquote.text-white cite span {
 
 .header .container,
 .header .container-md,
+.header .container-lg,
 .header .container-sm,
 .header .container-fluid {
     position: relative;
@@ -959,10 +961,6 @@ blockquote.text-white cite span {
     margin-left: auto;
     padding-top: .65rem;
     padding-bottom: .65rem
-}
-
-.cart-dropdown {
-    padding-left: 2.5rem
 }
 
 .cart-dropdown .dropdown-toggle i {
@@ -1951,10 +1949,10 @@ blockquote.text-white cite span {
 }
 
 .menu>li>a {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 1rem;
     color: #333;
-    text-transform: uppercase
+    padding-right: .875rem;
 }
 
 .menu>li+li {
@@ -5908,7 +5906,6 @@ p {
 }
 
 .breadcrumb-nav {
-    margin: .4rem 0;
     border-bottom: 0.1rem solid rgba(235, 235, 235, 0.55)
 }
 
@@ -7471,7 +7468,7 @@ p {
 
 .product-body {
     position: relative;
-    padding: .6rem 1rem;
+    padding: .2rem .5rem;
     transition: all .35s ease;
     background-color: #fff
 }
@@ -7502,7 +7499,7 @@ p {
     font-weight: 300;
     line-height: 1.2;
     letter-spacing: -.01em;
-    margin-bottom: .3rem
+    margin-bottom: .1rem
 }
 
 .product-cat a {
@@ -7629,7 +7626,7 @@ p {
     align-items: center;
     line-height: 1;
     white-space: nowrap;
-    margin: .25rem 0  ;
+    margin: .1rem 0  ;
 }
 
 .ratings {
@@ -7640,7 +7637,7 @@ p {
 .ratings,
 .ratings-val {
     display: inline-block;
-    font-size: .875rem;
+    font-size: .575rem;
     letter-spacing: 0.1em;
     line-height: 1;
     font-family: "molla"
@@ -11022,13 +11019,10 @@ button:focus {
 .toolbox {
     display: flex;
     align-items: center;
-    flex-direction: column;
     flex-wrap: wrap;
     font-weight: 400;
-    font-size: 1.4rem;
     line-height: 1.5;
-    margin-top: 0;
-    margin-bottom: 1.1rem
+    margin: .5rem 0;
 }
 
 .toolbox::after {
@@ -11058,7 +11052,6 @@ button:focus {
     font-weight: 400;
     color: #333;
     letter-spacing: -.01em;
-    margin: 0
 }
 
 .toolbox .form-control {
@@ -11086,13 +11079,7 @@ button:focus {
 }
 
 .toolbox-center {
-    margin-top: 1rem;
     flex: 0 1 auto
-}
-
-.toolbox-right {
-    margin-top: 1rem;
-    flex-direction: column
 }
 
 .toolbox-info {
@@ -11106,10 +11093,6 @@ button:focus {
 .toolbox-sort {
     display: flex;
     align-items: center
-}
-
-.toolbox-sort label {
-    margin-right: 1.6rem
 }
 
 .toolbox-layout {
@@ -11368,7 +11351,7 @@ button:focus {
 }
 
 .filter-price-text {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     letter-spacing: -.01em
 }
 

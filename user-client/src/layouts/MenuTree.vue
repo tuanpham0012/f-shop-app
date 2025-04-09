@@ -59,7 +59,7 @@ li {
   > a {
     &.sf-with-ul-children {
       font-size: 1rem;
-      font-weight: 400;
+      font-weight: 550;
       color: #000000;
       > span {
         transition: transform 0.4s ease;
@@ -69,7 +69,7 @@ li {
         }
       }
       &:hover {
-        font-weight: 450;
+        font-weight: 550;
         background-color: rgb(255, 255, 252);
       }
     }

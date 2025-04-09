@@ -8,6 +8,7 @@ using ShopAppApi.Middlewares;
 using ShopAppApi.Repositories.Auth;
 using ShopAppApi.Repositories.CartRepo;
 using ShopAppApi.Repositories.Categories;
+using ShopAppApi.Repositories.Common;
 using ShopAppApi.Repositories.Menus;
 using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Products;
@@ -46,6 +47,7 @@ builder.Services.AddScoped<IFileHelper, FileHelper>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IStringHelper, StringHelper>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICommonRepository, CommonRepository>();
 
 builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
 

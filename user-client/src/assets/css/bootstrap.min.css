@@ -8,8 +8,8 @@
 :root,
 [data-bs-theme=light] {
 
-    --bs-primary: #00A99D;
-    --bs-primary-rgb: 0, 169, 157;
+    --bs-primary: rgb(28, 192, 160);
+    --bs-primary-rgb: 28, 192, 160;
     --bs-primary-text-emphasis: #ffffff;
     --bs-primary-bg-subtle: #cfe2ff;
     --bs-primary-border-subtle: #fec19e;
@@ -24,11 +24,11 @@
     --bs-secondary-bg: #e9ecef;
     --bs-secondary-bg-rgb: 233, 236, 239;
 
-    --bs-link-color: rgb(0, 169, 157);
-    --bs-link-color-rgb: 0, 169, 157;
+    --bs-link-color: rgb(28, 192, 160);
+    --bs-link-color-rgb: 28, 192, 160;
     --bs-link-decoration: underline;
-    --bs-link-hover-color: #00A99D;
-    --bs-link-hover-color-rgb: 0, 169, 157;
+    --bs-link-hover-color: rgb(28, 192, 160);
+    --bs-link-hover-color-rgb: 28, 192, 160;
 
     --bs-text-white: #fff;
     --bs-text-dark: #505050d7;

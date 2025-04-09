@@ -1,17 +1,17 @@
 <template lang="">
   <div class="product flex flex-col cursor-pointer" v-if="item">
     <figure
-      class="product-media bg-gray-100 flex aspect-square items-center px-1"
+      class="product-media bg-gray-50 flex aspect-square items-center px-1"
     >
       <img :src="item.imageThumb" alt="Product image" class="product-image" />
-      <div class="product-action">
+      <!-- <div class="product-action">
         <a href="#" class="btn-product btn-cart" @click="addToCart(1)"
           ><span>Thêm vào giỏ hàng</span></a
         >
-      </div>
+      </div> -->
     </figure>
 
-    <div class="product-body flex flex-col justify-between">
+    <div class="product-body flex flex-col justify-between md:px-3">
       <div>
         <p class="product-title text-base">
           {{ item.name }}
@@ -21,12 +21,12 @@
         </p>
       </div>
       <div>
-        <div class="text-base text-red-500 my-1">
+        <div class="text-base text-red-500">
           {{ displayPrice(item.price) }}đ
         </div>
         <div class="ratings-container">
-          <span class="ratings-text"
-            ><i class="fa fa-star text-sm text-yellow-300"></i> 2</span
+          <span class="ratings-text text-[0.8rem]"
+            ><i class="fa fa-star text-yellow-300"></i> 2</span
           >
         </div>
       </div>

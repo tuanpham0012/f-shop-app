@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header-top" v-if="false">
-      <div class="container-md">
+      <div class="container-lg">
         <div class="header-left">
           <div class="header-dropdown">
             <a href="#">Usd</a>
@@ -59,7 +59,7 @@
     <!-- End .header-top -->
 
     <div class="header-middle sticky-header">
-      <div class="container-md">
+      <div class="container-lg">
         <div class="header-left">
           <button class="mobile-menu-toggler">
             <span class="sr-only">Toggle mobile menu</span>
@@ -122,7 +122,7 @@
           </div>
           <!-- End .compare-dropdown -->
 
-          <div class="dropdown cart-dropdown ps-2 pe-4">
+          <div class="dropdown cart-dropdown ps-3 pe-4">
             <a
               href="#"
               class="dropdown-toggle"
