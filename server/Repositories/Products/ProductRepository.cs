@@ -395,12 +395,12 @@ namespace ShopAppApi.Repositories.Products
                     ProductId = sku.ProductId ?? 0,
                     Name = sku.Name ?? "",
                     Price = sku.Price,
+                    ImagePath = !string.IsNullOrWhiteSpace(sku.ImagePath) ? fileHelper.SaveFile(sku.ImagePath, "imgThumb") : "",
                     Barcode = sku.Barcode ?? "",
                     Stock = sku.Stock,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     ImageCode = sku.ImageCode ?? "",
-                    ImagePath = sku.ImagePath ?? "",
                 };
                 _context.Add(_sku);
                 _context.SaveChanges();

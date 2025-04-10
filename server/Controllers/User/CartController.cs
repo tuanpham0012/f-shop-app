@@ -19,7 +19,7 @@ namespace ShopAppApi.Controllers.User
         [HttpPost]
         public IActionResult AddToCart(AddCartRequest request)
         {
-            if (long.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var customerId))
+            if (long.TryParse(User.FindFirstValue("ID"), out var customerId))
             {
                 request.CustomerId = customerId;
             }
@@ -29,6 +29,36 @@ namespace ShopAppApi.Controllers.User
             }
             repository.AddToCart(request);
             return Ok(new SuccessResponse(200, "Thêm vào giỏ hàng thành công!"));
+        }
+
+        [HttpPut("{Id}")]
+        public IActionResult UpdateCart(long Id, UpdateCartRequest request)
+        {
+            repository.UpdateCart(Id, request);
+            return Ok(new SuccessResponse(200, "Cập nhật giỏ hàng thành công!"));
+        }
+
+        [HttpDelete("{Id}")]
+        public IActionResult DeleteCart(long Id)
+        {
+            repository.DeleteCart(Id);
+            return Ok(new SuccessResponse(200, "Xoá giỏ hàng thành công!"));
+        }
+
+        [HttpDelete("delete-all")]
+        public IActionResult DeleteAllCart(long Id)
+        {
+            long CustomerId = 0;
+            if (long.TryParse(User.FindFirstValue("ID"), out var customerId))
+            {
+                CustomerId = customerId;
+            }
+            else
+            {
+                return BadRequest("Invalid CustomerId.");
+            }
+            repository.DeleteAllCart(CustomerId);
+            return Ok(new SuccessResponse(200, "Xoá giỏ hàng thành công!"));
         }
 
         [HttpGet]

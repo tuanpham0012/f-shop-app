@@ -46,7 +46,7 @@
           class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 lg:gap-3"
         >
           <div
-            class="box-border cursor-pointer [&:nth-child(2n+1)]:hidden md:[&:nth-child(n+10)]:hidden lg:[&:nth-child(n+9)]:hidden lg:nth-9]:hidden"
+            class="box-border cursor-pointer"
             v-for="(item, index) in featuredProducts.products"
             :key="index"
           >
@@ -80,7 +80,7 @@ const productStore = useProductStore();
 const router = useRouter();
 
 const featuredProductQuery = reactive({
-  pageSize: 20,
+  pageSize: 10,
   page: 1,
   categoryId: null,
 });

@@ -266,6 +266,7 @@ defineExpose({
 
 onMounted(() => {
     var divs = document.getElementsByTagName("div");
+    window.addEventListener('scroll', position)
     for (var i = 0; i < divs.length; i++) {
         divs[i].addEventListener("scroll", position);
         new ResizeObserver(position).observe(divs[i]);
@@ -346,20 +347,20 @@ onMounted(() => {
 
 .option {
     &.active {
-        background: #4782ff;
+        background: var(--bs-primary);
         border-radius: 3px;
-        color: #ffffff !important;
+        color: var(--bs-text-white) !important;
         pointer-events: none;
     }
 
     &.disabled {
-        background: #ffffff;
+        background: var(--bs-white);
         pointer-events: none;
     }
 }
 
 .select-box .option:hover {
-    background: #687cc4;
+    background: var(--bs-link-hover-color);
     border-radius: 3px;
     color: #ffffff;
 }
@@ -370,9 +371,8 @@ onMounted(() => {
 
     input {
         width: 100%;
-        padding: 6px 6px;
-        font-family: Roboto, sans-serif;
-        font-size: 13px;
+        padding: .4rem;
+        font-size: .875rem;
         background-color: #ffffff;
         border: 1px solid #c5c5c5;
         border-radius: 4px;
@@ -383,6 +383,9 @@ onMounted(() => {
     position: absolute;
     right: 10px;
     top: 10px;
+    i {
+        font-size: .875rem;
+    }
 }
 
 .active {

@@ -16,7 +16,7 @@ namespace ShopAppApi.Repositories.CartRepo
         private readonly IFileHelper fileHelper = _fileHelper;
         public void AddToCart(AddCartRequest request)
         {
-            Console.WriteLine(request.CustomerId);
+            using var transaction = context.Database.BeginTransaction();
             var sku = context.Skus.SingleOrDefault(x => x.Id == request.SkuId) ?? throw new ArgumentException("Sku Not found");
             var getCart = context.Carts.FirstOrDefault(x => x.CustomerId == request.CustomerId && x.SkuId == request.SkuId);
             if (getCart == null)
@@ -36,6 +36,52 @@ namespace ShopAppApi.Repositories.CartRepo
                 getCart.Quantity += request.Quantity;
                 context.SaveChanges();
             }
+            transaction.Commit();
+        }
+
+        public void UpdateCart(long Id, UpdateCartRequest request)
+        {
+            using var transaction = context.Database.BeginTransaction();
+            var getCart = context.Carts.SingleOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Cart Not found");
+            switch (request.Type)
+            {
+                case 1:
+                    getCart.Quantity++;
+                    break;
+                case 2:
+                    getCart.Quantity--;
+                    break;
+                default:
+                    getCart.Quantity = request.Quantity;
+                    break;
+            }
+            // if (getCart.Quantity > getCart.Sku.Stock)
+            // {
+            //     throw new ArgumentException("Quantity is greater than stock");
+            // }
+            getCart.Quantity = getCart.Quantity < 1 ? 1 : getCart.Quantity;
+            context.SaveChanges();
+            transaction.Commit();
+        }
+        public void DeleteCart(long Id)
+        {
+            using var transaction = context.Database.BeginTransaction();
+            var getCart = context.Carts.SingleOrDefault(x => x.Id == Id) ?? throw new ArgumentException("Cart Not found");
+            context.Carts.Remove(getCart);
+            context.SaveChanges();
+            transaction.Commit();
+        }
+
+        public void DeleteAllCart(long CustomerId)
+        {
+            using var transaction = context.Database.BeginTransaction();
+            var getCart = context.Carts.Where(x => x.CustomerId == CustomerId).ToList();
+            if (getCart.Count > 0)
+            {
+                context.Carts.RemoveRange(getCart);
+                context.SaveChanges();
+            }
+            transaction.Commit();
         }
 
         public async Task<List<CartVM>> GetCart(long CustomerId)

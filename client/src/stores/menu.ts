@@ -27,7 +27,6 @@ export const useMenuStore = defineStore("menu", {
         async getAdminMenu(query: any) {
             await _getList(`${apiUrl}/menus/admin-menu`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.adminMenus = res.data;
                 })
                 .catch((err) => {
@@ -38,7 +37,6 @@ export const useMenuStore = defineStore("menu", {
         async getList(query: any) {
             await _getList(`${apiUrl}/menus`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.entries = res.data;
                 })
                 .catch((err) => {
@@ -49,7 +47,6 @@ export const useMenuStore = defineStore("menu", {
         async show(id: any) {
             await _show(`${apiUrl}/menus/${id}`)
                 .then((res) => {
-                    console.log(res.data);
                     this.menu = res.data.data;
                 })
                 .catch((err) => {

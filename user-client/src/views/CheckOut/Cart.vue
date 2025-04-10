@@ -120,6 +120,8 @@
                                                         <button
                                                             class="btn btn-decrement btn-spinner"
                                                             type="button"
+                                                            :disabled="isPending"
+                                                            @click="updateCart(item,2)"
                                                         >
                                                             <i
                                                                 class="icon-minus"
@@ -135,6 +137,7 @@
                                                         required=""
                                                         placeholder=""
                                                         v-model="item.quantity"
+                                                        @change="updateCart(item,0)"
                                                     />
                                                     <div
                                                         class="input-group-append flex h-100 aspect-square"
@@ -142,6 +145,8 @@
                                                         <button
                                                             class="btn btn-increment btn-spinner"
                                                             type="button"
+                                                            :disabled="isPending"
+                                                            @click="updateCart(item,1)"
                                                         >
                                                             <i
                                                                 class="icon-plus"
@@ -327,6 +332,10 @@ const totalPrice = ref(0);
 
 const shippingUnitId = ref(1);
 
+const isPending = computed(() => {
+    return cartStore.$state.pending;
+});
+
 watch(
     () => selectedProductId.value,
     (newValue) => {
@@ -366,9 +375,21 @@ watch(
     },
     { deep: true }
 );
+
 const carts = computed(() => cartStore.$state.carts.data);
 const paymentMethods = computed(() => commonStore.$state.paymentMethods.data);
 const shippingUnits = computed(() => commonStore.$state.shippingUnits.data);
+
+const updateCart = async (item: any, type: any) => {
+    console.log(item);
+    
+    const data = {
+        id: item.id,
+        quantity: type == 0 ? item.quantity : 1,
+        type: type,
+    };
+    await cartStore.updateCart(item.id, data);
+};
 onBeforeMount(async () => {
     await cartStore.getList();
     await commonStore.getPaymentMethods();

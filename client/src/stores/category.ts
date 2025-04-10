@@ -22,7 +22,6 @@ export const useCustomerStore = defineStore("category", {
         getList(query: any) {
             _getList(`${apiUrl}/Category`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.categories = res.data;
                 })
                 .catch((err) => {

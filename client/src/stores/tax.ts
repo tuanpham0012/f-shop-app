@@ -1,5 +1,11 @@
 import { defineStore } from "pinia";
-import { _getList, _create, _update, _show, _destroy } from "@/helpers/axiosConfig";
+import {
+    _getList,
+    _create,
+    _update,
+    _show,
+    _destroy,
+} from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
 
 export const useTaxStore = defineStore("tax", {
@@ -19,7 +25,6 @@ export const useTaxStore = defineStore("tax", {
         async getList(query: any) {
             await _getList(`${apiUrl}/taxes`, query)
                 .then((res) => {
-                    console.log(res.data);
                     this.entries = res.data;
                 })
                 .catch((err) => {
@@ -29,13 +34,12 @@ export const useTaxStore = defineStore("tax", {
         async create(data: any) {
             return await _create(`${apiUrl}/taxes`, data);
         },
-        async update(id:any, data: any) {
+        async update(id: any, data: any) {
             return await _update(`${apiUrl}/taxes/${id}`, data);
         },
         async show(id: any) {
             await _show(`${apiUrl}/taxes/${id}`)
                 .then((res) => {
-                    console.log(res.data);
                     this.entry = res.data.data;
                 })
                 .catch((err) => {
@@ -43,7 +47,7 @@ export const useTaxStore = defineStore("tax", {
                 });
         },
         async delete(id: any) {
-                    return await _destroy(`${apiUrl}/taxes/${id}`);
-                },
+            return await _destroy(`${apiUrl}/taxes/${id}`);
+        },
     },
 });

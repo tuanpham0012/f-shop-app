@@ -1024,7 +1024,6 @@ const generateCombinations = (arrays: any) => {
       return [item];
     } else {
       return generateCombinations(rest).map((subCombination: any) => {
-        console.log();
         if (typeof subCombination == "string") {
           return [item, subCombination];
         }
@@ -1067,7 +1066,6 @@ const productImage = (event: any) => {
 
         if (i == 0 && (thumbId.value == "" || thumbId.value == null)) {
           thumbId.value = imgId;
-          console.log(imgId);
         }
       };
       reader.readAsDataURL(file);
@@ -1093,7 +1091,6 @@ const generateCode = () => {
 };
 
 const save = () => {
-  console.log(editing.value);
 
   if (editing.value) {
     return;
@@ -1103,7 +1100,6 @@ const save = () => {
     productStore
       .create(product.value)
       .then((res) => {
-        console.log(res);
         successMessage(res.data?.message ?? "Thêm mới thành công!");
         emits("close", true);
       })
@@ -1115,7 +1111,6 @@ const save = () => {
     productStore
       .update(product.value.id, product.value)
       .then((res) => {
-        console.log(res);
         successMessage(res.data?.message ?? "Cập nhật thành công!");
         emits("close", true);
       })
@@ -1133,13 +1128,11 @@ const closeTaxModal = (value: any) => {
 };
 const closeBrandModal = (value: any) => {
   showBrandModal.value = false;
-  console.log(value);
   brandStore.getList({ notUse: false });
   product.value.brandId = value.id;
 };
 const closeCategoryModal = (value: any) => {
   showCategoryModal.value = false;
-  console.log(value);
   categoryStore.getList({ notUse: false });
   product.value.categoryId = value.id;
 };
@@ -1165,7 +1158,6 @@ const dataChanged = (
   index2 = null,
   type2 = null
 ) => {
-  console.log(index, type);
   if (index2 != null && type2 != null) {
     product.value[type][index][type2][index2].isEdited = true;
   }

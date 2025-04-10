@@ -1822,13 +1822,13 @@ blockquote.text-white cite span {
 }
 
 .menu a {
-    font-weight: 600;
+    font-weight: 550;
     padding: 8px 0;
-    margin: 0 8px;
     display: block;
     color: #999;
     border-bottom: 1px solid transparent;
-    transition: border-bottom-color .25s
+    transition: border-bottom-color .25s;
+    margin: 0 8px;
 }
 
 .menu li {
@@ -1940,8 +1940,8 @@ blockquote.text-white cite span {
     letter-spacing: 0;
     padding-top: .25rem;
     padding-bottom: .25rem;
-    padding-left: .5rem;
-    padding-right: .5rem
+    padding-left: 0;
+    padding-right: 1.5rem
 }
 
 .menu li>a span:not(.tip) {
@@ -1949,10 +1949,9 @@ blockquote.text-white cite span {
 }
 
 .menu>li>a {
-    font-weight: 600;
+    font-weight: 550;
     font-size: 1rem;
     color: #333;
-    padding-right: .875rem;
 }
 
 .menu>li+li {
@@ -1963,11 +1962,15 @@ blockquote.text-white cite span {
     position: relative
 }
 
+.menu li>a:not(.sf-with-ul)  {
+    padding-right: .5rem;
+}
+
 .menu.sf-arrows .sf-with-ul::after {
     font-family: 'molla';
     content: '\f110';
     position: absolute;
-    right: -10px;
+    right: 0px;
     top: 50%;
     display: block;
     font-size: 1rem;

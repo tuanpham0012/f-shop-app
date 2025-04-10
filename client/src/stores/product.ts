@@ -74,7 +74,6 @@ export const useProductStore = defineStore("product", {
                 });
         },
         async updateDes(id:any, data: any) {
-            console.log(data);
             
             return await _update(`${adminUrl}/products/description/${id}`, data);
         },
