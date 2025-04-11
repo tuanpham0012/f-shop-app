@@ -72,10 +72,10 @@ namespace ShopAppApi.Repositories.CartRepo
             transaction.Commit();
         }
 
-        public void DeleteAllCart(long CustomerId)
+        public void DeleteAllCart(DeleteCartRequest request)
         {
             using var transaction = context.Database.BeginTransaction();
-            var getCart = context.Carts.Where(x => x.CustomerId == CustomerId).ToList();
+            var getCart = context.Carts.Where(x => request.Ids.Contains(x.Id)).ToList();
             if (getCart.Count > 0)
             {
                 context.Carts.RemoveRange(getCart);

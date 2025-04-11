@@ -334,7 +334,7 @@ blockquote.text-white cite span {
 }
 
 .page-content {
-    padding-bottom: 5rem
+    padding-bottom: 1.5rem
 }
 
 @media screen and (min-width: 992px) {
@@ -14983,7 +14983,6 @@ button:focus {
     margin: 0;
     margin-right: 1rem;
     flex-shrink: 0;
-    max-width: 60px
 }
 
 .product-col .product-title {
@@ -15171,19 +15170,19 @@ button:focus {
 }
 
 .table.table-cart .price-col {
-    width: 120px
-}
-
-.table.table-cart .total-col {
-    width: 120px
-}
-
-.table.table-cart .quantity-col {
     width: 140px
 }
 
+.table.table-cart .total-col {
+    width: 140px
+}
+
+.table.table-cart .quantity-col {
+    width: 160px
+}
+
 .cart-product-quantity {
-    width: 120px
+    /* width: 120px */
 }
 
 .cart-product-quantity .form-control {
@@ -15206,11 +15205,11 @@ button:focus {
 }
 
 .input-spinner .input-group-prepend {
-    left: 0
+    left: -1px
 }
 
 .input-spinner .input-group-append {
-    right: 0
+    right: 1px
 }
 
 .input-spinner .form-control {

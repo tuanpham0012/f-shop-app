@@ -89,7 +89,7 @@ export const _update = (url:any, data:any, header:any = {}) => {
     });
 }
 
-export const _destroy = (url:any, header:any = {}) => {
+export const _destroy = (url:any, header:any = {}, data:any = null) => {
     return http({
         url: url,
         method: "DELETE",
@@ -97,6 +97,7 @@ export const _destroy = (url:any, header:any = {}) => {
             // ...this.headers,
             loading: false,
             ...header,
-        }
+        },
+        data: data,
     });
 }

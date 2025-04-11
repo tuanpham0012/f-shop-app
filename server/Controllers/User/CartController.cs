@@ -46,18 +46,9 @@ namespace ShopAppApi.Controllers.User
         }
 
         [HttpDelete("delete-all")]
-        public IActionResult DeleteAllCart(long Id)
+        public IActionResult DeleteAllCart([FromBody] DeleteCartRequest request)
         {
-            long CustomerId = 0;
-            if (long.TryParse(User.FindFirstValue("ID"), out var customerId))
-            {
-                CustomerId = customerId;
-            }
-            else
-            {
-                return BadRequest("Invalid CustomerId.");
-            }
-            repository.DeleteAllCart(CustomerId);
+            repository.DeleteAllCart(request);
             return Ok(new SuccessResponse(200, "Xoá giỏ hàng thành công!"));
         }
 

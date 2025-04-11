@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header class="header" id="header" ref="header">
     <div class="header-top" v-if="false">
       <div class="container-lg">
         <div class="header-left">
@@ -150,7 +150,7 @@
   <!-- End .header -->
 </template>
 <script setup>
-import { onBeforeMount, computed } from "vue";
+import { onBeforeMount, computed, ref } from "vue";
 import { useCategoryStore } from "@/stores/category";
 import { useMenuStore } from "@/stores/menu";
 import CategoryTree from "./CategoryTree.vue";
@@ -171,19 +171,20 @@ const menuStore = useMenuStore();
 
 const categories = computed(() => categoryStore.$state.listTree.data);
 const menu = computed(() => menuStore.$state.menu.data);
+const header = ref(null);
 
 const carts = computed(() => cartStore.$state.carts.data);
 
 onBeforeMount(async () => {
   window.onscroll = function () {
-    // if (
-    //   document.body.scrollTop > 80 ||
-    //   document.documentElement.scrollTop > 80
-    // ) {
-    //   document.getElementById("header-middle").classList.add("nav-strict");
-    // } else {
-    //   document.getElementById("header-middle").classList.remove("nav-strict");
-    // }
+    if (
+      document.body.scrollTop > 80 ||
+      document.documentElement.scrollTop > 80
+    ) {
+      document.getElementById("header").classList.add("nav-strict");
+    } else {
+      document.getElementById("header").classList.remove("nav-strict");
+    }
   };
 
   // await categoryStore.getListCategory({ notUse: false });

@@ -14,4 +14,9 @@ namespace ShopAppApi.Request
         public int Quantity { get; set; }
         public int Type { get; set; } // 0:cập nhật theo số lượng 1: plus, 2: minus
     }
+
+    public class DeleteCartRequest
+    {
+        public List<long> Ids { get; set; } = [];
+    }
 }
