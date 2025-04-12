@@ -12,7 +12,7 @@
     --bs-primary-rgb: 28, 192, 160;
     --bs-primary-text-emphasis: #ffffff;
     --bs-primary-bg-subtle: #cfe2ff;
-    --bs-primary-border-subtle: #fec19e;
+    --bs-primary-border-subtle: rgb(131, 255, 230);
 
     --bs-secondary: rgb(166, 199, 108);
     --bs-secondary-rgb: 166, 199, 108;
@@ -2774,14 +2774,14 @@ textarea.form-control-lg {
 }
 
 .form-check-input:focus {
-    border-color: #86b7fe;
+    border-color: var(--bs-primary-bg-subtle);
     outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25)
+    box-shadow: 0 0 0 .25rem rgba(183, 212, 255, 0.25)
 }
 
 .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
 }
 
 .form-check-input:checked[type=checkbox] {

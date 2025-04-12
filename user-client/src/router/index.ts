@@ -19,11 +19,24 @@ const routes = [
     
   },
   {
-    path: '/gio-hang',
-    name: 'Cart',
-    component: () => import('../views/CheckOut/Cart.vue')
-    
-  },
+    path: '/',
+    name: 'Thanh toan',
+    children: [
+      {
+        path: '/gio-hang',
+        name: 'Cart',
+        component: () => import('../views/Checkout/Cart.vue')
+        
+      },
+      {
+        path: '/thanh-toan/:ids*',
+        name: 'checkout',
+        component: () => import('../views/Checkout/Checkout.vue')
+        
+      }
+    ]
+  }
+  
 ]
 
 const router = createRouter({

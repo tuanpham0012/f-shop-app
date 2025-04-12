@@ -11,18 +11,23 @@
     </nav>
     <div class="page-content">
       <div class="cart mt-1">
+        <div class="col-span-12 bg-white my-3 p-3">
+          <p class="text-lg text-gray-700 font-medium"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</p>
+          <div class="flex gap-1 flex-wrap ps-4">
+            <span class="text-base font-semibold">Phạm Quốc Tuấn (0983776901)</span>
+            <span class="checkout-label">Công Ty Cp Pm Quảng Ích, Số 46, Gamuda City, Phường Yên Sở, Quận Hoàng Mai, Hà Nội <span class="badge text-bg-primary">Mặc định</span></span>
+          </div>
+          
+        </div>
         <div class="grid grid-cols-24 gap-3 p-3 pt-0 bg-white">
           <div class="col-span-24 p-2">
             <div class="hidden md:grid grid-cols-24 gap-4 py-3 border-b border-gray-300 font-semibold text-gray-500">
-              <div class="col-span-1"><input type="checkbox" class="form-check-input" v-model="checkAll" /></div>
-              <div class="col-span-10 col-start-4 text-start">Sản phẩm</div>
+              <div class="col-span-9 col-start-4 text-start">Sản phẩm</div>
               <div class="col-span-3 text-right">Đơn giá</div>
               <div class="col-span-4 text-center">Số lượng</div>
               <div class="col-span-3 text-right">Thành tiền</div>
-              <div class="col-span-1 text-center"></div>
             </div>
             <div class="grid grid-cols-24 gap-1 md:gap-4 border-b py-4 border-gray-100" v-for="(item, index) in carts" :key="index">
-              <div class="col-span-2 md:col-span-1 flex items-center"><input type="checkbox" class="form-check-input" :id="item.id" :value="item.id" v-model="selectedProductId" /></div>
               <div class="col-span-5 md:col-span-2 flex items-start md:items-center justify-center">
                 <figure class="max-w-[80px] max-h-[80px] aspect-square">
                   <img :src="item.sku.imagePath" alt="Product image" class="w-100 h-100 object-contain" />
@@ -43,84 +48,64 @@
                 <div class="col-span-8 md:col-span-3 flex items-center justify-start md:justify-end py-2 text-xs md:text-sm">{{ displayPrice(item.sku.price) + " đ" }}</div>
                 <div class="col-span-8 md:col-span-4 flex items-center justify-center">
                   <div class="cart-product-quantity">
-                    <div class="flex items-center justify-center border">
-                      <div class="input-group-prepend bg-white z-10">
-                        <button class="p-[.5rem] flex aspect-square btn-decrement text-sm" type="button" :disabled="isPending" @click="updateCart(item, 2)">
-                          <i class="icon-minus"></i>
-                        </button>
-                      </div>
-                      <input type="text" style="text-align: center" class="w-100 max-w-[60px] py-[.3rem] text-sm" required="" placeholder="" v-model="item.quantity" @change="updateCart(item, 0)" />
-                      <div class="input-group-append">
-                        <button class="btn-increment p-[.5rem] flex aspect-square z-10 bg-white text-sm" type="button" :disabled="isPending" @click="updateCart(item, 1)">
-                          <i class="icon-plus"></i>
-                        </button>
-                      </div>
-                    </div>
+                    {{ item.quantity }}
                   </div>
                 </div>
                 <div class="col-span-3 hidden md:flex items-center justify-end">{{ displayPrice(item.totalPrice) + " đ" }}</div>
               </div>
-              <div class="col-span-1 flex justify-end">
-                <button class="btn-remove" @click="cartStore.deleteCart(item.id)">
-                  <i class="icon-close text-lg"></i>
-                </button>
-              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 bg-white my-3 p-3">
+          <p class="text-lg text-gray-700 font-semibold">Đơn vị vận chuyển</p>
+          <!-- <select-search :listData="shippingUnits" display="name" keyValue="id" v-model="shippingUnitId" :firstSelected="true"></select-search> -->
+          <div class="radio-container ps-4" v-for="(item, index) in shippingUnits" :key="index">
+            <input type="radio" :id="`shippingUnits-${item.id}`" name="shippingUnits" :value="item.id" checked />
+            <label class="flex gap-2 items-center" :for="`shippingUnits-${item.id}`">
+              <span class="custom-radio"></span>
+              <span class="w-100">{{ item.name }}</span>
+            </label>
+          </div>
+        </div>
+        <div class="col-span-12 bg-white my-3 p-3">
+          <p class="text-lg text-gray-700 font-semibold">Phương thức thanh toán</p>
+          <div class="radio-container ps-4" v-for="(item, index) in paymentMethods" :key="index">
+            <input type="radio" :id="`paymentMethods-${item.id}`" name="paymentMethod" :value="item.id" checked />
+            <label class="flex gap-2 items-center" :for="`paymentMethods-${item.id}`">
+              <span class="custom-radio"></span>
+              <span class="w-100">{{ item.name }}</span>
+            </label>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- <div id="stop-point"></div> -->
   <div class="checkout-summary my-2" ref="checkoutElm">
     <div class="container-lg">
       <div class="bg-white pb-1 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.1)]">
-        <!-- Voucher Row -->
-        <div class="flex justify-between p-3 voucher-section">
-          <div class="left-content">
-            <span class="icon-voucher" title="Shopee Voucher"></span>
-            <span>Shopee Voucher</span>
-          </div>
-          <div class="right-content">
-            <a href="#">Chọn hoặc nhập mã</a>
-          </div>
-        </div>
-
-        <hr class="divider" />
-
-        <!-- Shopee Xu Row -->
-        <div class="hidden justify-between p-3 shopee-xu-section">
-          <div class="left-content">
-            <span class="xu-checkbox-placeholder"></span>
-            <!-- Placeholder for disabled checkbox -->
-            <span class="icon-shopee-coin">S</span>
-            <span>Shopee Xu</span>
-            <span>Bạn chưa chọn sản phẩm</span>
-            <span class="info-icon" title="Thông tin Shopee Xu">?</span>
-          </div>
-          <div class="right-content">
-            <span>-₫0</span>
-          </div>
-        </div>
-
-        <hr class="divider" />
-
-        <!-- Action Row -->
-        <div class="flex justify-between p-3 gap-2 action-section">
-          <div class="left-actions">
-            <div class="flex items-center gap-0">
-              <input type="checkbox" class="form-check-input" id="select-all-items" name="select-all-items" v-model="checkAll" />
-              <label for="select-all-items" class="checkout-label text-sm">Chọn Tất Cả ({{ carts.length }})</label>
+        <div class="gap-2 grid grid-cols-12">
+          <div class="right-summary col-span-12 md:col-span-6 md:col-start-7">
+            <div class="grid grid-cols-2 gap-2 px-4 py-2">
+              <p class="text-lg col-span-2 py-2 text-gray-600 font-semibold m-0 flex md:hidden">Chi tiết thanh toán</p>
+              <div class="total-label flex items-center gap-1">
+                <span>Tổng tiền hàng:</span>
+                <span class="text-xs text-gray-400">({{ carts.length }} sản phẩm)</span>
+              </div>
+              <div class="text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <div class="total-label flex items-center gap-1">
+                <span>Phí vận chuyển:</span>
+              </div>
+              <div class="text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <div class="total-label flex items-center gap-1">
+                <span>Giảm giá:</span>
+              </div>
+              <div class="text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <div class="total-label flex items-center gap-1">
+                <span>Tổng thanh toán:</span>
+              </div>
+              <div class="total-price text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
             </div>
-
-            <a class="hidden md:block" @click="deleteMultiple()">Xóa sản phẩm đã chọn</a>
-          </div>
-          <div class="right-summary">
-            <span class="total-label"
-              >Tổng cộng <span class="hidden md:block">({{ selectedProductId.length }} Sản phẩm)</span></span
-            >
-            <span class="total-price">{{ displayPrice(totalPrice) + "đ" }}</span>
-            <button class="btn buy-button" :class="{ 'disabled' : selectedProductId.length < 1}" @click="toggleCheckout()" >Thanh toán</button>
           </div>
         </div>
       </div>
@@ -130,15 +115,19 @@
 </template>
 <script setup lang="ts">
 import { onBeforeMount, computed, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useCartStore } from "@/stores/cart";
+import { useCommonStore } from "@/stores/common";
 import { displayPrice } from "@/services/utils";
 const cartStore = useCartStore();
-const router = useRouter();
+const commonStore = useCommonStore();
+const route = useRoute();
 const selectedProducts = ref<any>([]);
 const selectedProductId = ref<any>([]);
 const checkAll = ref(false);
 const totalPrice = ref(0);
+
+const shippingUnitId = ref(1);
 
 const checkoutElm = ref<any>(null);
 const stopElm = ref<any>(0);
@@ -147,20 +136,6 @@ const stopPoint = ref<any>(null);
 const isPending = computed(() => {
   return cartStore.$state.pending;
 });
-
-watch(
-  () => selectedProductId.value,
-  (newValue) => {
-    totalPrice.value = 0;
-    selectedProductId.value.forEach((value: any) => {
-      const item: any = carts.value.find((x: any) => x.id == value);
-      if (item) {
-        totalPrice.value += item.totalPrice;
-      }
-    });
-  },
-  { deep: true }
-);
 
 watch(
   () => cartStore.$state.carts.data,
@@ -176,20 +151,19 @@ watch(
   { deep: true }
 );
 
-watch(
-  () => checkAll.value,
-  (newValue) => {
-    if (newValue && selectedProductId.value.length <= carts.value.length) {
-      carts.value.forEach((v: any) => {
-        selectedProductId.value.push(v.id);
-      });
-    } else {
-      selectedProductId.value = [];
+const carts = computed<any>(() => {
+  const ids = route.params.ids as Array<string>;
+  let result: any[] = [];
+  ids.forEach((element) => {
+    const item = cartStore.$state.carts.data.find((x: any) => x.id == element);
+    if (item) {
+      result.push(item);
     }
-  }
-);
-
-const carts = computed(() => cartStore.$state.carts.data);
+  });
+  return result;
+});
+const paymentMethods = computed(() => commonStore.$state.paymentMethods.data);
+const shippingUnits = computed(() => commonStore.$state.shippingUnits.data);
 
 const updateCart = async (item: any, type: any) => {
   const data = {
@@ -212,15 +186,6 @@ const deleteMultiple = () => {
     ids: selectedProductId.value,
   });
   selectedProductId.value = [];
-};
-
-const toggleCheckout = () => {
-  router.push({
-    name: "checkout",
-    params: {
-      ids: selectedProductId.value,
-    },
-  });
 };
 
 const checkoutScroll = () => {
@@ -247,6 +212,8 @@ const checkoutScroll = () => {
 };
 onBeforeMount(async () => {
   await cartStore.getList();
+  await commonStore.getPaymentMethods();
+  await commonStore.getShippingUnits();
   checkoutScroll();
 });
 </script>
@@ -270,6 +237,96 @@ onBeforeMount(async () => {
   &::after {
     content: ", ";
   }
+}
+
+/* Container cho mỗi cặp input/label */
+.radio-container {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  font-size: 1rem;
+  -webkit-user-select: none;
+  /* Chống chọn text trên label */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align: left;
+  margin-bottom: 0.6rem;
+  width: 100%;
+}
+
+/* --- 1. Ẩn input radio gốc --- */
+.radio-container input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  /* Làm cho nó vô hình */
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-radio {
+  display: inline-block;
+  position: relative;
+  height: 20px;
+  min-width: 20px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.radio-container input[type="radio"]:checked ~ label .custom-radio {
+  background-color: #fff;
+  border: 1px solid var(--bs-primary);
+}
+
+.custom-radio::after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.radio-container input[type="radio"]:checked ~ label .custom-radio::after {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bs-primary);
+}
+
+.radio-container:hover input[type="radio"]:not(:checked) ~ label .custom-radio {
+  background-color: #ddd;
+  /* Đổi màu nền nhẹ khi hover (nếu chưa check) */
+}
+
+.radio-container input[type="radio"]:focus + label .custom-radio {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+.radio-container input[type="radio"]:focus-visible + label .custom-radio {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+.radio-container input[type="radio"]:disabled ~ label {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.radio-container input[type="radio"]:disabled ~ label .custom-radio {
+  background-color: #f0f0f0;
+  /* Màu nền nhạt hơn */
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+
+.radio-container input[type="radio"]:disabled ~ label .custom-radio::after {
+  background-color: #ccc;
 }
 
 .is-fixed-bottom {
