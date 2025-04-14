@@ -319,10 +319,6 @@ onMounted(() => {
 });
 </script>
 <style lang="scss" scoped>
-p {
-  padding: 0;
-  margin: 0;
-}
 .select-box {
   position: relative;
   width: 100%;

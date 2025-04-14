@@ -1,10 +1,11 @@
 import axios from "axios";
 import {successMessage, errorMessage} from './toast'
+import { useAuthStore } from '@/stores/auth'
 
 const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Authorization': `Bearer ${import.meta.env.VITE_VUE_APP_TOKEN}`
+    'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`
 }
 const axiosDefaults = {
     headers
@@ -28,12 +29,16 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(response => {
     // console.log("success: ", response);
-    document.body.classList.remove("loading");
+    // document.body.classList.remove("loading");
     return response;
 }, error => {
     // console.log("error:", error);
     errorMessage(error.message ?? 'something went wrong!')
-    document.body.classList.remove("loading");
+    if(error.response.status === 401) {
+        const authStore = useAuthStore()
+        authStore.login({ username: 'tuanpham0012@gmail.com', password: 'password@123A'})
+    }
+    // document.body.classList.remove("loading");
     return Promise.reject(error);
 });
 

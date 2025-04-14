@@ -114,7 +114,7 @@
             </form>
           </div>
           <!-- End .header-search -->
-          <div class="wishlist relative ps-3 pe-4">
+          <div class="wishlist relative ps-3 pe-4" v-if="route.name !== 'Cart'">
             <a href="wishlist.html" title="Wishlist">
               <i class="fa-regular fa-heart text-2xl"></i>
               <span class="wishlist-count">3</span>
@@ -122,7 +122,7 @@
           </div>
           <!-- End .compare-dropdown -->
 
-          <div class="dropdown cart-dropdown ps-3 pe-4">
+          <div class="dropdown cart-dropdown ps-3 pe-4" v-if="route.name !== 'Cart'">
             <a
               href="#"
               class="dropdown-toggle"
@@ -156,6 +156,7 @@ import { useMenuStore } from "@/stores/menu";
 import CategoryTree from "./CategoryTree.vue";
 import MenuTree from "./MenuTree.vue";
 import CartModal from "@/components/CartModal.vue";
+import { useRoute } from "vue-router";
 
 import { useCartStore } from "@/stores/cart";
 const cartStore = useCartStore();
@@ -165,6 +166,8 @@ const addToCart = async () => {
     quantity: quantity.value,
   });
 };
+
+const route = useRoute();
 
 const categoryStore = useCategoryStore();
 const menuStore = useMenuStore();

@@ -1,14 +1,12 @@
 <template lang="">
   <div class="dropdown-menu dropdown-menu-right">
-    <div class="dropdown-cart-products">
-      <div class="product" v-for="(item, index) in carts" :key="index">
+    <div class="dropdown-cart-products mb-1">
+      <div class="flex items-center pe-7 py-2 relative" v-for="(item, index) in carts.slice(0, limit)" :key="index">
         <div class="product-cart-details">
-          <h4 class="product-title text-base">
-            <a href="product.html">{{ item.product?.name }}</a>
-          </h4>
+          <p class="text-sm checkout-label text-gray-700">{{ item.product?.name }}</p>
 
-          <span class="cart-product-info">
-            <span class="cart-product-qty">{{ item.quantity }}</span>
+          <span class="cart-product-info text-sm">
+            <span class="cart-product-qty ms-1">{{ item.quantity }}</span>
             x {{ displayPrice(item.sku?.price) }}đ
           </span>
         </div>
@@ -28,22 +26,20 @@
         ></a>
       </div>
     </div>
-    <!-- End .cart-product -->
 
-    <div class="dropdown-cart-total">
+    <!-- <div class="dropdown-cart-total">
       <span>Tổng tiền</span>
 
       <span class="cart-total-price">{{ displayPrice(totalPrice) }}đ</span>
-    </div>
-    <!-- End .dropdown-cart-total -->
+    </div> -->
 
     <div class="dropdown-cart-action">
-      <a href="cart.html" class="btn btn-outline-primary">Xem giỏ hàng</a>
-      <a href="checkout.html" class="btn btn-outline-primary-2"
+      <!-- <a href="cart.html" class="btn btn-outline-primary">Xem giỏ hàng</a> -->
+      <span class="text-sm">{{ carts.length - limit}} thêm vào giỏ</span>
+      <router-link :to="{name:'Cart'}" class="btn btn-outline-primary-2"
         ><span>Thanh toán</span><i class="icon-long-arrow-right"></i
-      ></a>
+      ></router-link>
     </div>
-    <!-- End .dropdown-cart-total -->
   </div>
 </template>
 <script setup lang="ts">
@@ -51,6 +47,8 @@ import { watch, ref } from "vue";
 import { displayPrice } from "@/services/utils";
 
 const totalPrice = ref<number>(0);
+
+const limit = ref(5);
 
 const props = defineProps({
   carts: {
@@ -69,4 +67,11 @@ watch(
   { deep: true }
 );
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.checkout-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* Hoặc inline-block */
+}
+</style>

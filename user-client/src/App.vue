@@ -1,9 +1,19 @@
 <script setup>
-
+import { onBeforeMount } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import Header from "./layouts/Header.vue";
 import Footer from "./layouts/Footer.vue";
 import MobileMenu from "./layouts/MobileMenu.vue";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
+
+onBeforeMount(async () => {
+  await authStore.getInfo();
+  // await authStore.getListAddress();
+  // await authStore.getListOrder();
+  // await authStore.getListCart();
+});
 </script>
 
 <template>

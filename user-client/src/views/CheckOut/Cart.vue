@@ -23,12 +23,12 @@
             </div>
             <div class="grid grid-cols-24 gap-1 md:gap-4 border-b py-4 border-gray-100" v-for="(item, index) in carts" :key="index">
               <div class="col-span-2 md:col-span-1 flex items-center"><input type="checkbox" class="form-check-input" :id="item.id" :value="item.id" v-model="selectedProductId" /></div>
-              <div class="col-span-5 md:col-span-2 flex items-start md:items-center justify-center">
-                <figure class="max-w-[80px] max-h-[80px] aspect-square">
+              <div class="col-span-5 md:col-span-2 flex items-baseline justify-center">
+                <figure class="w-[80px] max-w-[100%] h-[80px] max-h-[100%] aspect-square">
                   <img :src="item.sku.imagePath" alt="Product image" class="w-100 h-100 object-contain" />
                 </figure>
               </div>
-              <div class="col-span-16 md:col-span-20 grid grid-cols-16 md:grid-cols-20 gap-0 md:gap-2 ps-1">
+              <div class="col-span-16 md:col-span-20 grid grid-cols-16 md:grid-cols-20 gap-1 md:gap-2 ps-1">
                 <div class="col-span-16 md:col-span-10 flex items-center">
                   <div class="grid grid-cols-10 gap-2 pt-[4px] justify-between">
                     <a class="col-span-16 md:col-span-6 text-neutral-600 text-sm md:text-base hover:text-[var(--bs-primary)] checkout-label" href="#">{{ item.product.name }}</a>
@@ -41,18 +41,18 @@
                   </div>
                 </div>
                 <div class="col-span-8 md:col-span-3 flex items-center justify-start md:justify-end py-2 text-xs md:text-sm">{{ displayPrice(item.sku.price) + " đ" }}</div>
-                <div class="col-span-8 md:col-span-4 flex items-center justify-center">
+                <div class="col-span-8 md:col-span-3 flex items-center justify-center">
                   <div class="cart-product-quantity">
-                    <div class="flex items-center justify-center border">
+                    <div class="flex border">
                       <div class="input-group-prepend bg-white z-10">
                         <button class="p-[.5rem] flex aspect-square btn-decrement text-sm" type="button" :disabled="isPending" @click="updateCart(item, 2)">
-                          <i class="icon-minus"></i>
+                          <i class="fa-solid fa-minus"></i>
                         </button>
                       </div>
                       <input type="text" style="text-align: center" class="w-100 max-w-[60px] py-[.3rem] text-sm" required="" placeholder="" v-model="item.quantity" @change="updateCart(item, 0)" />
                       <div class="input-group-append">
                         <button class="btn-increment p-[.5rem] flex aspect-square z-10 bg-white text-sm" type="button" :disabled="isPending" @click="updateCart(item, 1)">
-                          <i class="icon-plus"></i>
+                          <i class="fa-solid fa-plus"></i>
                         </button>
                       </div>
                     </div>
@@ -60,8 +60,8 @@
                 </div>
                 <div class="col-span-3 hidden md:flex items-center justify-end">{{ displayPrice(item.totalPrice) + " đ" }}</div>
               </div>
-              <div class="col-span-1 flex justify-end">
-                <button class="btn-remove" @click="cartStore.deleteCart(item.id)">
+              <div class="col-span-1 flex justify-end relative">
+                <button class="btn-remove absolute right-[-1.5rem] top-5" @click="cartStore.deleteCart(item.id)">
                   <i class="icon-close text-lg"></i>
                 </button>
               </div>
@@ -120,7 +120,7 @@
               >Tổng cộng <span class="hidden md:block">({{ selectedProductId.length }} Sản phẩm)</span></span
             >
             <span class="total-price">{{ displayPrice(totalPrice) + "đ" }}</span>
-            <button class="btn buy-button" :class="{ 'disabled' : selectedProductId.length < 1}" @click="toggleCheckout()" >Thanh toán</button>
+            <button class="btn buy-button" :class="{ 'disabled' : selectedProductId.length < 1}" @click="toggleCheckout()" ><span class="hidden md:block">Thanh toán</span> <i class="fa-solid fa-credit-card block md:hidden"></i></button>
           </div>
         </div>
       </div>

@@ -19,4 +19,12 @@ namespace ShopAppApi.Request
     {
         public List<long> Ids { get; set; } = [];
     }
+
+    public class CheckoutRequest
+    {
+        public List<long> CartIds { get; set; } = [];
+        public long ShippingUnitId { get; set; }
+        public long PaymentMethodId { get; set; }
+        public long CustomerId { get; set; }
+    }
 }

@@ -16,34 +16,17 @@
               <label for="name" class="form-label required">Tên sản phẩm</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="text"
-                class="form-control"
-                id="name"
-                v-model="product.name"
-              />
+              <input type="text" class="form-control" id="name" v-model="product.name" />
             </div>
             <Feedback :errors="errors?.Name" />
           </div>
           <div class="col-sm-4 mb-3">
             <div class="col-sm-12">
-              <label for="barCode" class="form-label required"
-                >Mã sản phẩm</label
-              >
+              <label for="barCode" class="form-label required">Mã sản phẩm</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="barCode"
-                class="form-control"
-                id="barCode"
-                v-model="product.code"
-              />
-              <span
-                id="basic-icon-default-password"
-                @click="generateCode()"
-                class="input-group-text cursor-pointer hover:bg-gray-200"
-                ><i class="fa-solid fa-arrows-rotate"></i
-              ></span>
+              <input type="barCode" class="form-control" id="barCode" v-model="product.code" />
+              <span id="basic-icon-default-password" @click="generateCode()" class="input-group-text cursor-pointer hover:bg-gray-200"><i class="fa-solid fa-arrows-rotate"></i></span>
             </div>
             <Feedback :errors="errors?.Code" />
           </div>
@@ -53,12 +36,7 @@
               <label for="barCode" class="form-label required">Barcode</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="barCode"
-                class="form-control"
-                id="barCode"
-                v-model="product.barcode"
-              />
+              <input type="barCode" class="form-control" id="barCode" v-model="product.barcode" />
             </div>
             <Feedback :errors="errors?.Barcode" />
           </div>
@@ -67,12 +45,7 @@
               <label for="unit" class="form-label">Đơn vị bán hàng</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="text"
-                class="form-control"
-                id="unit"
-                v-model="product.unitBuy"
-              />
+              <input type="text" class="form-control" id="unit" v-model="product.unitBuy" />
             </div>
             <Feedback :errors="errors?.UnitBuy" />
           </div>
@@ -81,48 +54,26 @@
               <label for="unit" class="form-label">Đơn vị mua hàng</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="text"
-                class="form-control"
-                id="unit"
-                v-model="product.unitSell"
-              />
+              <input type="text" class="form-control" id="unit" v-model="product.unitSell" />
             </div>
             <Feedback :errors="errors?.UnitSell" />
           </div>
 
           <div class="col-sm-4 mb-3">
             <div class="col-sm-12">
-              <label for="price" class="form-label required"
-                >Giá bán sản phẩm</label
-              >
+              <label for="price" class="form-label required">Giá bán sản phẩm</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="text"
-                id="price"
-                class="form-control"
-                v-model="product.price"
-                @keypress="isNumber"
-                :disabled="product.options.length > 0"
-              />
+              <input type="text" id="price" class="form-control" v-model="product.price" @keypress="isNumber" :disabled="product.options.length > 0" />
             </div>
             <Feedback :errors="errors?.Price" />
           </div>
           <div class="col-sm-4 mb-3">
             <div class="col-sm-12">
-              <label for="price" class="form-label required"
-                >Số lượng cảnh báo</label
-              >
+              <label for="price" class="form-label required">Số lượng cảnh báo</label>
             </div>
             <div class="input-group input-group-merge">
-              <input
-                type="text"
-                id="price"
-                class="form-control"
-                v-model="product.numberWarning"
-                @keypress="isNumber"
-              />
+              <input type="text" id="price" class="form-control" v-model="product.numberWarning" @keypress="isNumber" />
             </div>
             <Feedback :errors="errors?.NumberWarning" />
           </div>
@@ -132,21 +83,10 @@
             </div>
             <div class="col-sm-12 row">
               <div class="col-sm-11">
-                <select-search
-                  placeholder="-- Vui lòng Chọn --"
-                  :listData="categories"
-                  display="name"
-                  keyValue="id"
-                  v-model="product.categoryId"
-                ></select-search>
+                <select-search placeholder="-- Vui lòng Chọn --" :listData="categories" display="name" keyValue="id" v-model="product.categoryId"></select-search>
               </div>
               <div class="col-sm-1 d-flex p-0">
-                <span
-                  id="basic-icon-default-password"
-                  @click="showCategoryModal = true"
-                  class="input-group-text cursor-pointer hover:bg-gray-200"
-                  ><i class="fa-solid fa-plus"></i
-                ></span>
+                <span id="basic-icon-default-password" @click="showCategoryModal = true" class="input-group-text cursor-pointer hover:bg-gray-200"><i class="fa-solid fa-plus"></i></span>
               </div>
             </div>
             <Feedback :errors="errors?.CategoryId" />
@@ -157,21 +97,10 @@
             </div>
             <div class="col-sm-12 row">
               <div class="col-sm-11">
-                <select-search
-                  placeholder="-- Vui lòng Chọn --"
-                  :listData="brands"
-                  display="name"
-                  keyValue="id"
-                  v-model="product.brandId"
-                ></select-search>
+                <select-search placeholder="-- Vui lòng Chọn --" :listData="brands" display="name" keyValue="id" v-model="product.brandId"></select-search>
               </div>
               <div class="col-sm-1 d-flex p-0">
-                <span
-                  id="basic-icon-default-password"
-                  @click="showBrandModal = true"
-                  class="input-group-text cursor-pointer hover:bg-gray-200"
-                  ><i class="fa-solid fa-plus"></i
-                ></span>
+                <span id="basic-icon-default-password" @click="showBrandModal = true" class="input-group-text cursor-pointer hover:bg-gray-200"><i class="fa-solid fa-plus"></i></span>
               </div>
             </div>
 
@@ -179,27 +108,14 @@
           </div>
           <div class="col-sm-4 mb-3">
             <div class="col-sm-12">
-              <label for="price" class="form-label required"
-                >Thuế sản phẩm</label
-              >
+              <label for="price" class="form-label required">Thuế sản phẩm</label>
             </div>
             <div class="col-sm-12 row">
               <div class="col-sm-11">
-                <select-search
-                  :firstSelected="true"
-                  :listData="taxes"
-                  display="name"
-                  keyValue="id"
-                  v-model="product.taxId"
-                ></select-search>
+                <select-search :firstSelected="true" :listData="taxes" display="name" keyValue="id" v-model="product.taxId"></select-search>
               </div>
               <div class="col-sm-1 d-flex p-0">
-                <span
-                  id="basic-icon-default-password"
-                  @click="showTaxModal = true"
-                  class="input-group-text cursor-pointer hover:bg-gray-200"
-                  ><i class="fa-solid fa-plus"></i
-                ></span>
+                <span id="basic-icon-default-password" @click="showTaxModal = true" class="input-group-text cursor-pointer hover:bg-gray-200"><i class="fa-solid fa-plus"></i></span>
               </div>
             </div>
 
@@ -207,33 +123,18 @@
           </div>
           <div class="col-sm-4 mb-3">
             <div class="col-sm-12">
-              <label for="price" class="form-label required"
-                >Đơn vị quy đổi (Đơn vị mua
-                <i class="fa-solid fa-right-long"></i> Đơn vị bán)</label
-              >
+              <label for="price" class="form-label required">Đơn vị quy đổi (Đơn vị mua <i class="fa-solid fa-right-long"></i> Đơn vị bán)</label>
             </div>
             <div class="col-sm-12 row">
               <div class="col-sm-3">
-                <input
-                  type="text"
-                  id="price"
-                  class="form-control"
-                  :value="1"
-                  disabled
-                  @keypress="isNumber"
-                />
+                <input type="text" id="price" class="form-control" :value="1" disabled @keypress="isNumber" />
               </div>
               <div class="col-sm-1 d-flex justify-center items-center">
                 <i class="fa-solid fa-right-long"></i>
               </div>
 
               <div class="col-sm-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="product.conversionUnit"
-                  @keypress="isNumber"
-                />
+                <input type="text" class="form-control" v-model="product.conversionUnit" @keypress="isNumber" />
               </div>
             </div>
 
@@ -245,12 +146,7 @@
                 <label for="" class="form-label"></label>
               </div> -->
               <div class="col-sm-12 mt-3">
-                <input
-                  class="form-check-input me-2"
-                  type="checkbox"
-                  id="new_product"
-                  v-model="product.isNew"
-                />
+                <input class="form-check-input me-2" type="checkbox" id="new_product" v-model="product.isNew" />
                 <label for="new_product" class="form-label">Sản phẩm mới</label>
               </div>
               <!-- <div class="col-sm-12">
@@ -261,15 +157,8 @@
             </div>
             <div class="col-sm-3 mb-3">
               <div class="col-sm-12 mt-3">
-                <input
-                  class="form-check-input me-2"
-                  type="checkbox"
-                  id="isFeatured"
-                  v-model="product.isFeatured"
-                />
-                <label for="isFeatured" class="form-label"
-                  >Sản phẩm đặc sắc</label
-                >
+                <input class="form-check-input me-2" type="checkbox" id="isFeatured" v-model="product.isFeatured" />
+                <label for="isFeatured" class="form-label">Sản phẩm đặc sắc</label>
               </div>
               <!-- <div class="col-sm-12">
                             <label for="outstanding" class="form-label"
@@ -280,61 +169,26 @@
             </div>
             <div class="col-sm-3 mb-3">
               <div class="col-sm-12 mt-3">
-                <input
-                  class="form-check-input me-2"
-                  type="checkbox"
-                  id="hasVariants"
-                  v-model="product.hasVariants"
-                />
-                <label for="hasVariants" class="form-label"
-                  >Sản phẩm có biến thể</label
-                >
+                <input class="form-check-input me-2" type="checkbox" id="hasVariants" v-model="product.hasVariants" />
+                <label for="hasVariants" class="form-label">Sản phẩm có biến thể</label>
               </div>
             </div>
             <div class="col-sm-3 mb-3">
               <div class="col-sm-12 mt-3">
-                <input
-                  class="form-check-input me-2"
-                  type="checkbox"
-                  id="hasVariants"
-                  v-model="product.soldOut"
-                />
+                <input class="form-check-input me-2" type="checkbox" id="hasVariants" v-model="product.soldOut" />
                 <label for="hasVariants" class="form-label">Hết hàng</label>
               </div>
             </div>
           </div>
           <div class="col-sm-12 mb-3 mt-3">
-            <label class="form-label mb-3 me-2"
-              >Hình ảnh sản phẩm ({{ product.images?.length }} /
-              {{ maxImage }})</label
-            >
-            <button
-              class="btn btn-sm btn-outline-danger ms-2"
-              @click="deleteImage(0, true)"
-            >
-              Xoá tất cả
-            </button>
-            <div
-              class="d-flex flex-wrap gap-4 items-center border border-gray-300 p-3 rounded-md"
-            >
-              <div
-                class="pr-image box-content"
-                v-for="(item, index) in product.images"
-                :key="index"
-              >
-                <img
-                  :src="item.path"
-                  class="w-[120px] h-[120px] object-contain rounded-2xl"
-                />
+            <label class="form-label mb-3 me-2">Hình ảnh sản phẩm ({{ product.images?.length }} / {{ maxImage }})</label>
+            <button class="btn btn-sm btn-outline-danger ms-2" @click="deleteImage(0, true)">Xoá tất cả</button>
+            <div class="d-flex flex-wrap gap-4 items-center border border-gray-300 p-3 rounded-md">
+              <div class="pr-image box-content" v-for="(item, index) in product.images" :key="index">
+                <img :src="item.path" class="w-[120px] h-[120px] object-contain rounded-2xl" />
                 <div class="middle rounded-2xl">
                   <div class="text">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-info"
-                      @click="deleteImage(index)"
-                    >
-                      Xoá ảnh
-                    </button>
+                    <button type="button" class="btn btn-sm btn-info" @click="deleteImage(index)">Xoá ảnh</button>
                     <!-- <i
                                             class="fa-solid fa-trash fs-4 ms-3 hover:text-red-500 hover:scale-125"
                                             @click="deleteImage(index)"
@@ -342,23 +196,11 @@
                   </div>
                 </div>
               </div>
-              <div
-                class="add-file w-[120px] h-[120px] border border-dashed border-red-600 text-red-600 p-1 box-content"
-              >
-                <label
-                  for="image-files"
-                  class="w-100 h-100 d-flex justify-center items-center cursor-pointer"
-                >
+              <div class="add-file w-[120px] h-[120px] border border-dashed border-red-600 text-red-600 p-1 box-content">
+                <label for="image-files" class="w-100 h-100 d-flex justify-center items-center cursor-pointer">
                   <i class="fa-solid fa-plus fs-3"></i>
                 </label>
-                <input
-                  type="file"
-                  id="image-files"
-                  @change="productImage"
-                  accept="image/png, image/gif, image/jpeg"
-                  hidden
-                  multiple
-                />
+                <input type="file" id="image-files" @change="productImage" accept="image/png, image/gif, image/jpeg" hidden multiple />
               </div>
             </div>
           </div>
@@ -384,41 +226,21 @@
               </div>
             </div>
             <div class="col-sm-6">
-              <img
-                :src="product.imageThumb"
-                class="max-w-[100%] h-[140px] object-contain rounded-2xl m-0 m-auto"
-              />
+              <img :src="product.imageThumb" class="max-w-[100%] h-[140px] object-contain rounded-2xl m-0 m-auto" />
             </div>
           </div>
           <div v-if="product.hasVariants">
             <!-- Thuộc tính sản phẩm -->
             <div class="col-sm-12 mb-3">
               <div class="col-sm-12 mb-2">
-                <label for="note" class="form-label me-3"
-                  >Thuộc tính sản phẩm</label
-                >
-                <button
-                  type="button"
-                  class="btn btn-sm btn-primary"
-                  @click="toggleAddOption"
-                >
-                  Thêm thuộc tính
-                </button>
+                <label for="note" class="form-label me-3">Thuộc tính sản phẩm</label>
+                <button type="button" class="btn btn-sm btn-primary" @click="toggleAddOption">Thêm thuộc tính</button>
               </div>
-              <div
-                class="col-sm-12 border-1 border-gray-300 rounded-lg mb-2 py-2 px-2 d-flex"
-                v-for="(option, i) in product.options"
-                :key="i"
-                :class="{ disabled: option.isDeleted }"
-              >
+              <div class="col-sm-12 border-1 border-gray-300 rounded-lg mb-2 py-2 px-2 d-flex" v-for="(option, i) in product.options" :key="i" :class="{ disabled: option.isDeleted }">
                 <div class="d-flex col-4 me-4">
                   <div class="col-sm-7 mb-3 me-2">
                     <div class="col-sm-12">
-                      <label
-                        :for="'option-name-' + i"
-                        class="form-label required"
-                        >Thuộc tính</label
-                      >
+                      <label :for="'option-name-' + i" class="form-label required">Thuộc tính</label>
                     </div>
                     <div class="col-sm-12">
                       <input
@@ -428,25 +250,16 @@
                         v-model="option.name"
                         @change="dataChanged(i, 'options')"
                         :class="{
-                          'is-invalid': optionErrors.find(
-                            (x) => x == 'option-' + i
-                          ),
+                          'is-invalid': optionErrors.find((x) => x == 'option-' + i),
                         }"
                       />
                     </div>
                   </div>
                   <div class="col-sm-5 mb-3">
                     <div class="col-sm-12">
-                      <label :for="'option-visual-' + i" class="form-label"
-                        >Loại</label
-                      >
+                      <label :for="'option-visual-' + i" class="form-label">Loại</label>
                     </div>
-                    <select
-                      class="form-select"
-                      v-model="option.visual"
-                      :id="'option-visual-' + i"
-                      @change="changeOptionType(i)"
-                    >
+                    <select class="form-select" v-model="option.visual" :id="'option-visual-' + i" @change="changeOptionType(i)">
                       <option selected :value="0">Text</option>
                       <option selected :value="1">Color</option>
                     </select>
@@ -459,12 +272,7 @@
                   <div class="col-sm-6">
                     <label class="form-label">Nhãn</label>
                   </div>
-                  <div
-                    class="d-flex col-sm-12 mb-1"
-                    v-for="(value, j) in option.optionValues"
-                    :key="j"
-                    :class="{ disabled: value.isDeleted }"
-                  >
+                  <div class="d-flex col-sm-12 mb-1" v-for="(value, j) in option.optionValues" :key="j" :class="{ disabled: value.isDeleted }">
                     <div class="d-flex col-10 me-2 gap-2">
                       <input
                         type="text"
@@ -473,40 +281,16 @@
                         v-if="option.visual == 0"
                         :id="i + '' + j"
                         :class="{
-                          'is-invalid': optionErrors.find(
-                            (x) => x == `value-${i}${j}`
-                          ),
+                          'is-invalid': optionErrors.find((x) => x == `value-${i}${j}`),
                         }"
                         @change="dataChanged(i, 'options', j, 'optionValues')"
                       />
                       <div v-else class="d-flex align-items-center">
-                        <input
-                          type="text"
-                          class="form-control me-2"
-                          v-model="value.value"
-                          disabled
-                          @change="dataChanged(i, 'options', j, 'optionValues')"
-                        />
-                        <input
-                          class="rounded box-content p-1"
-                          type="color"
-                          v-model="value.value"
-                          @change="dataChanged(i, 'options', j, 'optionValues')"
-                        />
+                        <input type="text" class="form-control me-2" v-model="value.value" disabled @change="dataChanged(i, 'options', j, 'optionValues')" />
+                        <input class="rounded box-content p-1" type="color" v-model="value.value" @change="dataChanged(i, 'options', j, 'optionValues')" />
                       </div>
-                      <input
-                        class="form-control w-50"
-                        type="text"
-                        v-model="value.label"
-                        @change="dataChanged(i, 'options', j, 'optionValues')"
-                      />
-                      <input
-                        class="form-control"
-                        type="file"
-                        :id="`optionValueImage-${i}-${j}`"
-                        @change="productImage($event, i, j)"
-                        hidden
-                      />
+                      <input class="form-control w-50" type="text" v-model="value.label" @change="dataChanged(i, 'options', j, 'optionValues')" />
+                      <input class="form-control" type="file" :id="`optionValueImage-${i}-${j}`" @change="productImage($event, i, j)" hidden />
                       <!-- <div
                                             v-if="value.image"
                                             class="d-flex justify-center items-center w-[45px] h-[45px] object-contain cursor-pointer"
@@ -526,58 +310,24 @@
                                         ></label> -->
                     </div>
                     <div class="col-1">
-                      <button
-                        v-if="!value.isDeleted"
-                        type="button"
-                        class="btn btn-icon btm-sm btn-outline-secondary"
-                        @click="toggleDeleteOptionValue(i, j)"
-                      >
+                      <button v-if="!value.isDeleted" type="button" class="btn btn-icon btm-sm btn-outline-secondary" @click="toggleDeleteOptionValue(i, j)">
                         <i class="bx bx-trash"></i>
                       </button>
-                      <button
-                        v-else
-                        type="button"
-                        class="btn btn-icon btm-sm btn-outline-danger"
-                        data-bs-dismiss="modal"
-                        @click="toggleRestoreOptionValue(i, j)"
-                      >
+                      <button v-else type="button" class="btn btn-icon btm-sm btn-outline-danger" data-bs-dismiss="modal" @click="toggleRestoreOptionValue(i, j)">
                         <i class="fa-regular fa-window-restore"></i>
                       </button>
                     </div>
                   </div>
                   <div class="col-9 me-2 text-center mt-1">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-primary"
-                      @click="toggleAddOptionValue(i)"
-                    >
+                    <button type="button" class="btn btn-sm btn-outline-primary" @click="toggleAddOptionValue(i)">
                       <i class="bx bx-plus-circle"></i>
-                      &nbsp; Thêm mới ({{ option.optionValues.length }}/
-                      {{ maxOptionValue }})
+                      &nbsp; Thêm mới ({{ option.optionValues.length }}/ {{ maxOptionValue }})
                     </button>
                   </div>
                 </div>
-                <div
-                  v-if="
-                    product.options.filter((x) => x.isDeleted == false).length >
-                    1
-                  "
-                >
-                  <button
-                    v-if="!option.deleted"
-                    type="button"
-                    class="btn-close text-white p-1"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                    @click="toggleDeleteOption(i)"
-                  ></button>
-                  <button
-                    v-else
-                    type="button"
-                    class="btn btn-sm w-[1.25rem] h-[1.25rem] p-1"
-                    data-bs-dismiss="modal"
-                    @click="toggleRestoreOption(i)"
-                  >
+                <div v-if="product.options.filter((x) => x.isDeleted == false).length > 1">
+                  <button v-if="!option.deleted" type="button" class="btn-close text-white p-1" data-bs-dismiss="modal" aria-label="Close" @click="toggleDeleteOption(i)"></button>
+                  <button v-else type="button" class="btn btn-sm w-[1.25rem] h-[1.25rem] p-1" data-bs-dismiss="modal" @click="toggleRestoreOption(i)">
                     <i class="fa-regular fa-window-restore"></i>
                   </button>
                 </div>
@@ -585,34 +335,19 @@
             </div>
             <!-- Tạo biến thể -->
             <div class="col-sm-12">
-              <button
-                class="btn btn-info"
-                @click="generateSKUs()"
-                v-if="product.options.length > 0"
-              >
-                Tạo biến thể
-              </button>
+              <button class="btn btn-info" @click="generateSKUs()" v-if="product.options.length > 0">Tạo biến thể</button>
 
               <div class="" v-if="product.skus.length > 0">
                 <h4 class="card-header">Danh sách biến thể của sản phẩm</h4>
 
                 <div class="d-flex align-items-center col-sm-12 mb-3 gap-3">
                   <div class="col-sm-2">
-                    <label for="password" class="form-label m-0"
-                      >Thiết lập hàng loạt</label
-                    >
+                    <label for="password" class="form-label m-0">Thiết lập hàng loạt</label>
                   </div>
                   <div class="col-sm-2">
                     <div class="input-group input-group-merge">
                       <span class="input-group-text">đ</span>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="name"
-                        placeholder="Giá bán"
-                        @keypress="isNumber($event)"
-                        v-model="fillAll.price"
-                      />
+                      <input type="text" class="form-control" id="name" placeholder="Giá bán" @keypress="isNumber($event)" v-model="fillAll.price" />
                     </div>
                   </div>
                   <!-- <div class="col-sm-2">
@@ -634,24 +369,18 @@
                       type="text"
                       class="form-control"
                       :class="{
-                        'is-invalid': optionErrors.find(
-                          (x) => x == 'option-' + i
-                        ),
+                        'is-invalid': optionErrors.find((x) => x == 'option-' + i),
                       }"
                       v-model="fillAll.barCode"
                       placeholder="Mã hàng hoá"
                     />
                   </div>
                   <div class="col-sm-2">
-                    <button class="btn btn-info" @click="toggleFillAll()">
-                      Thiết lập
-                    </button>
+                    <button class="btn btn-info" @click="toggleFillAll()">Thiết lập</button>
                   </div>
                 </div>
                 <div class="table-responsive text-nowrap table-scroll h-[70vh]">
-                  <table
-                    class="table table-responsive text-nowrap table-scroll h-[70vh]"
-                  >
+                  <table class="table table-responsive text-nowrap table-scroll h-[70vh]">
                     <thead class="table-light">
                       <tr>
                         <th>STT</th>
@@ -667,34 +396,15 @@
                           <strong>{{ index + 1 }}</strong>
                         </td>
                         <td class="min-w-[200px]">
-                          <strong
-                            class="list-variants"
-                            v-for="(value, i) in item.variants"
-                            :key="i"
-                            >{{ value.optionValue.label }}</strong
-                          >
+                          <strong class="list-variants" v-for="(value, i) in item.variants" :key="i">{{ value.optionValue.label }}</strong>
                         </td>
                         <td class="min-w-[200px] input-group input-group-merge">
                           <span class="input-group-text">đ</span>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="name"
-                            v-model="item.price"
-                            @keypress="isNumber($event)"
-                            @change="dataChanged(index, 'skus')"
-                          />
+                          <input type="text" class="form-control" id="name" v-model="item.price" @keypress="isNumber($event)" @change="dataChanged(index, 'skus')" />
                         </td>
 
                         <td class="min-w-[150px]">
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="name"
-                            v-model="item.barCode"
-                            @change="dataChanged(index, 'skus')"
-                            required
-                          />
+                          <input type="text" class="form-control" id="name" v-model="item.barCode" @change="dataChanged(index, 'skus')" required />
                         </td>
                         <td class="w-[100%]">
                           <div class="row col-12">
@@ -714,10 +424,7 @@
                               ></select-search-user>
                             </div>
                             <div class="col-4" v-if="item.imagePath">
-                              <img
-                                :src="item.imagePath"
-                                class="h-[35px] w-[auto]"
-                              />
+                              <img :src="item.imagePath" class="h-[35px] w-[auto]" />
                             </div>
                           </div>
                         </td>
@@ -732,9 +439,7 @@
       </div>
     </template>
     <template #footer>
-      <button class="btn btn-success" :disabled="editing" @click="save()">
-        Lưu lại
-      </button>
+      <button class="btn btn-success" :disabled="editing" @click="save()">Lưu lại</button>
       <button
         class="btn btn-secondary"
         @click="
@@ -753,11 +458,7 @@
 </template>
 <script lang="ts" setup>
 import { reactive, ref, onBeforeMount, computed, watch } from "vue";
-import {
-  useProductStore,
-  useCategoryStore,
-  useBrandStore,
-} from "@/stores/product";
+import { useProductStore, useCategoryStore, useBrandStore } from "@/stores/product";
 import { useTaxStore } from "@/stores/tax";
 import { errorMessage, successMessage, warningMessage } from "@/helpers/toast";
 import { v4 as uuidv4 } from "uuid";
@@ -845,6 +546,7 @@ const toggleAddOption = () => {
     name: "",
     visual: 0,
     order: 0,
+    isDeleted: false,
     optionValues: [
       {
         code: uuidv4(),
@@ -872,18 +574,14 @@ const changeOptionType = (index: any) => {
 };
 
 const toggleAddOptionValue = (optionIndex: any) => {
-  if (
-    product.value.options[optionIndex].optionValues.length >=
-    maxOptionValue.value
-  ) {
+  if (product.value.options[optionIndex].optionValues.length >= maxOptionValue.value) {
     return;
   }
   const value = {
     id: null,
     optionId: product.value.options[optionIndex].id,
     code: uuidv4(),
-    value:
-      product.value.options[optionIndex].visual == 1 ? defaultColor.value : "",
+    value: product.value.options[optionIndex].visual == 1 ? defaultColor.value : "",
     label: "",
     image: "",
   };
@@ -931,17 +629,9 @@ const toggleFillAll = () => {
 
 const generateSKUs = () => {
   if (product.value.options.length < 1) return;
-  product.value.options.sort(
-    (a: any, b: any) => a.optionValues.length - b.optionValues.length
-  );
+  product.value.options.sort((a: any, b: any) => a.optionValues.length - b.optionValues.length);
 
-  const arrCodeOptionValue = product.value.options
-    .filter((item: any) => !item.isDeleted)
-    .map((option: any) =>
-      option.optionValues
-        .filter((item: any) => !item.isDeleted)
-        .map((x: any) => x.code)
-    );
+  const arrCodeOptionValue = product.value.options.filter((item: any) => !item.isDeleted).map((option: any) => option.optionValues.filter((item: any) => !item.isDeleted).map((x: any) => x.code));
 
   optionErrors.value = [];
   const arrOptionValueFlat = product.value.options
@@ -969,30 +659,28 @@ const generateSKUs = () => {
     return;
   }
 
-  product.value.skus = generateCombinations(arrCodeOptionValue).map(
-    (item: any) => {
-      if (typeof item == "string") {
-        item = [
-          mapOptionValue(arrOptionValueFlat, item),
-          // arrOptionValueFlat.find((x: any) => {
-          //         return x.code == item;
-          //     }),
-        ];
-      } else {
-        item = item.map((i: any) => mapOptionValue(arrOptionValueFlat, i));
-      }
-
-      return {
-        id: null,
-        productId: product.value.id,
-        barCode: "",
-        price: 0,
-        name: "",
-        stock: 0,
-        variants: item,
-      };
+  product.value.skus = generateCombinations(arrCodeOptionValue).map((item: any) => {
+    if (typeof item == "string") {
+      item = [
+        mapOptionValue(arrOptionValueFlat, item),
+        // arrOptionValueFlat.find((x: any) => {
+        //         return x.code == item;
+        //     }),
+      ];
+    } else {
+      item = item.map((i: any) => mapOptionValue(arrOptionValueFlat, i));
     }
-  );
+
+    return {
+      id: null,
+      productId: product.value.id,
+      barCode: "",
+      price: 0,
+      name: "",
+      stock: 0,
+      variants: item,
+    };
+  });
   editing.value = false;
   product.value.newSkus = true;
 };
@@ -1041,10 +729,7 @@ const productImage = (event: any) => {
   const { files } = event.target;
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    if (
-      file &&
-      !product.value.images.some((img: any) => img.fileName == file.name)
-    ) {
+    if (file && !product.value.images.some((img: any) => img.fileName == file.name)) {
       const reader = new FileReader();
       reader.onload = async (e: any) => {
         if (product.value.images.length >= maxImage.value) {
@@ -1091,7 +776,6 @@ const generateCode = () => {
 };
 
 const save = () => {
-
   if (editing.value) {
     return;
   }
@@ -1141,23 +825,12 @@ const changeSkuImage = async (index: number) => {
   const ImgCode = product.value.skus[index].imageCode;
   const img = product.value.images.find((x: any) => x.code == ImgCode);
   if (img) {
-    product.value.skus[index].imagePath = await resizeImage(
-      img.path,
-      img.extension,
-      null,
-      null,
-      250
-    );
+    product.value.skus[index].imagePath = await resizeImage(img.path, img.extension, null, null, 250);
   }
   dataChanged(index, "skus");
 };
 
-const dataChanged = (
-  index: number,
-  type: string,
-  index2 = null,
-  type2 = null
-) => {
+const dataChanged = (index: number, type: string, index2 = null, type2 = null) => {
   if (index2 != null && type2 != null) {
     product.value[type][index][type2][index2].isEdited = true;
   }
@@ -1183,13 +856,7 @@ watch(
   async (newVal) => {
     const img = product.value.images.find((x: any) => x.code == newVal);
     if (img) {
-      product.value.imageThumb = await resizeImage(
-        img.path,
-        img.extension,
-        null,
-        null,
-        250
-      );
+      product.value.imageThumb = await resizeImage(img.path, img.extension, null, null, 250);
     } else {
       product.value.imageThumb = "";
     }
@@ -1207,12 +874,8 @@ watch(
   () => product.value.skus,
   (newVal, oldVal) => {
     newVal.forEach((value: any, index: any) => {
-      product.value.skus[index].price = isNaN(Number(value.price))
-        ? 0
-        : Number(value.price);
-      product.value.skus[index].stock = isNaN(Number(value.stock))
-        ? 0
-        : Number(value.stock);
+      product.value.skus[index].price = isNaN(Number(value.price)) ? 0 : Number(value.price);
+      product.value.skus[index].stock = isNaN(Number(value.stock)) ? 0 : Number(value.stock);
     });
   },
   { deep: true }
@@ -1240,10 +903,8 @@ watch(
         product.value.newSkus = false;
         product.value.options.forEach((option: any, index: number) => {
           product.value.options[index].isDeleted = false;
-          if(product.value.options[index].id == null)
-            product.value.newSkus = true;
+          if (product.value.options[index].id == null) product.value.newSkus = true;
         });
-        
       }
     }
   }

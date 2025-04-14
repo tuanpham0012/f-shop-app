@@ -17,7 +17,7 @@ export const useCartStore = defineStore("cart", {
 
   actions: {
     async getList() {
-      const token = import.meta.env.VITE_VUE_APP_TOKEN;
+      const token = localStorage.getItem("token");
       if (token) {
         await _getList(`${apiUrl}/cart`, null)
           .then((res) => {
@@ -46,7 +46,7 @@ export const useCartStore = defineStore("cart", {
       });
     },
 
-    async deleteCarts(data:any) {
+    async deleteCarts(data: any) {
       await _destroy(`${apiUrl}/cart/delete-all`, {}, data).then((res) => {
         this.getList();
       });

@@ -128,5 +128,10 @@ namespace ShopAppApi.Repositories.CartRepo
             }).OrderBy(x => x.ProductId).ToListAsync();
             return getCart;
         }
+
+        public async Task Checkout(CheckoutRequest request)
+        {
+            return;
+        }
     }
 }

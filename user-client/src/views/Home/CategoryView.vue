@@ -27,7 +27,7 @@
       >
         <swiper-slide v-for="(item, index) in popularCategories" :key="index">
             <router-link
-              :to="'/danh-muc/' + item.code"
+              :to="{ name: 'Category', params: {categoryCode: item.code}}"
             >
               <BrandCardComponent
                 :srcImage="item.image"

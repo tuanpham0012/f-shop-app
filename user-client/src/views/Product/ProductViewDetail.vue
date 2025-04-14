@@ -240,7 +240,7 @@
 import { reactive, ref, onBeforeMount, computed, watch } from "vue";
 import { useProductStore } from "@/stores/product";
 import { useRoute, useRouter } from "vue-router";
-import { errorMessage } from "@/helpers/toast";
+import { errorMessage, warningMessage, successMessage } from "@/helpers/toast";
 import { isNumber } from "@/helpers/helpers";
 import { displayPrice } from "@/services/utils";
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -286,6 +286,10 @@ const tabViews = reactive([
 ]);
 
 const addToCart = async () => {
+  if (skuSelect.value == null) {
+    warningMessage("Vui lòng chọn sản phẩm trước khi thêm vào giỏ hàng");
+    return;
+  }
   addToCartBtn.value.classList.add('clicked')
   setTimeout( () => {
     addToCartBtn.value.classList.remove('clicked')
@@ -293,6 +297,10 @@ const addToCart = async () => {
   await cartStore.addToCart({
     skuId: skuSelect.value.id,
     quantity: quantity.value,
+  }).then((res:any) => {
+    successMessage("Thêm vào giỏ hàng thành công");
+  }).catch((err:any) => {
+    errorMessage("Thêm vào giỏ hàng thất bại");
   });
 };
 
@@ -354,7 +362,6 @@ watch(
 watch(
   () => skus.value,
   (newValue) => {
-    console.log(skus.value);
     if (skus.value.length == 1) skuSelect.value = skus.value[0];
   },
   { deep: true }

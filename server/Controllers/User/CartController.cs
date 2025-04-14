@@ -67,6 +67,20 @@ namespace ShopAppApi.Controllers.User
             var entries = await repository.GetCart(CustomerId);
             return Ok(new ResponseCollection<CartVM>(entries));
         }
+
+        [HttpPost("checkout")]
+        public IActionResult Checkout([FromBody] CheckoutRequest request)
+        {
+            if (long.TryParse(User.FindFirstValue("ID"), out var customerId))
+            {
+                request.CustomerId = customerId;
+            }
+            else
+            {
+                return BadRequest("Invalid CustomerId.");
+            }
+            repository.Checkout(request);
+            return Ok(new SuccessResponse(200, "Đặt hàng thành công!"));
         
     }
 }

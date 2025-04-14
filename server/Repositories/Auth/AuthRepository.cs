@@ -87,5 +87,19 @@ namespace ShopAppApi.Repositories.Auth
 
             return tokenHandler.WriteToken(token); // Chuyển token thành chuỗi
         }
+
+        public async Task<LoginInfoVM> GetInfo(long customerId)
+        {
+            var entry = await context.Customers.AsNoTracking().SingleOrDefaultAsync(x => x.Id == customerId) ?? throw new ArgumentException("Không tìm thấy thông tin người dùng!");
+            var result = new LoginInfoVM
+            {
+                Id = entry.Id,
+                Name = entry.Name,
+                Email = entry.Email,
+                Address = entry.Address,
+                Phone = entry.Phone,
+            };
+            return result;
+        }
     }
 }

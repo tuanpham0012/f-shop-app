@@ -13,13 +13,25 @@ public partial class Order
 
     public DateOnly? DeliveryDate { get; set; }
 
-    public long? CustomerId { get; set; }
+    public long CustomerId { get; set; }
 
     public long? UserId { get; set; }
+
+    public long PaymentMethodId { get; set; }
+
+    public long ShippingUnitId { get; set; }
 
     public double TotalAmount { get; set; }
 
     public double DiscountAmount { get; set; }
+
+    public double ShippingFee { get; set; }
+
+    public string? ShippingAddress { get; set; }
+
+    public string? ShippingPhone { get; set; }
+
+    public string? ReceiverName { get; set; }
 
     public byte Status { get; set; }
 
@@ -27,7 +39,11 @@ public partial class Order
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Customer Customer { get; set; } = null!;
+
+    public virtual PaymentMethod PaymentMethod { get; set; } = null!;
+
+    public virtual ShippingUnit ShippingUnit { get; set; } = null!;
 
     public virtual User? User { get; set; }
 }

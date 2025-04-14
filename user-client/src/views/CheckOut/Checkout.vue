@@ -10,16 +10,15 @@
       </ol>
     </nav>
     <div class="page-content">
-      <div class="cart mt-1">
-        <div class="col-span-12 bg-white my-3 p-3">
-          <p class="text-lg text-gray-700 font-medium"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</p>
+      <div class="cart grid grid-cols-12 gap-3">
+        <div class="col-span-12 bg-white my-2 p-3 rounded-lg">
+          <p class="text-base text-gray-700 font-medium mb-1"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</p>
           <div class="flex gap-1 flex-wrap ps-4">
-            <span class="text-base font-semibold">Phạm Quốc Tuấn (0983776901)</span>
-            <span class="checkout-label">Công Ty Cp Pm Quảng Ích, Số 46, Gamuda City, Phường Yên Sở, Quận Hoàng Mai, Hà Nội <span class="badge text-bg-primary">Mặc định</span></span>
+            <span class="text-sm font-semibold">{{ `${info?.name} (${info?.phone})` }}</span>
+            <span class="checkout-label text-sm">{{ info?.address }} <span class="badge text-bg-primary">Mặc định</span></span>
           </div>
-          
         </div>
-        <div class="grid grid-cols-24 gap-3 p-3 pt-0 bg-white">
+        <div class="col-span-12 grid grid-cols-24 gap-3 p-2 pt-0 bg-white rounded-lg">
           <div class="col-span-24 p-2">
             <div class="hidden md:grid grid-cols-24 gap-4 py-3 border-b border-gray-300 font-semibold text-gray-500">
               <div class="col-span-9 col-start-4 text-start">Sản phẩm</div>
@@ -27,7 +26,7 @@
               <div class="col-span-4 text-center">Số lượng</div>
               <div class="col-span-3 text-right">Thành tiền</div>
             </div>
-            <div class="grid grid-cols-24 gap-1 md:gap-4 border-b py-4 border-gray-100" v-for="(item, index) in carts" :key="index">
+            <div class="grid grid-cols-24 gap-1 md:gap-4 border-b py-2 border-gray-100" v-for="(item, index) in carts" :key="index">
               <div class="col-span-5 md:col-span-2 flex items-start md:items-center justify-center">
                 <figure class="max-w-[80px] max-h-[80px] aspect-square">
                   <img :src="item.sku.imagePath" alt="Product image" class="w-100 h-100 object-contain" />
@@ -35,7 +34,7 @@
               </div>
               <div class="col-span-16 md:col-span-20 grid grid-cols-16 md:grid-cols-20 gap-0 md:gap-2 ps-1">
                 <div class="col-span-16 md:col-span-10 flex items-center">
-                  <div class="grid grid-cols-10 gap-2 pt-[4px] justify-between">
+                  <div class="grid grid-cols-10 gap-2 pt-[4px] w-100">
                     <a class="col-span-16 md:col-span-6 text-neutral-600 text-sm md:text-base hover:text-[var(--bs-primary)] checkout-label" href="#">{{ item.product.name }}</a>
                     <div class="col-span-16 md:col-span-4 text-xs md:text-sm text-gray-400 flex md:inline-block" v-if="item.sku.variants.length > 0">
                       <span>Phân Loại Hàng:</span>
@@ -46,9 +45,9 @@
                   </div>
                 </div>
                 <div class="col-span-8 md:col-span-3 flex items-center justify-start md:justify-end py-2 text-xs md:text-sm">{{ displayPrice(item.sku.price) + " đ" }}</div>
-                <div class="col-span-8 md:col-span-4 flex items-center justify-center">
-                  <div class="cart-product-quantity">
-                    {{ item.quantity }}
+                <div class="col-span-8 md:col-span-4 flex items-center justify-end md:justify-center md:pe-6">
+                  <div class="cart-product-quantity text-sm">
+                    x{{ item.quantity }}
                   </div>
                 </div>
                 <div class="col-span-3 hidden md:flex items-center justify-end">{{ displayPrice(item.totalPrice) + " đ" }}</div>
@@ -57,24 +56,24 @@
           </div>
         </div>
 
-        <div class="col-span-12 bg-white my-3 p-3">
-          <p class="text-lg text-gray-700 font-semibold">Đơn vị vận chuyển</p>
+        <div class="col-span-12 md:col-span-6 bg-white p-3 rounded-lg">
+          <p class="text-lg text-gray-700 font-medium mb-2">Đơn vị vận chuyển</p>
           <!-- <select-search :listData="shippingUnits" display="name" keyValue="id" v-model="shippingUnitId" :firstSelected="true"></select-search> -->
           <div class="radio-container ps-4" v-for="(item, index) in shippingUnits" :key="index">
-            <input type="radio" :id="`shippingUnits-${item.id}`" name="shippingUnits" :value="item.id" checked />
+            <input type="radio" :id="`shippingUnits-${item.id}`" name="shippingUnits" :value="item.id" v-model="shippingUnitId" />
             <label class="flex gap-2 items-center" :for="`shippingUnits-${item.id}`">
               <span class="custom-radio"></span>
-              <span class="w-100">{{ item.name }}</span>
+              <span class="w-100 text-sm">{{ item.name }}</span>
             </label>
           </div>
         </div>
-        <div class="col-span-12 bg-white my-3 p-3">
-          <p class="text-lg text-gray-700 font-semibold">Phương thức thanh toán</p>
+        <div class="col-span-12 md:col-span-6 bg-white p-3 rounded-lg">
+          <p class="text-lg text-gray-700 font-medium mb-2">Phương thức thanh toán</p>
           <div class="radio-container ps-4" v-for="(item, index) in paymentMethods" :key="index">
-            <input type="radio" :id="`paymentMethods-${item.id}`" name="paymentMethod" :value="item.id" checked />
+            <input type="radio" :id="`paymentMethods-${item.id}`" name="paymentMethod" :value="item.id" v-model="paymentMethodId" />
             <label class="flex gap-2 items-center" :for="`paymentMethods-${item.id}`">
               <span class="custom-radio"></span>
-              <span class="w-100">{{ item.name }}</span>
+              <span class="w-100 text-sm">{{ item.name }}</span>
             </label>
           </div>
         </div>
@@ -83,28 +82,28 @@
   </div>
   <div class="checkout-summary my-2" ref="checkoutElm">
     <div class="container-lg">
-      <div class="bg-white pb-1 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.1)]">
+      <div class="bg-white pb-1 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.1)] rounded-lg">
         <div class="gap-2 grid grid-cols-12">
           <div class="right-summary col-span-12 md:col-span-6 md:col-start-7">
-            <div class="grid grid-cols-2 gap-2 px-4 py-2">
-              <p class="text-lg col-span-2 py-2 text-gray-600 font-semibold m-0 flex md:hidden">Chi tiết thanh toán</p>
-              <div class="total-label flex items-center gap-1">
+            <div class="grid grid-cols-5 gap-0 md:gap-2 px-4 py-2">
+              <p class="text-lg col-span-5 py-2 text-gray-600 font-semibold m-0 flex md:hidden">Chi tiết thanh toán</p>
+              <div class="total-label col-span-3 flex items-center gap-1">
                 <span>Tổng tiền hàng:</span>
                 <span class="text-xs text-gray-400">({{ carts.length }} sản phẩm)</span>
               </div>
-              <div class="text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
-              <div class="total-label flex items-center gap-1">
+              <div class="text-right text-sm col-span-2">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <div class="total-label col-span-3">
                 <span>Phí vận chuyển:</span>
               </div>
-              <div class="text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
-              <div class="total-label flex items-center gap-1">
+              <div class="text-right text-sm col-span-2">{{ displayPrice(shippingFee) + " đ" }}</div>
+              <div class="total-label col-span-3">
                 <span>Giảm giá:</span>
               </div>
-              <div class="text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
-              <div class="total-label flex items-center gap-1">
+              <div class="text-right text-sm col-span-2">{{ displayPrice(discount) + " đ" }}</div>
+              <div class="total-label col-span-3">
                 <span>Tổng thanh toán:</span>
               </div>
-              <div class="total-price text-right">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <div class="total-price text-right font-semibold col-span-2">{{ displayPrice(totalPrice) + " đ" }}</div>
             </div>
           </div>
         </div>
@@ -118,61 +117,48 @@ import { onBeforeMount, computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { useCommonStore } from "@/stores/common";
+import { useAuthStore } from "@/stores/auth";
 import { displayPrice } from "@/services/utils";
 const cartStore = useCartStore();
 const commonStore = useCommonStore();
+const authStore = useAuthStore();
 const route = useRoute();
-const selectedProducts = ref<any>([]);
-const selectedProductId = ref<any>([]);
-const checkAll = ref(false);
 const totalPrice = ref(0);
 
 const shippingUnitId = ref(1);
+const shippingFee = ref(0);
+const discount = ref(0);
+const paymentMethodId = ref(1);
 
 const checkoutElm = ref<any>(null);
 const stopElm = ref<any>(0);
 const stopPoint = ref<any>(null);
 
-const isPending = computed(() => {
-  return cartStore.$state.pending;
-});
+const info = computed(() => authStore.$state.info);
+
+const carts = ref<any>([]);
 
 watch(
-  () => cartStore.$state.carts.data,
-  (newValue) => {
+  () => cartStore.$state.carts,
+  () => {
+    const ids = route.params.ids as Array<string>;
+    let result: any[] = [];
     totalPrice.value = 0;
-    selectedProductId.value.forEach((value: any) => {
-      const item: any = newValue.find((x: any) => x.id == value);
+    ids.forEach((element) => {
+      const item = cartStore.$state.carts.data.find((x: any) => x.id == element);
       if (item) {
-        totalPrice.value += item.totalPrice;
+        result.push(item);
       }
     });
-  },
-  { deep: true }
+    result.forEach((item: any) => {
+      totalPrice.value += item.totalPrice;
+    });
+    carts.value = result;
+  }
 );
 
-const carts = computed<any>(() => {
-  const ids = route.params.ids as Array<string>;
-  let result: any[] = [];
-  ids.forEach((element) => {
-    const item = cartStore.$state.carts.data.find((x: any) => x.id == element);
-    if (item) {
-      result.push(item);
-    }
-  });
-  return result;
-});
 const paymentMethods = computed(() => commonStore.$state.paymentMethods.data);
 const shippingUnits = computed(() => commonStore.$state.shippingUnits.data);
-
-const updateCart = async (item: any, type: any) => {
-  const data = {
-    id: item.id,
-    quantity: type == 0 ? item.quantity : 1,
-    type: type,
-  };
-  await cartStore.updateCart(item.id, data);
-};
 
 watch(
   () => carts.value,
@@ -180,13 +166,6 @@ watch(
     setTimeout(() => checkoutScroll(), 500);
   }
 );
-
-const deleteMultiple = () => {
-  cartStore.deleteCarts({
-    ids: selectedProductId.value,
-  });
-  selectedProductId.value = [];
-};
 
 const checkoutScroll = () => {
   function handleScroll() {
@@ -268,8 +247,8 @@ onBeforeMount(async () => {
 .custom-radio {
   display: inline-block;
   position: relative;
-  height: 20px;
-  min-width: 20px;
+  height: 1rem;
+  min-width: 1rem;
   background-color: #eee;
   border: 1px solid #ccc;
   border-radius: 50%;
@@ -440,8 +419,7 @@ onBeforeMount(async () => {
   align-items: center;
   gap: 0.5rem; /* Khoảng cách các mục bên phải */
 }
-.action-section {
-  .total-price {
+.total-price {
     color: var(--bs-primary); /* Màu cam/đỏ cho giá tiền */
     font-size: 1rem; /* Cỡ chữ lớn hơn */
     font-weight: 500;
@@ -452,7 +430,6 @@ onBeforeMount(async () => {
     font-size: 0.875rem; /* Cỡ chữ nhỏ hơn */
     color: #555; /* Màu xám cho label */
   }
-}
 .action-section .buy-button {
   border: 1px solid var(--bs-primary); /* Màu cam Shopee */
   color: var(--bs-primary);

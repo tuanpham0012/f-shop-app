@@ -79,18 +79,22 @@ export const resizeImage = (
           const canvas = document.createElement("canvas");
           const ctx: any = canvas.getContext("2d");
   
+          console.log(`i-w: ${img.width}, i-h: ${img.height}`);
+
           if (targetWidth == null || targetHeight == null) {
             targetWidth = img.width;
             targetHeight = img.height;
   
             if (img.height > img.width) {
               targetHeight = maxSize;
-              targetWidth = (img.width / img.height) * targetWidth;
+              targetWidth = targetWidth / (img.height / targetHeight);
             } else {
               targetWidth = maxSize;
-              targetHeight = (img.height / img.width) * targetWidth;
+              targetHeight = targetHeight /(img.width / targetWidth);
             }
           }
+          console.log(`w: ${targetWidth}, h: ${targetHeight}`);
+          
           // Set kích thước của canvas
           canvas.width = targetWidth;
           canvas.height = targetHeight;
