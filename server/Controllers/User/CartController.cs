@@ -71,16 +71,26 @@ namespace ShopAppApi.Controllers.User
         [HttpPost("checkout")]
         public IActionResult Checkout([FromBody] CheckoutRequest request)
         {
+            long CustomerId = 0;
             if (long.TryParse(User.FindFirstValue("ID"), out var customerId))
             {
-                request.CustomerId = customerId;
+                CustomerId = customerId;
             }
             else
             {
                 return BadRequest("Invalid CustomerId.");
             }
-            repository.Checkout(request);
-            return Ok(new SuccessResponse(200, "Đặt hàng thành công!"));
+            try
+            {
+                repository.Checkout(CustomerId, request);
+                return Ok(new SuccessResponse(200, "Đặt hàng thành công!"));
+            }
+            catch (Exception ex)
+            {
+                
+                return BadRequest(ex.Message);
+            }
+        }
         
     }
 }

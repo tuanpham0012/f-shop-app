@@ -11,6 +11,6 @@ namespace ShopAppApi.Repositories.CartRepo
         public void DeleteCart(long Id);
         public void DeleteAllCart(DeleteCartRequest request);
         public Task<List<CartVM>> GetCart(long CustomerId);
-        public Task Checkout(CheckoutRequest request);
+        public void Checkout(long CustomerId, CheckoutRequest request);
     }
 }

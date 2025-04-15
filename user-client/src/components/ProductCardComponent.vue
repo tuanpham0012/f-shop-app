@@ -1,9 +1,9 @@
 <template lang="">
   <div class="product flex flex-col cursor-pointer" v-if="item">
     <figure
-      class="product-media bg-gray-50 flex aspect-square items-center px-1"
+      class="product-media bg-gray-50 flex aspect-square items-center"
     >
-      <img :src="item.imageThumb" alt="Product image" class="product-image" />
+      <img :src="item.imageThumb" alt="Product image" class="product-image w-100 h-100 object-contain" />
       <!-- <div class="product-action">
         <a href="#" class="btn-product btn-cart" @click="addToCart(1)"
           ><span>Thêm vào giỏ hàng</span></a
@@ -13,18 +13,20 @@
 
     <div class="product-body flex flex-col justify-between md:px-3">
       <div>
-        <p class="product-title text-base">
+        <p class="product-title text-sm">
           {{ item.name }}
         </p>
-        <p class="product-cat text-sm">
+        <p class="product-cat text-xs py-1">
           {{ item.category?.name }}
         </p>
       </div>
       <div>
-        <div class="text-base text-red-500">
-          {{ displayPrice(item.price) }}đ
+        <div class="flex justify-between items-center">
+          <span class="text-base text-red-500">{{ displayPrice(item.price) }} ᵭ</span>
+          <span class="text-xs"> đã bán 1111</span>
         </div>
-        <div class="ratings-container">
+        <!-- ratings-container -->
+        <div class="hidden ">
           <span class="ratings-text text-[0.8rem]"
             ><i class="fa fa-star text-yellow-300"></i> 2</span
           >

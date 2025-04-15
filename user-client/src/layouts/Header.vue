@@ -66,8 +66,8 @@
             <i class="icon-bars"></i>
           </button>
 
-          <a
-            href="https://www.portotheme.com/html/molla/index1.html"
+          <router-link
+            :to="{name: 'home'}"
             class="logo"
           >
             <img
@@ -76,7 +76,7 @@
               width="100"
               height="25"
             />
-          </a>
+          </router-link>
 
           <nav class="main-nav">
             <ul class="menu sf-arrows">
@@ -123,8 +123,8 @@
           <!-- End .compare-dropdown -->
 
           <div class="dropdown cart-dropdown ps-3 pe-4" v-if="route.name !== 'Cart'">
-            <a
-              href="#"
+            <router-link
+              :to="{name: 'Cart'}"
               class="dropdown-toggle"
               role="button"
               data-toggle="dropdown"
@@ -132,9 +132,9 @@
               aria-expanded="false"
               data-display="static"
             >
-              <i class="fa-solid fa-cart-shopping text-2xl"></i>
+            <i class="las la-shopping-cart text-3xl"></i>
               <span class="cart-count">{{ carts.length }}</span>
-            </a>
+            </router-link>
 
             <CartModal :carts="carts" />
             <!-- End .dropdown-menu -->

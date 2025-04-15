@@ -28,9 +28,9 @@
                   <img :src="item.sku.imagePath" alt="Product image" class="w-100 h-100 object-contain" />
                 </figure>
               </div>
-              <div class="col-span-16 md:col-span-20 grid grid-cols-16 md:grid-cols-20 gap-1 md:gap-2 ps-1">
+              <div class="col-span-16 md:col-span-20 grid grid-cols-16 md:grid-cols-20 gap-1 md:gap-4 ps-1">
                 <div class="col-span-16 md:col-span-10 flex items-center">
-                  <div class="grid grid-cols-10 gap-2 pt-[4px] justify-between">
+                  <div class="grid grid-cols-10 gap-2 pt-[4px] w-100">
                     <a class="col-span-16 md:col-span-6 text-neutral-600 text-sm md:text-base hover:text-[var(--bs-primary)] checkout-label" href="#">{{ item.product.name }}</a>
                     <div class="col-span-16 md:col-span-4 text-xs md:text-sm text-gray-400 flex md:inline-block" v-if="item.sku.variants.length > 0">
                       <span>Phân Loại Hàng:</span>
@@ -41,7 +41,7 @@
                   </div>
                 </div>
                 <div class="col-span-8 md:col-span-3 flex items-center justify-start md:justify-end py-2 text-xs md:text-sm">{{ displayPrice(item.sku.price) + " đ" }}</div>
-                <div class="col-span-8 md:col-span-3 flex items-center justify-center">
+                <div class="col-span-8 md:col-span-4 flex items-center justify-center">
                   <div class="cart-product-quantity">
                     <div class="flex border">
                       <div class="input-group-prepend bg-white z-10">
@@ -76,10 +76,10 @@
     <div class="container-lg">
       <div class="bg-white pb-1 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.1)]">
         <!-- Voucher Row -->
-        <div class="flex justify-between p-3 voucher-section">
+        <div class="flex justify-between px-3 py-1 md:py-3 voucher-section">
           <div class="left-content">
             <span class="icon-voucher" title="Shopee Voucher"></span>
-            <span>Shopee Voucher</span>
+            <span>Voucher</span>
           </div>
           <div class="right-content">
             <a href="#">Chọn hoặc nhập mã</a>
@@ -89,7 +89,7 @@
         <hr class="divider" />
 
         <!-- Shopee Xu Row -->
-        <div class="hidden justify-between p-3 shopee-xu-section">
+        <div class="hidden justify-between px-3 py-1 shopee-xu-section">
           <div class="left-content">
             <span class="xu-checkbox-placeholder"></span>
             <!-- Placeholder for disabled checkbox -->
@@ -106,7 +106,7 @@
         <hr class="divider" />
 
         <!-- Action Row -->
-        <div class="flex justify-between p-3 gap-2 action-section">
+        <div class="flex justify-between px-3 py-1 md:py-3 gap-2 action-section">
           <div class="left-actions">
             <div class="flex items-center gap-0">
               <input type="checkbox" class="form-check-input" id="select-all-items" name="select-all-items" v-model="checkAll" />
@@ -115,12 +115,11 @@
 
             <a class="hidden md:block" @click="deleteMultiple()">Xóa sản phẩm đã chọn</a>
           </div>
-          <div class="right-summary">
+          <div class="right-summary flex-wrap justify-end">
             <span class="total-label"
-              >Tổng cộng <span class="hidden md:block">({{ selectedProductId.length }} Sản phẩm)</span></span
+              >Tổng cộng <span class="hidden md:block">({{ selectedProductId.length }} Sản phẩm)</span><span class="ms-3 total-price">{{ displayPrice(totalPrice) + "đ" }}</span></span
             >
-            <span class="total-price">{{ displayPrice(totalPrice) + "đ" }}</span>
-            <button class="btn buy-button" :class="{ 'disabled' : selectedProductId.length < 1}" @click="toggleCheckout()" ><span class="hidden md:block">Thanh toán</span> <i class="fa-solid fa-credit-card block md:hidden"></i></button>
+            <button class="btn buy-button" :class="{ disabled: selectedProductId.length < 1 }" @click="toggleCheckout()"><span class="">Thanh toán</span></button>
           </div>
         </div>
       </div>
@@ -386,7 +385,7 @@ onBeforeMount(async () => {
 .action-section {
   .total-price {
     color: var(--bs-primary); /* Màu cam/đỏ cho giá tiền */
-    font-size: 1rem; /* Cỡ chữ lớn hơn */
+    font-size: 0.875rem; /* Cỡ chữ lớn hơn */
     font-weight: 500;
   }
   .total-label {

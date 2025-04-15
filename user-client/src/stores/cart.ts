@@ -57,5 +57,9 @@ export const useCartStore = defineStore("cart", {
         this.getList();
       });
     },
+
+    async checkout(data: any) {
+      return await _create(`${apiUrl}/cart/checkout`, data);
+    }
   },
 });

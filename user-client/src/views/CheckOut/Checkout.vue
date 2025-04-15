@@ -12,10 +12,10 @@
     <div class="page-content">
       <div class="cart grid grid-cols-12 gap-3">
         <div class="col-span-12 bg-white my-2 p-3 rounded-lg">
-          <p class="text-base text-gray-700 font-medium mb-1"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</p>
-          <div class="flex gap-1 flex-wrap ps-4">
-            <span class="text-sm font-semibold">{{ `${info?.name} (${info?.phone})` }}</span>
-            <span class="checkout-label text-sm">{{ info?.address }} <span class="badge text-bg-primary">Mặc định</span></span>
+          <p class="text-base text-gray-700 font-medium mb-1 hidden md:block"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</p>
+          <div class="flex gap-1 flex-wrap ps-2">
+            <span class="text-sm font-semibold me-2">{{ `${info?.name} (${info?.phone})` }}</span>
+            <span class="checkout-label text-sm"> <i class="fa-solid fa-location-dot"></i> {{ info?.address }} <span class="badge text-bg-primary">Mặc định</span></span>
           </div>
         </div>
         <div class="col-span-12 grid grid-cols-24 gap-3 p-2 pt-0 bg-white rounded-lg">
@@ -46,9 +46,7 @@
                 </div>
                 <div class="col-span-8 md:col-span-3 flex items-center justify-start md:justify-end py-2 text-xs md:text-sm">{{ displayPrice(item.sku.price) + " đ" }}</div>
                 <div class="col-span-8 md:col-span-4 flex items-center justify-end md:justify-center md:pe-6">
-                  <div class="cart-product-quantity text-sm">
-                    x{{ item.quantity }}
-                  </div>
+                  <div class="cart-product-quantity text-sm">x{{ item.quantity }}</div>
                 </div>
                 <div class="col-span-3 hidden md:flex items-center justify-end">{{ displayPrice(item.totalPrice) + " đ" }}</div>
               </div>
@@ -60,7 +58,7 @@
           <p class="text-lg text-gray-700 font-medium mb-2">Đơn vị vận chuyển</p>
           <!-- <select-search :listData="shippingUnits" display="name" keyValue="id" v-model="shippingUnitId" :firstSelected="true"></select-search> -->
           <div class="radio-container ps-4" v-for="(item, index) in shippingUnits" :key="index">
-            <input type="radio" :id="`shippingUnits-${item.id}`" name="shippingUnits" :value="item.id" v-model="shippingUnitId" />
+            <input type="radio" :id="`shippingUnits-${item.id}`" name="shippingUnits" :value="item.id" v-model="orderInfo.shippingUnitId" />
             <label class="flex gap-2 items-center" :for="`shippingUnits-${item.id}`">
               <span class="custom-radio"></span>
               <span class="w-100 text-sm">{{ item.name }}</span>
@@ -70,7 +68,7 @@
         <div class="col-span-12 md:col-span-6 bg-white p-3 rounded-lg">
           <p class="text-lg text-gray-700 font-medium mb-2">Phương thức thanh toán</p>
           <div class="radio-container ps-4" v-for="(item, index) in paymentMethods" :key="index">
-            <input type="radio" :id="`paymentMethods-${item.id}`" name="paymentMethod" :value="item.id" v-model="paymentMethodId" />
+            <input type="radio" :id="`paymentMethods-${item.id}`" name="paymentMethod" :value="item.id" v-model="orderInfo.paymentMethodId" />
             <label class="flex gap-2 items-center" :for="`paymentMethods-${item.id}`">
               <span class="custom-radio"></span>
               <span class="w-100 text-sm">{{ item.name }}</span>
@@ -85,8 +83,8 @@
       <div class="bg-white pb-1 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.1)] rounded-lg">
         <div class="gap-2 grid grid-cols-12">
           <div class="right-summary col-span-12 md:col-span-6 md:col-start-7">
-            <div class="grid grid-cols-5 gap-0 md:gap-2 px-4 py-2">
-              <p class="text-lg col-span-5 py-2 text-gray-600 font-semibold m-0 flex md:hidden">Chi tiết thanh toán</p>
+            <div class="grid grid-cols-5 gap-0 md:gap-2 px-4 pt-3 pb-1">
+              <p class="checkout-titles text-lg col-span-5 py-1 text-gray-600 m-0 flex md:hidden">Chi tiết thanh toán</p>
               <div class="total-label col-span-3 flex items-center gap-1">
                 <span>Tổng tiền hàng:</span>
                 <span class="text-xs text-gray-400">({{ carts.length }} sản phẩm)</span>
@@ -103,7 +101,8 @@
               <div class="total-label col-span-3">
                 <span>Tổng thanh toán:</span>
               </div>
-              <div class="total-price text-right font-semibold col-span-2">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <div class="total-price text-right text-sm font-semibold col-span-2">{{ displayPrice(totalPrice) + " đ" }}</div>
+              <button class="btn btn-outline-primary col-span-3 col-start-2 mt-2" @click="checkout()"><span class="">Thanh toán</span></button>
             </div>
           </div>
         </div>
@@ -113,22 +112,28 @@
   <div class="mb-5"></div>
 </template>
 <script setup lang="ts">
-import { onBeforeMount, computed, ref, watch } from "vue";
+import { onBeforeMount, computed, ref, watch, reactive } from "vue";
 import { useRoute } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { useCommonStore } from "@/stores/common";
 import { useAuthStore } from "@/stores/auth";
 import { displayPrice } from "@/services/utils";
+import { successMessage } from "@/helpers/toast";
 const cartStore = useCartStore();
 const commonStore = useCommonStore();
 const authStore = useAuthStore();
 const route = useRoute();
 const totalPrice = ref(0);
 
-const shippingUnitId = ref(1);
 const shippingFee = ref(0);
 const discount = ref(0);
-const paymentMethodId = ref(1);
+
+const orderInfo = reactive({
+  cartIds: [],
+  shippingUnitId: 1,
+  paymentMethodId: 1,
+  voucher: [],
+});
 
 const checkoutElm = ref<any>(null);
 const stopElm = ref<any>(0);
@@ -141,9 +146,10 @@ const carts = ref<any>([]);
 watch(
   () => cartStore.$state.carts,
   () => {
-    const ids = route.params.ids as Array<string>;
+    const ids = route.params.ids as [];
     let result: any[] = [];
     totalPrice.value = 0;
+    orderInfo.cartIds = ids
     ids.forEach((element) => {
       const item = cartStore.$state.carts.data.find((x: any) => x.id == element);
       if (item) {
@@ -189,6 +195,16 @@ const checkoutScroll = () => {
 
   handleScroll();
 };
+
+const checkout = async () => {
+  await cartStore
+    .checkout(orderInfo)
+    .then((res: any) => {
+      successMessage(res.data.message);
+    })
+    .catch((error: any) => console.log(error));
+};
+
 onBeforeMount(async () => {
   await cartStore.getList();
   await commonStore.getPaymentMethods();
@@ -208,8 +224,31 @@ onBeforeMount(async () => {
   }
 }
 
+.is-fixed-bottom {
+  .checkout-titles {
+    display: none;
+  }
+}
+
 .btn {
-  --bs-btn-border-radius: 0;
+  --bs-btn-border-radius: 0.25rem;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--bs-primary);
+  --bs-btn-border-color: var(--bs-primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--bs-primary);
+  --bs-btn-hover-border-color: var(--bs-primary);
+  --bs-btn-focus-shadow-rgb: 13, 110, 253;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--bs-primary);
+  --bs-btn-active-border-color: var(--bs-primary);
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: var(--bs-primary);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: var(--bs-primary);
+  --bs-gradient: none;
 }
 
 .variant span:not(:last-child) {
@@ -420,16 +459,14 @@ onBeforeMount(async () => {
   gap: 0.5rem; /* Khoảng cách các mục bên phải */
 }
 .total-price {
-    color: var(--bs-primary); /* Màu cam/đỏ cho giá tiền */
-    font-size: 1rem; /* Cỡ chữ lớn hơn */
-    font-weight: 500;
-  }
-  .total-label {
-    display: flex;
-    gap: 0.1rem;
-    font-size: 0.875rem; /* Cỡ chữ nhỏ hơn */
-    color: #555; /* Màu xám cho label */
-  }
+  color: var(--bs-primary); /* Màu cam/đỏ cho giá tiền */
+}
+.total-label {
+  display: flex;
+  gap: 0.1rem;
+  font-size: 0.875rem; /* Cỡ chữ nhỏ hơn */
+  color: #555; /* Màu xám cho label */
+}
 .action-section .buy-button {
   border: 1px solid var(--bs-primary); /* Màu cam Shopee */
   color: var(--bs-primary);

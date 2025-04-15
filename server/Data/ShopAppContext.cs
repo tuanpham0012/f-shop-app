@@ -474,6 +474,7 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.DiscountAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("discount_amount");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.ProductName)
                 .HasMaxLength(255)
@@ -491,6 +492,10 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("order_details_order_id_foreign");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)

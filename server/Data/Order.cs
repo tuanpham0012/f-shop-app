@@ -41,6 +41,8 @@ public partial class Order
 
     public virtual Customer Customer { get; set; } = null!;
 
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 
     public virtual ShippingUnit ShippingUnit { get; set; } = null!;

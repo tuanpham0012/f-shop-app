@@ -25,6 +25,10 @@ public partial class OrderDetail
 
     public DateTime? UpdatedAt { get; set; }
 
+    public long OrderId { get; set; }
+
+    public virtual Order Order { get; set; } = null!;
+
     public virtual Product Product { get; set; } = null!;
 
     public virtual Sku Sku { get; set; } = null!;

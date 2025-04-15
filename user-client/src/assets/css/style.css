@@ -6482,9 +6482,6 @@ p {
     outline: none !important
 }
 
-.nav.nav-pills .nav-item+.nav-item {
-    margin-left: 1rem
-}
 
 .nav.nav-pills .nav-item.show .nav-link,
 .nav.nav-pills .nav-item .nav-link.active {
@@ -7308,7 +7305,7 @@ p {
     background-color: #fff;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     border: 1px solid #ccc;
-    border-radius: .2rem;
+    border-radius: .25rem;
 }
 
 .product:hover {
@@ -7467,7 +7464,7 @@ p {
 
 .product-body {
     position: relative;
-    padding: .2rem .5rem;
+    padding: .5rem;
     transition: all .35s ease;
     background-color: #fff
 }

@@ -1,8 +1,8 @@
 <template lang="">
   <div class="container-lg mb-2" v-for="(category, i) in topCategories" :key="i">
-    <div class="heading heading-flex mb-1">
+    <div class="flex justify-between items-baseline">
       <div class="heading-center">
-        <h2 class="text-center text-2xl font-medium">
+        <h2 class="text-center text-xl font-medium">
           {{ category.name }}
         </h2>
         <!-- End .title -->
@@ -10,9 +10,8 @@
       <!-- End .heading-left -->
 
       <div class="heading-right">
-        <a href="category.html" class="title-link"
-          >Xem thêm <i class="icon-long-arrow-right"></i
-        ></a>
+        <a href="category.html" class="text-base"
+          >Xem thêm <i class="fa-solid fa-arrow-right text-base"></i></a>
       </div>
       <!-- End .heading-right -->
     </div>
@@ -26,7 +25,7 @@
       :breakpoints="{
         '0': {
           slidesPerView: 2,
-          spaceBetween: 10,
+          spaceBetween: 5,
         },
         '640': {
           slidesPerView: 2,

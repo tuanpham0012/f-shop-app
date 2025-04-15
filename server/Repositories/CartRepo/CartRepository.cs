@@ -1,6 +1,7 @@
 
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
@@ -129,9 +130,78 @@ namespace ShopAppApi.Repositories.CartRepo
             return getCart;
         }
 
-        public async Task Checkout(CheckoutRequest request)
+        public void Checkout(long CustomerId, CheckoutRequest request)
         {
-            return;
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                var carts = context.Carts.Include("Product").Include("Sku").Where(x => request.CartIds.Contains(x.Id)).ToList();
+                Customer customer = context.Customers.SingleOrDefault(c => c.Id == CustomerId) ?? throw new AggregateException("Không tìm thấy thông tin");
+                var order = new Order
+                {
+                    Code = Guid.NewGuid().ToString("D"),
+                    OrderDate = DateOnly.FromDateTime(DateTime.Now),
+                    CustomerId = CustomerId,
+                    PaymentMethodId = request.PaymentMethodId,
+                    ShippingUnitId = request.ShippingUnitId,
+                    TotalAmount = 0,
+                    DiscountAmount = 0,
+                    ShippingFee = 0,
+                    ShippingAddress = customer.Address,
+                    ShippingPhone = customer.Phone,
+                    ReceiverName = customer.Name,
+                    Status = 0,
+                    CreatedAt = DateTime.Now
+                };
+                context.Add(order);
+                context.SaveChanges();
+                double totalAmount = 0;
+                foreach (var cart in carts)
+                {
+                    totalAmount += cart.Sku.Price * cart.Quantity;
+                    var orderDetail = new OrderDetail
+                    {
+                        ProductId = cart.ProductId,
+                        SkuId = cart.SkuId,
+                        Quantity = cart.Quantity,
+                        UnitPrice = cart.Sku.Price,
+                        TotalAmount = cart.Sku.Price * cart.Quantity,
+                        DiscountAmount = 0,
+                        OrderId = order.Id
+                    };
+                    context.Add(orderDetail);
+                    UpdateStatisticProduct(cart.ProductId, cart.Quantity);
+                }
+                context.RemoveRange(carts);
+                order.TotalAmount = totalAmount;
+                context.SaveChanges();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new ArgumentException(ex.Message);
+            }
+            
+        }
+
+        private void UpdateStatisticProduct(long ProductId, int Quantity)
+        {
+            var statistic = context.ProductStatistics.SingleOrDefault(x => x.ProductId == ProductId);
+            if (statistic == null)
+            {
+                statistic = new ProductStatistic
+                {
+                    ProductId = ProductId,
+                    SoldCount = Quantity,
+                };
+                context.Add(statistic);
+            }
+            else
+            {
+                statistic.SoldCount += Quantity;
+            }
+            context.SaveChanges();
         }
     }
 }
