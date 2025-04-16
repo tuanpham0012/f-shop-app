@@ -55,6 +55,13 @@
         content: "";
     }
 }
+
+.limmit-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block; /* Hoặc inline-block */
+}
 // .disabled {
 //     background-color: rgb(246, 246, 246);
 //     * {

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from "vue";
-import { useBrandStore } from "../../stores/product";
+import { useOrderStore } from "../../stores/order";
 import debounce from "lodash.debounce";
-import BrandModal from "./BrandModal.vue";
+import { displayPrice} from '@/services/utils'
 import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
+import OrderDetailModal from './OrderDetailModal.vue'
 
-const brandStore = useBrandStore();
+const orderStore = useOrderStore();
 const query = reactive({
   pageSize: 25,
   search: "",
@@ -14,20 +15,20 @@ const query = reactive({
 });
 const showModal = ref(false);
 const id = ref(null);
-const brands = computed<any>(() => {
-  return brandStore.$state.entries.data;
+const orders = computed<any>(() => {
+  return orderStore.$state.entries.data;
 });
 const currenPage = computed(() => {
-  return brandStore.$state.entries.meta?.currentPage ?? query.page;
+  return orderStore.$state.entries.meta?.currentPage ?? query.page;
 });
 const pageSize = computed(() => {
-  return brandStore.$state.entries.meta?.pageSize ?? query.pageSize;
+  return orderStore.$state.entries.meta?.pageSize ?? query.pageSize;
 });
 const totalPages = computed(() => {
-  return brandStore.$state.entries.meta?.totalPages ?? 1;
+  return orderStore.$state.entries.meta?.totalPages ?? 1;
 });
 const totalCount = computed(() => {
-  return brandStore.$state.entries.meta?.totalCount ?? 1;
+  return orderStore.$state.entries.meta?.totalCount ?? 1;
 });
 const changePage = async (value: any) => {
   console.log(value);
@@ -50,27 +51,23 @@ const toggleCreate = () => {
   toggleModal();
 };
 
-const toggleDelete = (id: any) => {
-  confirmAlert({
-    title: "Xoá bản ghi?",
-    text: "Xác nhận xoá bản ghi này!!!",
-    confirmButtonText: "Xác nhận",
-    cancelButtonText: "Huỷ",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      console.log("deleting...");
-      brandStore
-        .delete(id)
-        .then((res) => {
-          successMessage(res.data?.message ?? "Xoá bản ghi thành công!");
-          if (brands.value.length <= 1 && currenPage.value > 1) {
-            query.page -= 1;
-          }
-          getListData();
-        })
-        .catch((err) => errorMessage(err.response.data.title));
-    }
-  });
+const copyTextToClipboard = async (text: any) => {
+  if (!navigator.clipboard) {
+    // Clipboard API không được hỗ trợ (ví dụ: trên HTTP hoặc trình duyệt cũ)
+    // Bạn có thể thêm phương pháp dự phòng ở đây (xem bên dưới)
+    console.error("Clipboard API không khả dụng.");
+    alert("Không thể sao chép. Trình duyệt hoặc kết nối không hỗ trợ.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    console.log("Đã sao chép vào clipboard:", text);
+    // Tùy chọn: Hiển thị thông báo thành công cho người dùng
+    alert("Đã sao chép thành công!");
+  } catch (err) {
+    console.error("Lỗi khi sao chép:", err);
+    alert("Không thể sao chép. Đã xảy ra lỗi.");
+  }
 };
 
 watch(
@@ -89,7 +86,7 @@ watch(
 );
 
 const getListData = async () => {
-  await brandStore.getList(query);
+  await orderStore.getList(query);
 };
 
 onBeforeMount(async () => {
@@ -106,13 +103,7 @@ onBeforeMount(async () => {
             <label for="customerCode" class="col-form-label">Tìm kiếm</label>
           </div>
           <div class="w-100px ms-1">
-            <input
-              type="text"
-              class="form-control mb-lg-0 p-2"
-              id="customerCode"
-              placeholder="Nhập tên, email, sdt.."
-              v-model="query.search"
-            />
+            <input type="text" class="form-control mb-lg-0 p-2" id="customerCode" placeholder="Nhập tên, email, sdt.." v-model="query.search" />
           </div>
         </div>
         <div class="d-flex align-items-center w-auto me-2">
@@ -123,7 +114,6 @@ onBeforeMount(async () => {
           </select>
         </div>
         <!-- <div class="w-[250px] me-2"><select-search placeholder="-- Vui lòng Chọn --" :listData="customers" display="name" keyValue="id"></select-search></div> -->
-        
       </div>
       <button class="btn btn-primary" @click="toggleCreate()">
         <i class="feather icon-plus"></i>
@@ -134,51 +124,54 @@ onBeforeMount(async () => {
       <table class="table table-hover">
         <thead class="table-light">
           <tr>
-            <th>STT</th>
-            <th>Mã</th>
-            <th>Tên</th>
-            <th class="text-center">Hình ảnh</th>
+            <th class="text-center">STT</th>
+            <th>Mã đơn hàng</th>
+            <th>Tổng tiền</th>
+            <th>Người đặt</th>
+            <th>Người nhận</th>
+            <th>SDT nhận</th>
+            <th>Địa chỉ nhận hàng</th>
+            <th>Người xử lý</th>
             <th>Trạng thái</th>
             <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tbody class="table-border-bottom-0">
-          <tr v-for="(item, index) in brands" :key="index">
-            <td>
+          <tr v-for="(item, index) in orders" :key="index">
+            <td class="text-center">
               <strong>{{ index + 1 }}</strong>
             </td>
-            <td class="max-w-[350px]">
-              {{ item.code }}
+            <td class="">
+              <div class="flex gap-2">
+                <span class="limmit-text max-w-[12rem]">{{ item.code }}</span>
+                <i class="fa-regular fa-copy cursor-pointer" @click="copyTextToClipboard(item.code)"></i>
+              </div>
             </td>
-            <td class="max-w-[350px]">
-              {{ item.name }}
+            <td class="text-right">
+              {{ `${displayPrice(item.totalAmount)} đ` }}
             </td>
-            <td class="text-center"> <img :src="item.image" class="h-[45px] object-fill m-auto rounded-md" loading="lazy" /></td>
-            <td class="max-w-[350px]">
-              {{ item.notUse ? "Ngưng sử dụng" : "Sử dụng" }}
+            <td class="">
+              {{ item.customer?.name }}
+            </td>
+            <td class="">{{ item.receiverName }}</td>
+            <td class="">{{ item.shippingPhone }}</td>
+            <td class=""><span class="limmit-text max-w-[15rem]">{{ item.shippingAddress }}</span></td>
+            <td class="">{{ item.user?.name }}</td>
+            <td class="">
+              {{ item.textStatus }}
             </td>
             <td class="text-center">
               <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" @click="toggleEdit(item.id)">
                 <span class="tf-icons bx bx-edit-alt bx-xs"></span>
               </button>
-              <button type="button" class="btn btn-sm btn-icon btn-outline-secondary me-1" @click="toggleDelete(item.id)">
-                <span class="tf-icons bx bx-trash-alt bx-xs"></span>
-              </button>
-              
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <Pagination
-      :current-page="currenPage"
-      :page-size="pageSize"
-      :total-pages="totalPages"
-      :total-count="totalCount"
-      @change-page="changePage"
-    />
+    <Pagination :current-page="currenPage" :page-size="pageSize" :total-pages="totalPages" :total-count="totalCount" @change-page="changePage" />
   </div>
-  <BrandModal v-if="showModal" :id="id" @close="toggleModal" />
+  <OrderDetailModal :id="6" />
 </template>
 
 <style lang="scss" scoped>

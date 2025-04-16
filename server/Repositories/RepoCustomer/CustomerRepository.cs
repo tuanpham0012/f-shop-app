@@ -39,7 +39,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
                 Status = customer.Status
             }).AsQueryable().OrderByDescending(q => q.Id);
 
-            if (!String.IsNullOrEmpty(request.Search))
+            if (!string.IsNullOrEmpty(request.Search))
             {
                 query = query.Where(q => q.Name.Contains(request.Search) || q.Email.Contains(request.Search) || q.Phone.Contains(request.Search));
             }

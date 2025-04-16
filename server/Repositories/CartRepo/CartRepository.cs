@@ -1,10 +1,6 @@
 
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
-using ShopAppApi.Helpers;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.ViewModels;

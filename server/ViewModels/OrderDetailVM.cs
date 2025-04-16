@@ -1,6 +1,6 @@
-﻿namespace ShopAppApi.Data;
+﻿namespace ShopAppApi.ViewModels;
 
-public partial class OrderDetail
+public partial class OrderDetailVM
 {
     public long Id { get; set; }
 
@@ -24,9 +24,9 @@ public partial class OrderDetail
 
     public long OrderId { get; set; }
 
-    public virtual Order Order { get; set; } = null!;
+    public virtual OrderVM Order { get; set; } = null!;
 
-    public virtual Product Product { get; set; } = null!;
+    public virtual ProductVM Product { get; set; } = null!;
 
-    public virtual Sku Sku { get; set; } = null!;
+    public virtual SkuVM Sku { get; set; } = null!;
 }

@@ -1,6 +1,8 @@
-﻿namespace ShopAppApi.Data;
+﻿using ShopAppApi.Data;
 
-public partial class Order
+namespace ShopAppApi.ViewModels;
+
+public partial class OrderVM
 {
     public long Id { get; set; }
 
@@ -36,13 +38,17 @@ public partial class Order
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual CustomerVM Customer { get; set; } = null!;
 
-    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+    public virtual ICollection<OrderDetailVM> OrderDetails { get; set; } = [];
 
-    public virtual PaymentMethod PaymentMethod { get; set; } = null!;
+    public virtual PaymentMethodVM PaymentMethod { get; set; } = null!;
 
-    public virtual ShippingUnit ShippingUnit { get; set; } = null!;
+    public virtual ShippingUnitVM ShippingUnit { get; set; } = null!;
 
     public virtual User? User { get; set; }
+
+    public string TextStatus { get; set; } = string.Empty;
+
+    public int ProductCount { get; set; }
 }

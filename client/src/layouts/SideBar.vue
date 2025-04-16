@@ -103,9 +103,6 @@
                     >Sneat</span
                 >
             </a>
-            <!-- <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-                <i class="icon-base bx bx-chevron-left bx-sm align-middle"></i>
-            </a> -->
             <a
                 href="javascript:void(0);"
                 class="layout-menu-toggle menu-link text-large ms-auto"
@@ -135,11 +132,21 @@ const menuStore = useMenuStore();
 
 const menus = computed(() => menuStore.$state.adminMenus?.data);
 
-onMounted(async () => {
+const loadScript = () => {
+    const plugin2 = document.createElement("script");
+    plugin2.setAttribute("src", "src/assets/vendor/js/menu.js");
+    plugin2.async = true;
+    document.body.appendChild(plugin2);
+
     const plugin = document.createElement("script");
     plugin.setAttribute("src", "src/assets/js/main.js");
     plugin.async = true;
     document.body.appendChild(plugin);
+}
+
+onMounted(async () => {
+
+    setTimeout( loadScript(), 200)
 
     await menuStore.getAdminMenu();
 });

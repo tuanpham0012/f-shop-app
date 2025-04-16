@@ -11,11 +11,11 @@ using ShopAppApi.Repositories.Categories;
 using ShopAppApi.Repositories.Common;
 using ShopAppApi.Repositories.Menus;
 using ShopAppApi.Repositories.Metrics;
+using ShopAppApi.Repositories.Orders;
 using ShopAppApi.Repositories.Products;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Repositories.RepoCustomer;
 using ShopAppApi.Repositories.TelegramBotRepository;
-using StackExchange.Redis;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -48,6 +48,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IStringHelper, StringHelper>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICommonRepository, CommonRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
 
