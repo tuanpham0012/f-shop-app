@@ -31,11 +31,11 @@ const closeModal = () => {
             :class="modalSize"
         >
             <div class="modal-content">
-                <div class="modal-header border-b border-b-gray-200">
+                <div class="modal-header border-b border-b-gray-400">
                     <h5 class="modal-title">{{ props.title }}</h5>
                     <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close" @click="closeModal()"></button>
                 </div>
-                <div class="modal-body my-2">
+                <div class="modal-body">
                     <slot name="body"></slot>
                 </div>
                 <div class="modal-footer">
@@ -74,6 +74,11 @@ const closeModal = () => {
     --bs-modal-footer-border-width: var(--bs-border-width);
     background-color: var(--bs-modal-color);
     z-index: 10;
+}
+
+.modal-body
+{
+    padding: 0;
 }
 
 // .loading-spinner {

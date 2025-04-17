@@ -1,16 +1,10 @@
 import { defineStore } from "pinia";
-import {
-    _getList,
-    _create,
-    _update,
-    _show,
-    _destroy,
-} from "@/helpers/axiosConfig";
+import { _getList, _create, _update, _show, _destroy } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
 
 const adminUrl = apiUrl + "/admin";
 
-export const useOrderStore = defineStore('order', {
+export const useOrderStore = defineStore("order", {
     state: () => {
         return {
             entries: {
@@ -19,7 +13,7 @@ export const useOrderStore = defineStore('order', {
                 data: [] as any[],
                 meta: null as any,
             },
-            entry: null,
+            entry: null as any,
         };
     },
 
@@ -40,9 +34,21 @@ export const useOrderStore = defineStore('order', {
             return await _update(`${apiUrl}/taxes/${id}`, data);
         },
         async show(id: any) {
-            await _show(`${apiUrl}/taxes/${id}`)
+            await _show(`${adminUrl}/orders/${id}`)
                 .then((res) => {
                     this.entry = res.data.data;
+                    this.getOrderDetails(id);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getOrderDetails(id: any) {
+            await _show(`${adminUrl}/orders/order-details/${id}`)
+                .then((res) => {
+                    if (this.entry) {
+                        this.entry.orderDetails = res.data.data;
+                    }
                 })
                 .catch((err) => {
                     console.log(err);

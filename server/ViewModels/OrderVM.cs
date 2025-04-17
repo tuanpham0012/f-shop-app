@@ -8,9 +8,9 @@ public partial class OrderVM
 
     public string Code { get; set; } = null!;
 
-    public DateOnly OrderDate { get; set; }
+    public string OrderDate { get; set; } = string.Empty;
 
-    public DateOnly? DeliveryDate { get; set; }
+    public string? DeliveryDate { get; set; } = string.Empty;
 
     public long CustomerId { get; set; }
 
@@ -34,9 +34,11 @@ public partial class OrderVM
 
     public byte Status { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public double? TaxFee { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public double? TotalPrice { get; set; }
+
+    public string? Note { get; set; }
 
     public virtual CustomerVM Customer { get; set; } = null!;
 

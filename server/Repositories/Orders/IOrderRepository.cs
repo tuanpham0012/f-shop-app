@@ -10,6 +10,7 @@ namespace ShopAppApi.Repositories.Orders
         Task<PaginatedList<OrderVM>> GetAll(OrderRequest request);
         public Task Create(StoreMenuRequest menu);
         public Task Update(long Id, UpdateMenuRequest menu);
-        public Task<Menu> Show(long Id);
+        Task<OrderVM> Show(long Id);
+        Task<List<OrderDetailVM>> GetOrderDetails(long OrderId);
     }
 }

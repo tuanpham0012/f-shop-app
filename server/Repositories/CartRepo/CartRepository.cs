@@ -113,12 +113,8 @@ namespace ShopAppApi.Repositories.CartRepo
                         OptionId = v.OptionId,
                         OptionValueId = v.OptionValueId,
                         Code = v.OptionValue.Code ?? "",
-                        OptionValue = new OptionValueVM
-                        {
-                            Code = v.OptionValue.Code,
-                            Value = v.OptionValue.Value,
-                            Label = v.OptionValue.Label,
-                        }
+                        OptionName = v.Option.Name,
+                        ValueName = v.OptionValue.Label
                     }).ToList()
                 },
                 TotalPrice = (long)(x.Quantity * x.Sku.Price)
@@ -140,6 +136,9 @@ namespace ShopAppApi.Repositories.CartRepo
                     CustomerId = CustomerId,
                     PaymentMethodId = request.PaymentMethodId,
                     ShippingUnitId = request.ShippingUnitId,
+                    TotalPrice = 0,
+                    TaxFee = 0,
+                    Note = request.Note,
                     TotalAmount = 0,
                     DiscountAmount = 0,
                     ShippingFee = 0,
@@ -152,16 +151,20 @@ namespace ShopAppApi.Repositories.CartRepo
                 context.Add(order);
                 context.SaveChanges();
                 double totalAmount = 0;
+                double totalPrice = 0;
                 foreach (var cart in carts)
                 {
-                    totalAmount += cart.Sku.Price * cart.Quantity;
+                    var orderDetailPrice = cart.Sku.Price * cart.Quantity;
+                    totalPrice += orderDetailPrice;
+                    totalAmount += orderDetailPrice;
                     var orderDetail = new OrderDetail
                     {
                         ProductId = cart.ProductId,
+                        ProductName = cart.Product.Name,
                         SkuId = cart.SkuId,
                         Quantity = cart.Quantity,
                         UnitPrice = cart.Sku.Price,
-                        TotalAmount = cart.Sku.Price * cart.Quantity,
+                        TotalAmount = orderDetailPrice,
                         DiscountAmount = 0,
                         OrderId = order.Id
                     };
@@ -170,6 +173,7 @@ namespace ShopAppApi.Repositories.CartRepo
                 }
                 context.RemoveRange(carts);
                 order.TotalAmount = totalAmount;
+                order.TotalPrice = totalPrice;
                 context.SaveChanges();
                 transaction.Commit();
             }

@@ -12,6 +12,9 @@ namespace ShopAppApi.ViewModels
 
         public long OptionValueId { get; set; }
 
+        public string OptionName { get; set; } = string.Empty;
+        public string ValueName { get; set; } = string.Empty;
+
         public virtual OptionVM? Option { get; set; } = null;
 
         public virtual OptionValueVM? OptionValue { get; set; } = null;

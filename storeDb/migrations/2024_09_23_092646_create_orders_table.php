@@ -20,12 +20,15 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('payment_method_id')->constrained();
             $table->foreignId('shipping_unit_id')->constrained();
+            $table->double('tax_fee', 12, 4)->default(0);
+            $table->double('total_price', 12, 4)->default(0);
             $table->double('total_amount', 12, 4)->default(0);
             $table->double('discount_amount', 12, 4)->default(0);
             $table->double('shipping_fee', 12, 4)->default(0);
             $table->string('shipping_address', 255)->nullable();
             $table->string('shipping_phone', 255)->nullable();
             $table->string('receiver_name', 255)->nullable();
+            $table->string('note', 1000)->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

@@ -1,4 +1,7 @@
-﻿namespace ShopAppApi.Data;
+﻿using System;
+using System.Collections.Generic;
+
+namespace ShopAppApi.Data;
 
 public partial class Order
 {
@@ -35,6 +38,12 @@ public partial class Order
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+
+    public double? TaxFee { get; set; }
+
+    public double? TotalPrice { get; set; }
+
+    public string? Note { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
 

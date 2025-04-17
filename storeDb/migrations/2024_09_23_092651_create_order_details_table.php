@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('sku_id')->constrained()->cascadeOnDelete();
             $table->string('product_name', 255)->nullable();
             $table->double('unit_price', 12, 4)->default(0);
+            $table->double('unit_discount', 12, 4)->default(0);
+            $table->double('tax_fee', 12, 4)->default(0);
             $table->integer('quantity')->default(0);
             $table->double('total_amount', 12, 4)->default(0);
             $table->double('discount_amount', 12, 4)->default(0);

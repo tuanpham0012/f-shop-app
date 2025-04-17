@@ -339,6 +339,9 @@ namespace ShopAppApi.Repositories.Products
                 {
                     sku.ProductId = _product.Id;
                     sku.Barcode ??= _product.Barcode;
+                    if(string.IsNullOrWhiteSpace(sku.ImagePath)){
+                        sku.ImagePath = product.ImageThumb;
+                    }
                     CreateOrUpdateSku(sku);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;

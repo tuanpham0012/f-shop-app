@@ -18,13 +18,11 @@ public partial class OrderDetailVM
 
     public double DiscountAmount { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
-
     public long OrderId { get; set; }
 
-    public virtual OrderVM Order { get; set; } = null!;
+    public double? UnitDiscount { get; set; }
+
+    public double? TaxFee { get; set; }
 
     public virtual ProductVM Product { get; set; } = null!;
 

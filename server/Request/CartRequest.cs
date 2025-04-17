@@ -26,6 +26,7 @@ namespace ShopAppApi.Request
         public long ShippingUnitId { get; set; }
         public long PaymentMethodId { get; set; }
         public long? CustomerId { get; set; }
+        public string? Note { get; set;} = string.Empty;
         public List<long> Voucher { get; set; } = [];
 
     }

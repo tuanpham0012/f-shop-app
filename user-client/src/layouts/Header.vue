@@ -122,7 +122,7 @@
           </div>
           <!-- End .compare-dropdown -->
 
-          <div class="dropdown cart-dropdown ps-3 pe-4" v-if="route.name !== 'Cart'">
+          <div class="dropdown cart-dropdown ps-3 pe-8" v-if="route.name !== 'Cart'">
             <router-link
               :to="{name: 'Cart'}"
               class="dropdown-toggle"
@@ -203,14 +203,7 @@ onBeforeMount(async () => {
 }
 
 .product {
-  // padding: 0.5rem 1rem;
-  // display: flex;
-  // align-items: center;
   cursor: pointer;
-
-  // &:hover {
-  //   background-color: aliceblue;
-  // }
 }
 
 .dropdown-menu {
@@ -246,14 +239,6 @@ onBeforeMount(async () => {
     .header-search-wrapper .search-wrapper-wide {
       height: 2rem;
     }
-
-    // input{
-
-    //     padding: 1.8rem 2rem 1rem 0;
-    // }
-    // button{
-    //     padding: .2rem 2rem 1rem .5rem;
-    // }
   }
 }
 </style>

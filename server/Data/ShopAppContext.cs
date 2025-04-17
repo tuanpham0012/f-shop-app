@@ -415,6 +415,7 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.DiscountAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("discount_amount");
+            entity.Property(e => e.Note).HasColumnName("note");
             entity.Property(e => e.OrderDate).HasColumnName("order_date");
             entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
             entity.Property(e => e.ReceiverName)
@@ -433,9 +434,11 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.Status)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("status");
+            entity.Property(e => e.TaxFee).HasColumnName("tax_fee");
             entity.Property(e => e.TotalAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("total_amount");
+            entity.Property(e => e.TotalPrice).HasColumnName("total_price");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
@@ -483,9 +486,11 @@ public partial class ShopAppContext : DbContext
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("quantity");
             entity.Property(e => e.SkuId).HasColumnName("sku_id");
+            entity.Property(e => e.TaxFee).HasColumnName("tax_fee");
             entity.Property(e => e.TotalAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("total_amount");
+            entity.Property(e => e.UnitDiscount).HasColumnName("unit_discount");
             entity.Property(e => e.UnitPrice)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("unit_price");

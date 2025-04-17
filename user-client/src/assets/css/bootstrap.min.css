@@ -2393,9 +2393,6 @@ progress {
     }
 }
 
-.form-label {
-    margin-bottom: .5rem
-}
 
 .col-form-label {
     padding-top: calc(.375rem + var(--bs-border-width));
