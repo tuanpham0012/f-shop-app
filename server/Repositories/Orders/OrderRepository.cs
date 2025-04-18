@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
+using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
@@ -8,7 +9,7 @@ using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Orders
 {
-    public class OrderRepository(ShopAppContext context, IRedisCache cache) : IOrderRepository
+    public class OrderRepository(ShopAppContext context, IRedisCache cache, IFileHelper fileHelper) : IOrderRepository
     {
 
         public async Task Create(StoreMenuRequest menu)
@@ -161,6 +162,7 @@ namespace ShopAppApi.Repositories.Orders
                     ProductId = o.Sku.ProductId,
                     Barcode = o.Sku.Barcode,
                     Name = o.Sku.Name,
+                    ImagePath = fileHelper.GetLink(o.Sku.ImageCode),
                     Variants = o.Sku.Variants.Select(v => new VariantVM
                     {
                         Code = v.OptionValue.Code ?? "",

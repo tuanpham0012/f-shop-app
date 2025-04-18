@@ -40,7 +40,6 @@
           spaceBetween: 10,
         },
       }"
-      class="p-2"
     >
       <swiper-slide
         class="py-2"

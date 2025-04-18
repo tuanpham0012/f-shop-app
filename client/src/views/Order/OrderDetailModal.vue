@@ -150,7 +150,7 @@
                             <div class="flex flex-col justify-start items-start bg-gray-50 py-3 px-6 w-full" v-for="(item, index) in order.orderDetails" :key="index">
                                 <div class="flex flex-row justify-start items-center space-x-6 w-full">
                                     <div class="flex w-[160px] aspect-square">
-                                        <img class="w-full object-contain" src="https://i.ibb.co/84qQR4p/Rectangle-10.png" alt="dress" />
+                                        <img class="w-full object-contain" :src="item.sku.imagePath" alt="img" />
                                     </div>
                                     <div class="flex-row flex justify-between items-start w-full space-y-2 pb-2">
                                         <div class="w-full flex flex-col justify-start items-start space-y-4">

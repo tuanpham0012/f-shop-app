@@ -783,6 +783,8 @@ namespace ShopAppApi.Repositories.Products
                 Barcode = s.Barcode,
                 Price = s.Price,
                 Name = s.Name,
+                ImagePath = fileHelper.GetLink(s.ImagePath),
+                ImageCode = s.ImageCode,
                 Stock = s.Stock,
                 Variants = s.Variants.Select(v => new VariantVM
                 {

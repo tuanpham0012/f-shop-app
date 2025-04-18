@@ -5,6 +5,7 @@ import debounce from "lodash.debounce";
 import { displayPrice} from '@/services/utils'
 import { confirmAlert, successMessage, errorMessage } from "@/helpers/toast";
 import OrderDetailModal from './OrderDetailModal.vue'
+import OrderModal from './OrderModal.vue'
 
 const orderStore = useOrderStore();
 const query = reactive({
@@ -171,7 +172,8 @@ onBeforeMount(async () => {
     </div>
     <Pagination :current-page="currenPage" :page-size="pageSize" :total-pages="totalPages" :total-count="totalCount" @change-page="changePage" />
   </div>
-  <OrderDetailModal :id="6" />
+  <OrderDetailModal :id="id" v-if="showModal" @close="toggleModal()"/>
+  <OrderModal />
 </template>
 
 <style lang="scss" scoped>

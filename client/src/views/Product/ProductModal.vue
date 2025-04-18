@@ -625,7 +625,7 @@ const toggleFillAll = () => {
         sku.price = fillAll.price;
         // sku.stock = fillAll.stock;
         sku.barCode = fillAll.barCode;
-        sku.isEdited = true
+        sku.isEdited = true;
         return sku;
     });
 };
@@ -695,8 +695,8 @@ const skuName = (item: any) => {
         if (index < item.length - 1) result += " | ";
     });
     console.log(result);
-    
-    return result
+
+    return result;
 };
 
 const mapOptionValue = (arrOptionValue: any, value: any) => {
@@ -750,7 +750,7 @@ const productImage = (event: any) => {
                     warningMessage(`Tải lên tối đa ${maxImage.value} ảnh!`);
                     return;
                 }
-                let dataImg = await resizeImage(e.target.result, file.type);
+                let dataImg = await resizeImage(e.target.result, file.type, null, null, 1000);
                 let imgId = uuidv4();
                 product.value.images.push({
                     id: 0,
@@ -763,7 +763,7 @@ const productImage = (event: any) => {
                     extension: file.type,
                 });
 
-                if (i == 0 && (thumbId.value == "" || thumbId.value == null)) {
+                if (i == 0 && (thumbId.value == "" || thumbId.value == null) && (product.value.imageThumb == "" || product.value.imageThumb == null)) {
                     thumbId.value = imgId;
                 }
             };

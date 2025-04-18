@@ -158,7 +158,7 @@ const props = defineProps({
 const emits = defineEmits([
     "search-data",
     "update:modelValue",
-    "changDataSelect",
+    "changeDataSelect",
 ]);
 
 // const dataSelect = ref(props.listData.find(x => x[props.keyValue] == props.modelValue));
@@ -240,7 +240,7 @@ const setDataSelect = (data) => {
     } else {
         dataSelect.value = null;
     }
-    emits("changDataSelect", data);
+    emits("changeDataSelect", data);
 };
 
 const position = () => {
