@@ -4,7 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 import { useProductStore } from "../../stores/product";
 import { useBrandStore } from "../../stores/brand";
 import { currencyFormatTenant, displayPrice } from "@/services/utils";
-import { viewFile } from "@/helpers/helpers";
 import Pagination from "@/components/pagination/Pagination.vue";
 import Slider from "@vueform/slider";
 import ProductCardComponent from "@/components/ProductCardComponent.vue";
@@ -18,7 +17,7 @@ const router = useRouter();
 const categoryCode = ref<string>("");
 const priceRange = ref([10000, 2000000]);
 
-const selectFilterPrice = reactive([
+const selectFilterPrice = reactive<any>([
   {
     label: "Tất cả",
     value: [null, null],
@@ -41,7 +40,7 @@ const selectFilterPrice = reactive([
   },
 ]);
 
-const selectOptionPrice = ref(-1);
+const selectOptionPrice = ref<any>(-1);
 
 const showMore = (container: string) => {
   const headers = document.querySelectorAll("." + container);
@@ -132,6 +131,7 @@ watch(
   (newValue) => {
     if (selectOptionPrice.value == -1) return;
     if (
+      newValue &&
       selectFilterPrice[newValue].value[0] != null &&
       selectFilterPrice[newValue].value[1] != null
     ) {

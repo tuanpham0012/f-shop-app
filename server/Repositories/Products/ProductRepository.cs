@@ -3,6 +3,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.Services.Elasticsearch;
 using ShopAppApi.ViewModels;
 using Slugify;
 using System.Collections.ObjectModel;
@@ -11,9 +12,10 @@ using System.Threading.Tasks;
 
 namespace ShopAppApi.Repositories.Products
 {
-    public class ProductRepository(ShopAppContext context, IFileHelper fileHelper, IConfiguration configuration) : IProductRepository
+    public class ProductRepository(ShopAppContext context, IFileHelper fileHelper, IConfiguration configuration, IElasticsearchService elasticsearch) : IProductRepository
     {
         private readonly ShopAppContext _context = context;
+        private readonly string elsIndex = "product";
         private readonly string driver = configuration.GetSection("FileStorage:Driver").Value!;
         public async Task Create(StoreProductRequest product)
         {
@@ -77,7 +79,7 @@ namespace ShopAppApi.Repositories.Products
                 foreach (var sku in product.Skus)
                 {
                     sku.ProductId = entry.Id;
-                    CreateOrUpdateSku(sku);
+                    await CreateOrUpdateSku(sku, entry);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
                 }
@@ -91,7 +93,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = entry.Price,
                     Barcode = entry.Code,
                 };
-                CreateOrUpdateSku(sku);
+                await CreateOrUpdateSku(sku, entry);
                 minPrice = sku.Price;
             }
 
@@ -339,10 +341,11 @@ namespace ShopAppApi.Repositories.Products
                 {
                     sku.ProductId = _product.Id;
                     sku.Barcode ??= _product.Barcode;
-                    if(string.IsNullOrWhiteSpace(sku.ImagePath)){
+                    if (string.IsNullOrWhiteSpace(sku.ImagePath))
+                    {
                         sku.ImagePath = product.ImageThumb;
                     }
-                    CreateOrUpdateSku(sku);
+                    await CreateOrUpdateSku(sku, _product);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
                 }
@@ -356,7 +359,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = _product.Price,
                     Barcode = _product.Barcode
                 };
-                CreateOrUpdateSku(sku);
+                await CreateOrUpdateSku(sku, _product);
                 minPrice = sku.Price;
                 maxStock = sku.Stock;
             }
@@ -367,7 +370,7 @@ namespace ShopAppApi.Repositories.Products
 
         }
 
-        private void CreateOrUpdateSku(SkusRequest sku)
+        private async Task CreateOrUpdateSku(SkusRequest sku, Product product)
         {
             var _sku = new Sku();
             if (sku.Id != null && sku.IsEdited == true)
@@ -382,14 +385,30 @@ namespace ShopAppApi.Repositories.Products
                     fileHelper.DeleteFile(_sku.ImagePath);
                     _sku.ImagePath = fileHelper.SaveFile(sku.ImagePath, "imgThumb");
                 }
-                    _sku.ProductId = sku.ProductId ?? 0;
-                    _sku.Name = sku.Name ?? "";
-                    _sku.Price = sku.Price;
-                    _sku.Barcode = sku.Barcode ?? "";
-                    _sku.Stock = sku.Stock;
-                    _sku.UpdatedAt = DateTime.UtcNow;
-                    _sku.ImageCode = sku.ImageCode ?? "";
-                    _context.SaveChanges();
+                _sku.ProductId = sku.ProductId ?? 0;
+                _sku.Name = sku.Name ?? "";
+                _sku.Price = sku.Price;
+                _sku.Barcode = sku.Barcode ?? "";
+                _sku.Stock = sku.Stock;
+                _sku.UpdatedAt = DateTime.UtcNow;
+                _sku.ImageCode = sku.ImageCode ?? "";
+                _context.SaveChanges();
+
+                await elasticsearch.UpdateDocument<SkuVM>(elsIndex, sku.Id.ToString() ?? "0", new SkuVM
+                {
+                    Id = _sku.Id,
+                    ProductId = _sku.ProductId,
+                    Barcode = _sku.Barcode,
+                    Price = _sku.Price,
+                    Name = _sku.Name,
+                    ImagePath = fileHelper.GetLink(_sku.ImagePath),
+                    ImageCode = _sku.ImageCode,
+                    Stock = _sku.Stock,
+                    ProductBarcode = product.Barcode,
+                    ProductName = product.Name,
+                    ProductCode = product.Code,
+                });
+
             }
             else if (sku.Id == null)
             {
@@ -407,6 +426,20 @@ namespace ShopAppApi.Repositories.Products
                 };
                 _context.Add(_sku);
                 _context.SaveChanges();
+                await elasticsearch.CreateDocument<SkuVM>(elsIndex, new SkuVM
+                {
+                    Id = _sku.Id,
+                    ProductId = _sku.ProductId,
+                    Barcode = _sku.Barcode,
+                    Price = _sku.Price,
+                    Name = _sku.Name,
+                    ImagePath = fileHelper.GetLink(_sku.ImagePath),
+                    ImageCode = _sku.ImageCode,
+                    Stock = _sku.Stock,
+                    ProductBarcode = product.Barcode,
+                    ProductName = product.Name,
+                    ProductCode = product.Code,
+                });
                 CreateOrUpdateVariant(sku.Variants, _sku);
             }
         }
@@ -819,8 +852,31 @@ namespace ShopAppApi.Repositories.Products
             transaction.Commit();
         }
 
+        public Task<List<SkuVM>> SearchProduct(string search)
+        {
+            var query = elasticsearch.SearchDocuments<SkuVM>(elsIndex)
+            .Query(q => q
+            .Bool(b => b // Sử dụng Bool query để kết hợp các điều kiện
+            .Should( // Các điều kiện này là tùy chọn, document khớp 1 trong số chúng sẽ được trả về
+                sh => sh.Match(m => m // Query tìm kiếm full-text
+                    .Field(f => f.Name) // Tìm trên trường Name
+                    .Query("Laptop") // Từ khóa tìm kiếm
+                ),
+                sh => sh.Match(m => m // Query tìm kiếm full-text
+                    .Field(f => f.Description) // Tìm trên trường Description
+                    .Query("Laptop")
+                    )
+                )
+            // .Filter(...) // Thêm các bộ lọc không ảnh hưởng đến điểm số relevancy (ví dụ: Price > 1000)
+            // .Must(...) // Thêm các điều kiện bắt buộc phải khớp
+            // .MustNot(...) // Thêm các điều kiện không được khớp
+            ))
+            .Size(10) // Số lượng kết quả trả về tối đa
+            .From(0).ToListAsync();
+            return query;
+
+        }
     }
-}
 
 
 

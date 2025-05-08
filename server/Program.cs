@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Nest;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
 using ShopAppApi.Helpers.Interfaces;
@@ -10,12 +11,13 @@ using ShopAppApi.Repositories.CartRepo;
 using ShopAppApi.Repositories.Categories;
 using ShopAppApi.Repositories.Common;
 using ShopAppApi.Repositories.Menus;
-using ShopAppApi.Repositories.Metrics;
 using ShopAppApi.Repositories.Orders;
 using ShopAppApi.Repositories.Products;
-using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Repositories.RepoCustomer;
-using ShopAppApi.Repositories.TelegramBotRepository;
+using ShopAppApi.Services.Elasticsearch;
+using ShopAppApi.Services.Metrics;
+using ShopAppApi.Services.RedisCache;
+using ShopAppApi.Services.TelegramBotRepository;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -49,8 +51,39 @@ builder.Services.AddScoped<IStringHelper, StringHelper>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICommonRepository, CommonRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IElasticsearchService, ElasticsearchService>();
 
 builder.Services.AddSingleton<ICoreMonitoringData, InfluxData>();
+
+var elasticHost = builder.Configuration["Elasticsearch:Host"] ?? throw new ArgumentNullException("Elasticsearch:Host", "Elasticsearch host configuration is missing.");
+var elasticUsername = builder.Configuration["Elasticsearch:Username"] ?? throw new ArgumentNullException("Elasticsearch:Username", "Elasticsearch Username configuration is missing.");
+var elasticPassword = builder.Configuration["Elasticsearch:Password"] ?? throw new ArgumentNullException("Elasticsearch:Password", "Elasticsearch Password configuration is missing.");
+var elasticUri = new Uri(elasticHost);
+var settings = new ConnectionSettings(elasticUri)
+        .BasicAuthentication(elasticUsername, elasticPassword)
+        // .DefaultIndex("my_app_index") // Tùy chọn
+        .RequestTimeout(TimeSpan.FromMinutes(2)); // Tùy chọn
+var client = new ElasticClient(settings);
+builder.Services.AddSingleton<IElasticClient>(client);
+
+try
+{
+    if (!client.Ping().IsValid)
+    {
+        // Ghi log lỗi hoặc ném exception để ứng dụng không khởi động nếu ES không sẵn sàng
+        Console.WriteLine("Warning: Elasticsearch connection failed on startup.");
+        // throw new Exception("Could not connect to Elasticsearch on startup.");
+    }
+    else
+    {
+        Console.WriteLine("Elasticsearch connection successful on startup.");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Warning: Elasticsearch connection failed on startup: {ex.Message}");
+    // throw; // Uncomment để dừng khởi động nếu ES không kết nối được
+}
 
 builder.Services.AddStackExchangeRedisCache(options =>
         {

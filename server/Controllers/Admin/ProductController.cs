@@ -89,5 +89,20 @@ namespace ShopAppApi.Controllers.Admin
                 Skus = entry.Skus,
             }));
         }
+
+
+        [HttpGet("search/{Search}")]
+        public async Task<IActionResult> SearchProduct(string Search)
+        {
+            try
+            {
+                var entry = await _repo.Show(Id);
+                return Ok(new ResponseOne<ProductVM>(entry));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

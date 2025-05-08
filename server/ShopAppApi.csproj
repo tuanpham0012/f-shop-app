@@ -13,6 +13,7 @@
     <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
     <PackageReference Include="AspNetCore.HealthChecks.InfluxDB" Version="8.0.1" />
     <PackageReference Include="Coravel" Version="6.0.0" />
+    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.18.0" />
     <PackageReference Include="InfluxDB.Client.Core" Version="4.18.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
@@ -32,6 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.2.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="NEST" Version="7.17.5" />
     <PackageReference Include="Slugify.Core" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />

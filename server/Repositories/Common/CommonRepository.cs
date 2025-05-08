@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
-using ShopAppApi.Repositories.RedisCache;
+using ShopAppApi.Services.RedisCache;
 
 namespace ShopAppApi.Repositories.Common
 {

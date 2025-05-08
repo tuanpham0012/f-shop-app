@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ShopAppApi.Job;
-using ShopAppApi.Repositories.Metrics;
+using ShopAppApi.Services.Metrics;
 using System.Diagnostics;
 
 namespace ShopAppApi.Middlewares

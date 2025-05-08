@@ -1,4 +1,4 @@
-namespace ShopAppApi.Repositories.TelegramBotRepository
+namespace ShopAppApi.Services.TelegramBotRepository
 {
     public interface ITelegramRepository
     {

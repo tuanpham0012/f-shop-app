@@ -2,7 +2,7 @@
 using System.Drawing;
 using Telegram.Bot;
 
-namespace ShopAppApi.Repositories.TelegramBotRepository
+namespace ShopAppApi.Services.TelegramBotRepository
 {
     public class TelegramMessage
     {

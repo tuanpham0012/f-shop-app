@@ -2,9 +2,9 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers.Interfaces;
-using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.Services.RedisCache;
 using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Orders

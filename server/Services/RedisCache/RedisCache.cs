@@ -10,7 +10,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
-namespace ShopAppApi.Repositories.RedisCache
+namespace ShopAppApi.Services.RedisCache
 {
     public class RedisCache : IRedisCache
     {

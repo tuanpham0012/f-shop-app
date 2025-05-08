@@ -4,7 +4,7 @@ using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using Newtonsoft.Json.Linq;
 
-namespace ShopAppApi.Repositories.Metrics
+namespace ShopAppApi.Services.Metrics
 {
     public class InfluxData : ICoreMonitoringData
     {

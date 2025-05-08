@@ -1,4 +1,4 @@
-namespace ShopAppApi.Repositories.RedisCache
+namespace ShopAppApi.Services.RedisCache
 {
     public interface IRedisCache
     {
