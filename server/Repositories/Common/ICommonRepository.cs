@@ -8,5 +8,6 @@ namespace ShopAppApi.Repositories.Common
     {
         Task<List<PaymentMethod>> PaymentMethods();
         Task<List<ShippingUnit>> ShippingUnits();
+        Task<string> GetServerName();
     }
 }

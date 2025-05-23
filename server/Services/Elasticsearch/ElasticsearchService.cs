@@ -105,10 +105,9 @@ namespace ShopAppApi.Services.Elasticsearch
             return response.Source;
         }
 
-        public Task<ISearchResponse<T>> SearchDocuments<T>(string indexName) where T : class
+        public IElasticClient ElasticClient()
         {
-            return _elasticClient.SearchAsync<T>(s => s
-                .Index(indexName));
+            return _elasticClient;
         }
     }
 }

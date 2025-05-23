@@ -12,6 +12,6 @@ namespace ShopAppApi.Services.Elasticsearch
         Task CreateManyDocument<T>(string indexName, List<T> document) where T : class;
         Task DeleteDocument(string indexName, string documentId);
         Task<T> GetDocument<T>(string indexName, string documentId) where T : class;
-        Task<ISearchResponse<T>> SearchDocuments<T>(string indexName) where T : class;
+        IElasticClient ElasticClient();
     }
 }

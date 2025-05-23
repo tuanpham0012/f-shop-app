@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nest;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
@@ -110,6 +111,7 @@ namespace ShopAppApi.Repositories.Products
 
         public async Task<ProductVM> Show(long Id)
         {
+
             var query = _context.Products.AsQueryable().Select(p => new ProductVM
             {
                 Id = p.Id,
@@ -852,31 +854,42 @@ namespace ShopAppApi.Repositories.Products
             transaction.Commit();
         }
 
-        public Task<List<SkuVM>> SearchProduct(string search)
+        public async Task<List<SkuVM>> SearchProduct(string search)
         {
-            var query = elasticsearch.SearchDocuments<SkuVM>(elsIndex)
+            var searchResponse = await elasticsearch.ElasticClient().SearchAsync<SkuVM>(s => s
+            .Index(elsIndex)
             .Query(q => q
-            .Bool(b => b // Sử dụng Bool query để kết hợp các điều kiện
-            .Should( // Các điều kiện này là tùy chọn, document khớp 1 trong số chúng sẽ được trả về
-                sh => sh.Match(m => m // Query tìm kiếm full-text
-                    .Field(f => f.Name) // Tìm trên trường Name
-                    .Query("Laptop") // Từ khóa tìm kiếm
-                ),
-                sh => sh.Match(m => m // Query tìm kiếm full-text
-                    .Field(f => f.Description) // Tìm trên trường Description
-                    .Query("Laptop")
-                    )
+            .MultiMatch(mm => mm // Tìm kiếm trên nhiều fields
+                .Query(search)
+                .Fields(f => f
+                    .Field(p => p.Name) // Ưu tiên field Name hơn
+                    .Field(p => p.ProductName)
+                    .Field(p => p.ProductBarcode)
+                    .Field(p => p.ProductCode)
                 )
-            // .Filter(...) // Thêm các bộ lọc không ảnh hưởng đến điểm số relevancy (ví dụ: Price > 1000)
-            // .Must(...) // Thêm các điều kiện bắt buộc phải khớp
-            // .MustNot(...) // Thêm các điều kiện không được khớp
+                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
             ))
-            .Size(10) // Số lượng kết quả trả về tối đa
-            .From(0).ToListAsync();
-            return query;
+            .From(0)
+            .Size(10));
+
+            if (searchResponse.IsValid)
+            {
+                return searchResponse.Documents.ToList();
+            }
+            else
+            {
+                Console.WriteLine($"Lỗi khi tìm kiếm sản phẩm: {searchResponse.DebugInformation}");
+                if (searchResponse.OriginalException != null)
+                {
+                    Console.WriteLine($"Exception gốc: {searchResponse.OriginalException.Message}");
+                }
+                // Trả về danh sách rỗng trong trường hợp lỗi hoặc không tìm thấy
+                return new List<SkuVM>();
+            }
 
         }
     }
+}
 
 
 

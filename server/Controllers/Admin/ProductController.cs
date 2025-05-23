@@ -96,8 +96,8 @@ namespace ShopAppApi.Controllers.Admin
         {
             try
             {
-                var entry = await _repo.Show(Id);
-                return Ok(new ResponseOne<ProductVM>(entry));
+                var entry = await _repo.SearchProduct(Search);
+                return Ok(new ResponseCollection<SkuVM>(entry));
             }
             catch (Exception ex)
             {

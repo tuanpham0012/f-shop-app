@@ -21,9 +21,9 @@ namespace ShopAppApi.Controllers.User
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
-        
+
         [HttpGet("shipping-units")]
         public async Task<IActionResult> GetShippingUnit()
         {
@@ -36,7 +36,24 @@ namespace ShopAppApi.Controllers.User
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
+        
+        [HttpGet("server-name")]
+        public async Task<IActionResult> GetSQLServerName()
+        {
+            try
+            {
+                var entries = await repository.GetServerName();
+                Console.WriteLine(entries);
+                return Ok(entries);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
     }
 }
