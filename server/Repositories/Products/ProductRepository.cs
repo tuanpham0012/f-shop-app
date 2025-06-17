@@ -859,14 +859,24 @@ namespace ShopAppApi.Repositories.Products
             var searchResponse = await elasticsearch.ElasticClient().SearchAsync<SkuVM>(s => s
             .Index(elsIndex)
             .Query(q => q
-            .MultiMatch(mm => mm // Tìm kiếm trên nhiều fields
+            .Match(mm => mm // Tìm kiếm trên nhiều fields
                 .Query(search)
-                .Fields(f => f
-                    .Field(p => p.Name) // Ưu tiên field Name hơn
-                    .Field(p => p.ProductName)
-                    .Field(p => p.ProductBarcode)
-                    .Field(p => p.ProductCode)
-                )
+                .Field(p => p.Name)
+                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
+            ) || q
+            .Match(mm => mm // Tìm kiếm trên nhiều fields
+                .Query(search)
+                .Field(p => p.ProductName)
+                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
+            ) ||q
+            .Match(mm => mm // Tìm kiếm trên nhiều fields
+                .Query(search)
+                .Field(p => p.ProductBarcode)
+                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
+            ) || q
+            .Match(mm => mm // Tìm kiếm trên nhiều fields
+                .Query(search)
+                .Field(p => p.ProductCode)
                 .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
             ))
             .From(0)

@@ -23,6 +23,12 @@ export const useProductStore = defineStore("product", {
             entry: null as any,
             errors: null,
             descriptionProduct: null as any,
+            searchProduct: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null as any,
+            },
         };
     },
 
@@ -88,6 +94,15 @@ export const useProductStore = defineStore("product", {
                             console.log(err);
                         });
                 },
+        async getListSearchProduct(search: any) {
+            await _getList(`${adminUrl}/products/search/${search}`, { })
+                .then((res) => {
+                    this.searchProduct = res.data
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
     },
 });
 

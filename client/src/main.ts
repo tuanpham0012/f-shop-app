@@ -23,16 +23,24 @@ Object.entries(globalComponent).forEach(([name, component]) => {
 })
 
 app.directive('click-outside', {
-    mounted(el, binding, vnode) {
-        el.clickOutsideEvent = function (event: any) {
-            if (!(el === event.target || el.contains(event.target))) {
-                binding.value(event, el);
-            }
-        };
-        document.body.addEventListener('click', el.clickOutsideEvent);
-    },
-    unmounted(el) {
-        document.body.removeEventListener('click', el.clickOutsideEvent);
+    mounted(el, binding) {
+    // Lưu trữ handler trên phần tử để có thể gỡ bỏ sau này
+    el.__ClickOutsideHandler__ = (event:any) => {
+      // Nếu phần tử được click nằm ngoài `el` VÀ click không phải trên `el` itself
+      if (!(el === event.target || el.contains(event.target))) {
+        // Kiểm tra xem binding.value có phải là một hàm không
+        if (typeof binding.value === 'function') {
+          binding.value(event); // Gọi hàm callback được truyền vào directive
+        }
+      }
+    };
+    document.addEventListener('click', el.__ClickOutsideHandler__);
+  },
+  // `unmounted` (Vue 3) hoặc `unbind` (Vue 2)
+  unmounted(el) {
+    // Gỡ bỏ event listener khi phần tử bị hủy
+    document.removeEventListener('click', el.__ClickOutsideHandler__);
+    delete el.__ClickOutsideHandler__; // Xóa tham chiếu để tránh rò rỉ bộ nhớ
     }
 });
 
