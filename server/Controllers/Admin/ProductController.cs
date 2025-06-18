@@ -91,12 +91,12 @@ namespace ShopAppApi.Controllers.Admin
         }
 
 
-        [HttpGet("search/{Search}")]
-        public async Task<IActionResult> SearchProduct(string Search)
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProduct([FromQuery]BaseRequest Request)
         {
             try
             {
-                var entry = await _repo.SearchProduct(Search);
+                var entry = await _repo.SearchProduct(Request);
                 return Ok(new ResponseCollection<SkuVM>(entry));
             }
             catch (Exception ex)

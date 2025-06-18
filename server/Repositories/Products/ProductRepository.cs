@@ -854,8 +854,14 @@ namespace ShopAppApi.Repositories.Products
             transaction.Commit();
         }
 
-        public async Task<List<SkuVM>> SearchProduct(string search)
+        public async Task<List<SkuVM>> SearchProduct(BaseRequest Request)
         {
+            if (string.IsNullOrWhiteSpace(Request.Search))
+            {
+                return new List<SkuVM>();
+            }
+            string search = Request.Search.Trim();
+            int from = (Request.Page - 1) * Request.PageSize;
             var searchResponse = await elasticsearch.ElasticClient().SearchAsync<SkuVM>(s => s
             .Index(elsIndex)
             .Query(q => q
@@ -868,19 +874,14 @@ namespace ShopAppApi.Repositories.Products
                 .Query(search)
                 .Field(p => p.ProductName)
                 .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
-            ) ||q
-            .Match(mm => mm // Tìm kiếm trên nhiều fields
-                .Query(search)
-                .Field(p => p.ProductBarcode)
-                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
             ) || q
-            .Match(mm => mm // Tìm kiếm trên nhiều fields
-                .Query(search)
-                .Field(p => p.ProductCode)
-                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
+            .Wildcard(w => w
+                .Field(f => f.ProductBarcode) // Rất quan trọng: dùng trường .keyword
+                .Value($"*{search}*")
+                .CaseInsensitive() // Tùy chọn: không phân biệt hoa thường
             ))
-            .From(0)
-            .Size(10));
+            .From(from)
+            .Size(Request.PageSize));
 
             if (searchResponse.IsValid)
             {

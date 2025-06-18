@@ -22,6 +22,7 @@ namespace ShopAppApi.ViewModels
         public string? ProductName { get; set; } = string.Empty;
         public string? ProductBarcode { get; set; } = string.Empty;
         public string? ProductCode { get; set; } = string.Empty;
+        public string? DisplayName { get; set; } = string.Empty;
 
         // public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
