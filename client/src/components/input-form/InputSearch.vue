@@ -83,6 +83,12 @@ const setFocus = (value) => {
     }
     handleFocus.value = value;
 };
+
+const selectItem = (item) => {
+    //searchQuery.value = item.name;
+    setFocus(false);
+    emits("item-selected", item);
+};
 watch(
     () => searchQuery.value,
     debounce((newValue) => {
