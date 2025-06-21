@@ -31,5 +31,16 @@ namespace ShopAppApi.Controllers.Admin
             var entry = await repository.GetOrderDetails(Id);
             return Ok(new ResponseCollection<OrderDetailVM>(entry));
         }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
+        {
+            if (request.CustomerId <= 0)
+            {
+                return BadRequest(new ErrorResponse(400, "Invalid CustomerId."));
+            }
+            var entry = await repository.CreateOrder(request);
+            return Ok(new ResponseOne<OrderVM>(entry));
+        }
     }
 }
