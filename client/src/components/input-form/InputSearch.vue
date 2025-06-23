@@ -40,7 +40,6 @@ import { ref, computed, watch } from "vue";
 import debounce from "lodash.debounce";
 
 const searchQuery = ref("");
-const items = ref([]);
 const handleFocus = ref(false);
 const searchInput= ref(null);
 const scrollContainer = ref(null);

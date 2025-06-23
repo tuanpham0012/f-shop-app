@@ -12,10 +12,54 @@ namespace ShopAppApi.Repositories.Orders
     public class OrderRepository(ShopAppContext context, IRedisCache cache, IFileHelper fileHelper) : IOrderRepository
     {
 
-        public async Task Create(StoreMenuRequest menu)
+        public async Task Create(StoreOrderRequest request)
         {
             using var transaction = await context.Database.BeginTransactionAsync();
+            var order = new Order
+            {
+                Code = Guid.NewGuid().ToString("D"),
+                OrderDate = DateOnly.FromDateTime(DateTime.Now),
+                CustomerId = request.CustomerId,
+                PaymentMethodId = request.PaymentMethodId,
+                ShippingUnitId = request.ShippingUnitId,
+                TotalPrice = 0,
+                TaxFee = 0,
+                Note = request.Note,
+                TotalAmount = 0,
+                DiscountAmount = 0,
+                ShippingFee = 0,
+                ShippingAddress = request.Address,
+                ShippingPhone = request.PhoneNumber,
+                ReceiverName = request.ReceiverName,
+                Status = 0,
+                CreatedAt = DateTime.Now
+            };
+            foreach (var detail in request.OrderDetails)
+            {
+                if (detail.Quantity <= 0)
+                {
+                    throw new ArgumentException("Quantity must be greater than zero.");
+                }
+                var sku = await context.Skus.FindAsync(detail.SkuId) ?? throw new ArgumentException("Sku not found");
+                var orderDetailPrice = sku.Price * detail.Quantity;
+                order.TotalPrice += orderDetailPrice;
+                order.TotalAmount += orderDetailPrice;
 
+                var orderDetail = new OrderDetail
+                {
+                    ProductId = sku.ProductId,
+                    ProductName = sku.Product.Name,
+                    SkuId = sku.Id,
+                    Quantity = detail.Quantity,
+                    UnitPrice = sku.Price,
+                    TotalAmount = orderDetailPrice,
+                    DiscountAmount = 0, // Assuming no discount for simplicity
+                    OrderId = order.Id
+                };
+                context.OrderDetails.Add(orderDetail);
+            }
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
             await transaction.CommitAsync();
         }
 

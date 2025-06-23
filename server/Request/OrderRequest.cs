@@ -11,7 +11,7 @@ namespace ShopAppApi.Request
         public int? Status { get; set; } = null;
     }
 
-    public class CreateOrderRequest
+    public class StoreOrderRequest
     {
         [Required]
         public long CustomerId { get; set; }
@@ -23,5 +23,16 @@ namespace ShopAppApi.Request
         public string Address { get; set; } = string.Empty;
         [Required]
         public string PhoneNumber { get; set; } = string.Empty;
+        public string ReceiverName { get; set; } = string.Empty;
+        public string Note { get; set; } = string.Empty;
+        public List<OrderDetailRequest> OrderDetails { get; set; } = new List<OrderDetailRequest>();
+    }
+    public class OrderDetailRequest
+    {
+        public long? Id { get; set; }
+        [Required]
+        public long SkuId { get; set; }
+        [Required]
+        public int Quantity { get; set; }
     }
 }

@@ -15,9 +15,13 @@
                         <div class="col-span-4">
                             <label for="name" class="form-label required">Khách hàng</label>
                         </div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="name" v-model="newOrder.code" />
-                        </div>
+                        <SelectSearchApi
+                            :placeholder="'Tìm kiếm khách hàng...'"
+                            :filteredItems="searchCustomers"
+                            @change-searchQuery="searchCustomer"
+                            @item-selected="selectCustomer"
+                            :selectedItem="customerSelected"
+                                />
                         <Feedback :errors="errors?.Name" />
                     </div>
                     <div class="col-span-4">
@@ -25,34 +29,29 @@
                             <label for="code" class="form-label required">Tên người nhận </label>
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="code" :value="newOrder.code" />
+                            <input type="text" class="form-control" id="code" :value="newOrder.receiverName" />
                         </div>
-                        <Feedback :errors="errors?.Name" />
+                        <Feedback :errors="errors?.receiverName" />
                     </div>
                     <div class="col-span-4">
                         <div class="col-sm-12">
                             <label for="code" class="form-label required">SDT nhận hàng </label>
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="code" :value="newOrder.code" />
+                            <input type="text" class="form-control" id="code" :value="newOrder.phoneNumber" />
                         </div>
                         <Feedback :errors="errors?.Name" />
                     </div>
-                    <div class="col-span-8">
-                        <div class="col-sm-12">
-                            <label for="code" class="form-label required">Địa chỉ nhận hàng </label>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="code" :value="newOrder.code" />
-                        </div>
-                        <Feedback :errors="errors?.Name" />
-                    </div>
+                    
                     <div class="col-span-4">
                         <div class="col-sm-12">
                             <label for="code" class="form-label required">Hình thức vận chuyển </label>
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="code" :value="newOrder.code" />
+                            <select class="form-select" v-model="newOrder.shippingMethodId">
+                                <option :value="null">Chọn hình thức vận chuyển</option>
+                                <option v-for="item in shippingUnits" :key="item.id" :value="item.id">{{ item.name }}</option>
+                            </select>
                         </div>
                         <Feedback :errors="errors?.Name" />
                     </div>
@@ -61,14 +60,25 @@
                             <label for="code" class="form-label required">Phương thức thanh toán </label>
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="code" :value="newOrder.code" />
+                            <select class="form-select" v-model="newOrder.paymentMethodId">
+                                <option :value="null">Chọn hình thức thanh toán</option>
+                                <option v-for="item in paymentMethods" :key="item.id" :value="item.id">{{ item.name }}</option>
+                            </select>
+                        </div>
+                        <Feedback :errors="errors?.Name" />
+                    </div>
+                    <div class="col-span-8">
+                        <div class="col-sm-12">
+                            <label for="code" class="form-label required">Địa chỉ nhận hàng </label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="code" :value="newOrder.address" />
                         </div>
                         <Feedback :errors="errors?.Name" />
                     </div>
                     <div class="col-span-12">
                         <label for="name" class="form-label text-gray-500">Ghi chú cho người bán</label>
                         <textarea cols="" type="text" class="form-control" style="height: 100px" v-model="newOrder.note" placeholder="Nhập vào..."></textarea>
-                        
                     </div>
                 </div>
                 <div class="grid grid-cols-12 gap-3 bg-white p-3 rounded-md mt-2">
@@ -76,7 +86,7 @@
                         <div class="col-span-4">
                             <label for="name" class="form-label">Sản phẩm</label>
                         </div>
-                        <InputSearch :placeholder="'Tìm kiếm sản phẩm...'" :filteredItems="searchProducts" @change-searchQuery="searchProduct" :loading="productStore.searchProduct.loading" @item-selected="selectItem" />
+                        <InputSearch :placeholder="'Tìm kiếm sản phẩm...'" :filteredItems="searchProducts" @change-searchQuery="searchProduct" :loading="productStore.searchProduct.loading" @item-selected="selectProduct" />
                         <Feedback :errors="errors?.Name" />
                     </div>
                     <div class="col-span-12 border-gray-200 min-h-32">
@@ -160,13 +170,27 @@ import { displayPrice, textCode } from "@/services/utils";
 import { createSlug } from "@/helpers/helpers";
 import InputSearch from "@/components/input-form/InputSearch.vue";
 import debounce from "lodash.debounce";
+import { useCommonStore } from "@/stores/common";
+import { useCustomerStore} from '@/stores/customer';
+import SelectSearch from "@/components/input-form/SelectSearch.vue";
+
+const commonStore = useCommonStore();
+const customerStore = useCustomerStore();
+
+const paymentMethods = computed<any>(() => commonStore.$state.paymentMethods.data);
+const shippingUnits = computed<any>(() => commonStore.$state.shippingUnits.data);
+
+const searchCustomers = computed(() => {
+    return customerStore.searchCustomer.data ?? [];
+});
 
 const emits = defineEmits(["close"]);
 
 const productStore = useProductStore();
 const searchTemp = ref<string>("");
-const page = ref<number>(0);
-
+const customerPage = ref<number>(0);
+const productPage = ref<number>(0);
+const customerSelected = ref<any>(null);
 const searchProducts = computed(() => {
     return productStore.searchProduct.data ?? [];
 });
@@ -174,6 +198,11 @@ const searchProducts = computed(() => {
 const newOrder = reactive({
     id: null,
     code: "",
+    paymentMethodId: null,
+    shippingMethodId: null,
+    address: "",
+    phoneNumber: "",
+    receiverName: "",
     customerId: 1,
     totalAmount: 0,
     totalPrice: 0,
@@ -183,20 +212,47 @@ const newOrder = reactive({
 
 const errors = ref<any>(null);
 
+const searchCustomer = async (searchValue: string) => {
+    if (searchTemp.value !== searchValue) {
+        customerStore.$state.searchCustomer.data = [];
+        customerStore.$state.searchCustomer.loadFull = false;
+        searchTemp.value = searchValue;
+        customerPage.value = 0;
+    }
+    if (searchValue.length > 0) {
+        customerPage.value++;
+        await customerStore.getListSearchCustomer({
+        page: customerPage.value,
+        pageSize: 10,
+        search: "",
+    });
+    }
+};
+
 const searchProduct = (searchValue: string) => {
     if (searchTemp.value !== searchValue) {
         productStore.$state.searchProduct.data = [];
         productStore.$state.searchProduct.loadFull = false;
         searchTemp.value = searchValue;
-        page.value = 0;
+        productPage.value = 0;
     }
     if (searchValue.length > 0) {
-        page.value++;
-        productStore.getListSearchProduct({ search: searchValue, pageSize: 10, page: page.value });
+        productPage.value++;
+        productStore.getListSearchProduct({ search: searchValue, pageSize: 10, page: productPage.value });
     }
 };
 
-const selectItem = (item: any) => {
+const selectCustomer = (item: any) => {
+    newOrder.customerId = item.id;
+    customerSelected.value = item;
+    console.log("Selected customer:", item);
+    newOrder.receiverName = item.name;
+    newOrder.phoneNumber = item.phone;
+    newOrder.address = item.address;
+    
+};
+
+const selectProduct = (item: any) => {
     const existingItem = newOrder.orderDetails.findIndex((detail: any) => detail.skuId === item.id);
     if (existingItem !== -1) {
         newOrder.orderDetails[existingItem].quantity++;
@@ -251,6 +307,15 @@ const save = async () => {
     // }
 };
 
-onBeforeMount(async () => {});
+onBeforeMount(async () => {
+    await commonStore.getPaymentMethods();
+    await commonStore.getShippingUnits();
+
+    await customerStore.getListSearchCustomer({
+        page: 1,
+        pageSize: 10,
+        search: "",
+    });
+});
 </script>
 <style lang=""></style>
