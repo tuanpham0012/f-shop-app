@@ -5,6 +5,7 @@ using ShopAppApi.Helpers;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 using System.Net;
 using System.Numerics;
 
@@ -27,16 +28,17 @@ namespace ShopAppApi.Repositories.RepoCustomer
 
         }
 
-        public async Task<PaginatedList<Customer>> GetAll(CustomerRequest request)
+        public async Task<PaginatedList<CustomerVM>> GetAll(CustomerRequest request)
         {
-            IQueryable<Customer> query = _context.Customers.Select(customer => new Customer
+            IQueryable<CustomerVM> query = _context.Customers.Select(customer => new CustomerVM
             {
                 Id = customer.Id,
                 Name = customer.Name,
                 Email = customer.Email,
                 Phone = customer.Phone,
                 Address = customer.Address,
-                Status = customer.Status
+                Status = customer.Status,
+                DisplayName = $"{customer.Name} - {customer.Phone}",
             }).AsQueryable().OrderByDescending(q => q.Id);
 
             if (!string.IsNullOrEmpty(request.Search))
@@ -51,7 +53,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
 
 
 
-            var data = await PaginatedList<Customer>.CreateAsync(
+            var data = await PaginatedList<CustomerVM>.CreateAsync(
                 query.AsNoTracking(), request.Page, request.PageSize);
 
             //if (!request.search.IsNullOrEmpty())

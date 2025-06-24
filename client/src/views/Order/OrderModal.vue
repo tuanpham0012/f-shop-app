@@ -15,13 +15,7 @@
                         <div class="col-span-4">
                             <label for="name" class="form-label required">Khách hàng</label>
                         </div>
-                        <SelectSearchApi
-                            :placeholder="'Tìm kiếm khách hàng...'"
-                            :filteredItems="searchCustomers"
-                            @change-searchQuery="searchCustomer"
-                            @item-selected="selectCustomer"
-                            :selectedItem="customerSelected"
-                                />
+                        <SelectSearchApi :placeholder="'Tìm kiếm khách hàng...'" :url="`${apiUrl}/customers`" @item-selected="selectCustomer" displayKey="displayName"/>
                         <Feedback :errors="errors?.Name" />
                     </div>
                     <div class="col-span-4">
@@ -42,13 +36,13 @@
                         </div>
                         <Feedback :errors="errors?.Name" />
                     </div>
-                    
+
                     <div class="col-span-4">
                         <div class="col-sm-12">
                             <label for="code" class="form-label required">Hình thức vận chuyển </label>
                         </div>
                         <div class="input-group">
-                            <select class="form-select" v-model="newOrder.shippingMethodId">
+                            <select class="form-select" v-model="newOrder.shippingUnitId">
                                 <option :value="null">Chọn hình thức vận chuyển</option>
                                 <option v-for="item in shippingUnits" :key="item.id" :value="item.id">{{ item.name }}</option>
                             </select>
@@ -86,7 +80,7 @@
                         <div class="col-span-4">
                             <label for="name" class="form-label">Sản phẩm</label>
                         </div>
-                        <InputSearch :placeholder="'Tìm kiếm sản phẩm...'" :filteredItems="searchProducts" @change-searchQuery="searchProduct" :loading="productStore.searchProduct.loading" @item-selected="selectProduct" />
+                        <InputSearch :placeholder="'Tìm kiếm sản phẩm...'" :url="`${apiUrl}/admin/products/search`" @item-selected="selectProduct" />
                         <Feedback :errors="errors?.Name" />
                     </div>
                     <div class="col-span-12 border-gray-200 min-h-32">
@@ -169,13 +163,15 @@ import { successMessage } from "@/helpers/toast";
 import { displayPrice, textCode } from "@/services/utils";
 import { createSlug } from "@/helpers/helpers";
 import InputSearch from "@/components/input-form/InputSearch.vue";
-import debounce from "lodash.debounce";
 import { useCommonStore } from "@/stores/common";
-import { useCustomerStore} from '@/stores/customer';
+import { useCustomerStore } from "@/stores/customer";
 import SelectSearch from "@/components/input-form/SelectSearch.vue";
+import { apiUrl } from "@/helpers/config";
+import { useOrderStore } from "../../stores/order";
 
 const commonStore = useCommonStore();
 const customerStore = useCustomerStore();
+const orderStore = useOrderStore();
 
 const paymentMethods = computed<any>(() => commonStore.$state.paymentMethods.data);
 const shippingUnits = computed<any>(() => commonStore.$state.shippingUnits.data);
@@ -186,20 +182,11 @@ const searchCustomers = computed(() => {
 
 const emits = defineEmits(["close"]);
 
-const productStore = useProductStore();
-const searchTemp = ref<string>("");
-const customerPage = ref<number>(0);
-const productPage = ref<number>(0);
-const customerSelected = ref<any>(null);
-const searchProducts = computed(() => {
-    return productStore.searchProduct.data ?? [];
-});
-
 const newOrder = reactive({
     id: null,
     code: "",
     paymentMethodId: null,
-    shippingMethodId: null,
+    shippingUnitId: null,
     address: "",
     phoneNumber: "",
     receiverName: "",
@@ -212,44 +199,13 @@ const newOrder = reactive({
 
 const errors = ref<any>(null);
 
-const searchCustomer = async (searchValue: string) => {
-    if (searchTemp.value !== searchValue) {
-        customerStore.$state.searchCustomer.data = [];
-        customerStore.$state.searchCustomer.loadFull = false;
-        searchTemp.value = searchValue;
-        customerPage.value = 0;
-    }
-    if (searchValue.length > 0) {
-        customerPage.value++;
-        await customerStore.getListSearchCustomer({
-        page: customerPage.value,
-        pageSize: 10,
-        search: "",
-    });
-    }
-};
-
-const searchProduct = (searchValue: string) => {
-    if (searchTemp.value !== searchValue) {
-        productStore.$state.searchProduct.data = [];
-        productStore.$state.searchProduct.loadFull = false;
-        searchTemp.value = searchValue;
-        productPage.value = 0;
-    }
-    if (searchValue.length > 0) {
-        productPage.value++;
-        productStore.getListSearchProduct({ search: searchValue, pageSize: 10, page: productPage.value });
-    }
-};
 
 const selectCustomer = (item: any) => {
     newOrder.customerId = item.id;
-    customerSelected.value = item;
     console.log("Selected customer:", item);
     newOrder.receiverName = item.name;
     newOrder.phoneNumber = item.phone;
     newOrder.address = item.address;
-    
 };
 
 const selectProduct = (item: any) => {
@@ -281,30 +237,16 @@ watch(
 );
 
 const save = async () => {
-    // if (brand.value.id == null) {
-    //     await brandStore
-    //         .create(brand.value)
-    //         .then((res) => {
-    //             console.log(res);
-    //             successMessage(res.data?.message ?? "Thêm mới thành công!");
-    //             emits("close", res.data.data);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //             errors.value = err.response.data.errors;
-    //         });
-    // } else {
-    //     await brandStore
-    //         .update(props.id, brand.value)
-    //         .then((res) => {
-    //             successMessage(res.data?.message ?? "Cập nhật thành công!");
-    //             emits("close", true);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //             errors.value = err.response.data.errors;
-    //         });
-    // }
+    await orderStore
+            .create(newOrder)
+            .then((res) => {
+                successMessage(res.data?.message ?? "Tạo đơn hàng thành công!");
+                emits("close", true);
+            })
+            .catch((err) => {
+                console.log(err);
+                errors.value = err.response.data.errors;
+            });
 };
 
 onBeforeMount(async () => {

@@ -15,6 +15,8 @@ namespace ShopAppApi.Repositories.Orders
         public async Task Create(StoreOrderRequest request)
         {
             using var transaction = await context.Database.BeginTransactionAsync();
+            // try
+            // {
             var order = new Order
             {
                 Code = Guid.NewGuid().ToString("D"),
@@ -31,36 +33,47 @@ namespace ShopAppApi.Repositories.Orders
                 ShippingAddress = request.Address,
                 ShippingPhone = request.PhoneNumber,
                 ReceiverName = request.ReceiverName,
-                Status = 0,
+                Status = (int)Constants.OrderStatus.Pending,
                 CreatedAt = DateTime.Now
             };
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
             foreach (var detail in request.OrderDetails)
             {
                 if (detail.Quantity <= 0)
                 {
                     throw new ArgumentException("Quantity must be greater than zero.");
                 }
-                var sku = await context.Skus.FindAsync(detail.SkuId) ?? throw new ArgumentException("Sku not found");
+
+                var sku = await context.Skus.Include("Product").SingleOrDefaultAsync(s => s.Id == detail.SkuId) ?? throw new ArgumentException("Sku not found");
                 var orderDetailPrice = sku.Price * detail.Quantity;
                 order.TotalPrice += orderDetailPrice;
                 order.TotalAmount += orderDetailPrice;
-
+                Console.WriteLine($"Creating order with id: {order.Id}");
                 var orderDetail = new OrderDetail
                 {
                     ProductId = sku.ProductId,
-                    ProductName = sku.Product.Name,
+                    ProductName = sku.Product?.Name ?? "",
                     SkuId = sku.Id,
                     Quantity = detail.Quantity,
                     UnitPrice = sku.Price,
                     TotalAmount = orderDetailPrice,
-                    DiscountAmount = 0, // Assuming no discount for simplicity
+                    DiscountAmount = 0,
                     OrderId = order.Id
                 };
+
                 context.OrderDetails.Add(orderDetail);
             }
-            context.Orders.Add(order);
+
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+            // }
+            // catch (Exception ex)
+            // {
+            //     transaction.Rollback();
+            //     Console.WriteLine(ex.Message);
+            //     throw new ArgumentException("An error occurred while creating the order.");
+            // }
         }
 
         public async Task Update(long Id, UpdateMenuRequest menu)
@@ -73,6 +86,7 @@ namespace ShopAppApi.Repositories.Orders
 
         public async Task<PaginatedList<OrderVM>> GetAll(OrderRequest request)
         {
+            var statusEnumType = typeof(Constants.OrderStatus);
             var query = context.Orders.AsQueryable().Select(o => new OrderVM
             {
                 Id = o.Id,
@@ -98,8 +112,9 @@ namespace ShopAppApi.Repositories.Orders
                 DiscountAmount = o.DiscountAmount,
                 ReceiverName = o.ReceiverName,
                 Status = o.Status,
-                TextStatus = TextStatus(o.Status),
-                ProductCount = o.OrderDetails.Count
+                TextStatus = Enum.GetName(statusEnumType, o.Status) ?? "",//TextStatus(o.Status),
+                ProductCount = o.OrderDetails.Count,
+                OrderStatusesChange = GetListStatusCanChange(o.Status),
             });
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
@@ -132,8 +147,130 @@ namespace ShopAppApi.Repositories.Orders
             return Data;
         }
 
+        private static List<OrderStatus> GetListStatusCanChange(int Status)
+        {
+            switch (Status)
+            {
+                case (int)Constants.OrderStatus.Pending:
+                    return [
+                        new OrderStatus
+                    {
+                        Id = 1,
+                        Name = "Chuẩn bị hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 2,
+                        Name = "Đã gửi"
+                    }, new OrderStatus
+                    {
+                        Id = 3,
+                        Name = "Đã nhận hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 4,
+                        Name = "Huỷ"
+                    }];
+                case 1:
+                    return [
+                        new OrderStatus
+                    {
+                        Id = 1,
+                        Name = "Chuẩn bị hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 2,
+                        Name = "Đã gửi"
+                    }, new OrderStatus
+                    {
+                        Id = 3,
+                        Name = "Đã nhận hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 4,
+                        Name = "Huỷ"
+                    }];
+                case 2:
+                    return [
+                        new OrderStatus
+                    {
+                        Id = 1,
+                        Name = "Chuẩn bị hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 2,
+                        Name = "Đã gửi"
+                    }, new OrderStatus
+                    {
+                        Id = 3,
+                        Name = "Đã nhận hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 4,
+                        Name = "Huỷ"
+                    }];
+                case 3:
+                    return [
+                        new OrderStatus
+                    {
+                        Id = 1,
+                        Name = "Chuẩn bị hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 2,
+                        Name = "Đã gửi"
+                    }, new OrderStatus
+                    {
+                        Id = 3,
+                        Name = "Đã nhận hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 4,
+                        Name = "Huỷ"
+                    }];
+                case 4:
+                    return [
+                        new OrderStatus
+                    {
+                        Id = 1,
+                        Name = "Chuẩn bị hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 2,
+                        Name = "Đã gửi"
+                    }, new OrderStatus
+                    {
+                        Id = 3,
+                        Name = "Đã nhận hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 4,
+                        Name = "Huỷ"
+                    }];
+                default:
+                    return [
+                        new OrderStatus
+                    {
+                        Id = 1,
+                        Name = "Chuẩn bị hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 2,
+                        Name = "Đã gửi"
+                    }, new OrderStatus
+                    {
+                        Id = 3,
+                        Name = "Đã nhận hàng"
+                    }, new OrderStatus
+                    {
+                        Id = 4,
+                        Name = "Huỷ"
+                    }];
+            }
+        }
+
         private static string TextStatus(int Status)
         {
+            
             switch (Status)
             {
                 case 0:

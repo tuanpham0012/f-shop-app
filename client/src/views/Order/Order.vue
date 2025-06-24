@@ -15,6 +15,7 @@ const query = reactive({
   notUse: null,
 });
 const showModal = ref(false);
+const showCreateModal = ref(false);
 const id = ref(null);
 const orders = computed<any>(() => {
   return orderStore.$state.entries.data;
@@ -49,8 +50,8 @@ const toggleEdit = (value: any) => {
 
 const toggleCreate = () => {
   id.value = null;
-  toggleModal();
-};
+  showCreateModal.value = !showCreateModal.value;
+}
 
 const copyTextToClipboard = async (text: any) => {
   if (!navigator.clipboard) {
@@ -173,7 +174,7 @@ onBeforeMount(async () => {
     <Pagination :current-page="currenPage" :page-size="pageSize" :total-pages="totalPages" :total-count="totalCount" @change-page="changePage" />
   </div>
   <OrderDetailModal :id="id" v-if="showModal" @close="toggleModal()"/>
-  <OrderModal />
+  <OrderModal v-if="showCreateModal" @close="toggleCreate()"/>
 </template>
 
 <style lang="scss" scoped>

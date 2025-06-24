@@ -32,15 +32,18 @@ namespace ShopAppApi.Controllers.Admin
             return Ok(new ResponseCollection<OrderDetailVM>(entry));
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateOrder(StoreOrderRequest request)
         {
-            if (request.CustomerId <= 0)
+            try
             {
-                return BadRequest(new ErrorResponse(400, "Invalid CustomerId."));
+                await repository.Create(request);
+                return Ok(new SuccessResponse(200, "Thêm mới thành công"));
             }
-            await repository.Create(request);
-            return Ok(new SuccessResponse(200, "Thêm mới thành công"));
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponse(422, ex.Message, ex.ToString()));
+            }
         }
     }
 }

@@ -79,7 +79,11 @@ export const useCustomerStore = defineStore("customer", {
         async getListSearchCustomer(query: any) {
             _getList(`${apiUrl}/customers`, query)
                 .then((res) => {
-                    this.searchCustomer = res.data;
+                    res.data.data.map((item: any) => {
+                        item.name = `${item.name} - ${item.phone}`;
+                        return item;
+                    })
+                    this.searchCustomer.data.push(...res.data.data);
                 })
                 .catch((err) => {
                     console.log(err);

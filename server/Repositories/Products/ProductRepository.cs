@@ -885,7 +885,20 @@ namespace ShopAppApi.Repositories.Products
 
             if (searchResponse.IsValid)
             {
-                return searchResponse.Documents.ToList();
+                return searchResponse.Documents.Select(s => new SkuVM
+                {
+                    Id = s.Id,
+                    ProductId = s.ProductId,
+                    Barcode = s.Barcode,
+                    Price = s.Price,
+                    Name = $"{s.ProductName} - {s.Name} - {s.ProductBarcode}",
+                    ImagePath = s.ImagePath,
+                    ImageCode = s.ImageCode,
+                    Stock = s.Stock,
+                    ProductBarcode = s.ProductBarcode,
+                    ProductName = s.ProductName,
+                    ProductCode = s.ProductCode,
+                }).ToList();
             }
             else
             {
