@@ -54,6 +54,7 @@ public partial class OrderVM
 
     public int ProductCount { get; set; }
     public List<OrderStatus> OrderStatusesChange { get; set; } = new List<OrderStatus>();
+    public bool ShowChangeStatus { get; set; } = false;
 }
 
 public partial class OrderStatus

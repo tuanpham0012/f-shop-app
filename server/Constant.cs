@@ -12,7 +12,9 @@ namespace ShopAppApi
             Pending = 0,
             Processing = 1,
             Shipped = 2,
-            Cancelled = 3,
+            Delivered = 3,
+            Cancelled = 4,
+            Returned = 5,
         }
     }
 }

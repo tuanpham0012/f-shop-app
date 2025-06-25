@@ -112,7 +112,7 @@ namespace ShopAppApi.Repositories.Orders
                 DiscountAmount = o.DiscountAmount,
                 ReceiverName = o.ReceiverName,
                 Status = o.Status,
-                TextStatus = Enum.GetName(statusEnumType, o.Status) ?? "",//TextStatus(o.Status),
+                TextStatus = TextStatus(o.Status),
                 ProductCount = o.OrderDetails.Count,
                 OrderStatusesChange = GetListStatusCanChange(o.Status),
             });
@@ -155,133 +155,85 @@ namespace ShopAppApi.Repositories.Orders
                     return [
                         new OrderStatus
                     {
-                        Id = 1,
+                        Id = (int)Constants.OrderStatus.Processing,
                         Name = "Chuẩn bị hàng"
                     }, new OrderStatus
                     {
-                        Id = 2,
-                        Name = "Đã gửi"
-                    }, new OrderStatus
-                    {
-                        Id = 3,
-                        Name = "Đã nhận hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 4,
+                        Id = (int)Constants.OrderStatus.Cancelled,
                         Name = "Huỷ"
                     }];
-                case 1:
+                case (int)Constants.OrderStatus.Processing:
                     return [
                         new OrderStatus
                     {
-                        Id = 1,
-                        Name = "Chuẩn bị hàng"
+                        Id = (int)Constants.OrderStatus.Pending,
+                        Name = "Đang xử lý"
                     }, new OrderStatus
                     {
-                        Id = 2,
+                        Id = (int)Constants.OrderStatus.Shipped,
                         Name = "Đã gửi"
                     }, new OrderStatus
                     {
-                        Id = 3,
-                        Name = "Đã nhận hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 4,
+                        Id = (int)Constants.OrderStatus.Cancelled,
                         Name = "Huỷ"
                     }];
-                case 2:
+                case (int)Constants.OrderStatus.Shipped:
                     return [
                         new OrderStatus
                     {
-                        Id = 1,
+                        Id = (int)Constants.OrderStatus.Processing,
                         Name = "Chuẩn bị hàng"
                     }, new OrderStatus
                     {
-                        Id = 2,
-                        Name = "Đã gửi"
-                    }, new OrderStatus
-                    {
-                        Id = 3,
+                        Id = (int)Constants.OrderStatus.Delivered,
                         Name = "Đã nhận hàng"
                     }, new OrderStatus
                     {
-                        Id = 4,
+                        Id = (int)Constants.OrderStatus.Cancelled,
                         Name = "Huỷ"
                     }];
-                case 3:
+                case (int)Constants.OrderStatus.Delivered:
+                    return [
+                     new OrderStatus
+                    {
+                        Id = (int)Constants.OrderStatus.Returned,
+                        Name = "Trả hàng"
+                    }];
+                case (int)Constants.OrderStatus.Returned:
                     return [
                         new OrderStatus
                     {
-                        Id = 1,
-                        Name = "Chuẩn bị hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 2,
-                        Name = "Đã gửi"
-                    }, new OrderStatus
-                    {
-                        Id = 3,
-                        Name = "Đã nhận hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 4,
+                        Id = (int)Constants.OrderStatus.Cancelled,
                         Name = "Huỷ"
                     }];
-                case 4:
+                case (int)Constants.OrderStatus.Cancelled:
                     return [
                         new OrderStatus
                     {
-                        Id = 1,
-                        Name = "Chuẩn bị hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 2,
-                        Name = "Đã gửi"
-                    }, new OrderStatus
-                    {
-                        Id = 3,
-                        Name = "Đã nhận hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 4,
-                        Name = "Huỷ"
+                        Id = (int)Constants.OrderStatus.Pending,
+                        Name = "Đang xử lý"
                     }];
                 default:
-                    return [
-                        new OrderStatus
-                    {
-                        Id = 1,
-                        Name = "Chuẩn bị hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 2,
-                        Name = "Đã gửi"
-                    }, new OrderStatus
-                    {
-                        Id = 3,
-                        Name = "Đã nhận hàng"
-                    }, new OrderStatus
-                    {
-                        Id = 4,
-                        Name = "Huỷ"
-                    }];
+                    return [];
             }
         }
 
         private static string TextStatus(int Status)
         {
-            
+
             switch (Status)
             {
-                case 0:
+                case (int)Constants.OrderStatus.Pending:
                     return "Đang xử lý";
-                case 1:
+                case (int)Constants.OrderStatus.Processing:
                     return "Chuẩn bị hàng";
-                case 2:
+                case (int)Constants.OrderStatus.Shipped:
                     return "Đã gửi";
-                case 3:
+                case (int)Constants.OrderStatus.Delivered:
                     return "Đã nhận hàng";
-                case 4:
+                case (int)Constants.OrderStatus.Returned:
+                    return "Trả hàng";
+                case (int)Constants.OrderStatus.Cancelled:
                     return "Đã huỷ";
                 default:
                     return "Đang xử lý";
@@ -343,7 +295,7 @@ namespace ShopAppApi.Repositories.Orders
                     ProductId = o.Sku.ProductId,
                     Barcode = o.Sku.Barcode,
                     Name = o.Sku.Name,
-                    ImagePath = fileHelper.GetLink(o.Sku.ImageCode),
+                    ImagePath = fileHelper.GetLink(o.Sku.ImagePath),
                     Variants = o.Sku.Variants.Select(v => new VariantVM
                     {
                         Code = v.OptionValue.Code ?? "",
@@ -354,6 +306,33 @@ namespace ShopAppApi.Repositories.Orders
             }).AsNoTracking().ToListAsync();
 
             return data;
+        }
+
+        public void ChangeOrderStatus(ChangeOrderStatusRequest request)
+        {
+            using var transaction = context.Database.BeginTransaction();
+            try
+            {
+                var order = context.Orders.FirstOrDefault(o => o.Id == request.Id) ?? throw new ArgumentException("Order not found");
+                if (order.Status == request.Status)
+                {
+                    throw new ArgumentException("Order status is already set to the requested status.");
+                }
+                if (!GetListStatusCanChange(order.Status).Any(s => s.Id == request.Status))
+                {
+                    throw new ArgumentException("Cannot change order status to the requested status.");
+                }
+                order.Status = request.Status;
+                order.Note = request.Note;
+                context.SaveChanges();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Console.WriteLine(ex.Message);
+                throw new ArgumentException("An error occurred while changing the order status.");
+            }
         }
     }
 }

@@ -9,7 +9,7 @@
         "
     >
         <template #body>
-            <div class="grid grid-cols-12 bg-gray-100 p-3 gap-2" v-if="order">
+            <div class="grid grid-cols-12 bg-gray-100 p-2 gap-2" v-if="order">
                 <div class="col-span-8 grid grid-cols-12 gap-2">
                     <div class="bg-white overflow-hidden shadow rounded-lg border col-span-12">
                         <div class="px-4 py-2 sm:px-6">
@@ -149,22 +149,22 @@
                         <div class="flex flex-col justify-start items-start w-full space-y-1">
                             <div class="flex flex-col justify-start items-start bg-gray-50 py-3 px-6 w-full" v-for="(item, index) in order.orderDetails" :key="index">
                                 <div class="flex flex-row justify-start items-center space-x-6 w-full">
-                                    <div class="flex w-[160px] aspect-square">
+                                    <div class="flex w-[130px] aspect-square">
                                         <img class="w-full object-contain" :src="item.sku.imagePath" alt="img" />
                                     </div>
                                     <div class="flex-row flex justify-between items-start w-full space-y-2 pb-2">
-                                        <div class="w-full flex flex-col justify-start items-start space-y-4">
+                                        <div class="w-full flex flex-col justify-start items-start space-y-3">
                                             <h3 class="text-base font-semibold leading-6 text-gray-800">{{ item.productName }}</h3>
-                                            <div class="flex justify-start items-start flex-col space-y-2">
-                                                <p class="grid grid-cols-3 w-full text-sm leading-none text-gray-800" v-for="(variant, index) in item.sku.variants" :key="index">
+                                            <div class="flex justify-start items-start flex-col space-y-1">
+                                                <p class="grid grid-cols-3 w-full text-sm leading-none text-gray-800 space-x-1" v-for="(variant, index) in item.sku.variants" :key="index">
                                                     <span class="text-gray-400">{{ variant.optionName }}: </span> <span class="col-span-2">{{ variant.valueName }}</span>
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="flex justify-between space-x-6 items-start w-full">
-                                            <p class="text-sm leading-6">{{ displayPrice(item.unitPrice) }} đ <span class="text-red-300 line-through" v-if="item.discountAmount && item.discountAmount > 0"> $45.00</span></p>
+                                            <p class="text-sm leading-6">{{ displayPrice(item.unitPrice) }}đ <span class="text-red-300 line-through" v-if="item.discountAmount && item.discountAmount > 0"> $45.00</span></p>
                                             <p class="text-sm leading-6 text-gray-800">x{{ item.quantity }}</p>
-                                            <p class="text-sm font-semibold leading-6 text-gray-800">{{ displayPrice(item.totalAmount) }} đ</p>
+                                            <p class="text-sm font-semibold leading-6 text-gray-800">{{ displayPrice(item.totalAmount) }}đ</p>
                                         </div>
                                     </div>
                                 </div>

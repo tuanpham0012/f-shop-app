@@ -35,4 +35,12 @@ namespace ShopAppApi.Request
         [Required]
         public int Quantity { get; set; }
     }
+
+    public class ChangeOrderStatusRequest
+    {
+        public long? Id { get; set; }
+        [Required]
+        public byte Status { get; set; }
+        public string? Note { get; set; }
+    }
 }

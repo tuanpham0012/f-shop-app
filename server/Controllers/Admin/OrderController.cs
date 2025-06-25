@@ -45,5 +45,18 @@ namespace ShopAppApi.Controllers.Admin
                 return BadRequest(new ErrorResponse(422, ex.Message, ex.ToString()));
             }
         }
+        [HttpPost("change-order-status")]
+        public IActionResult ChangeOrderStatus(ChangeOrderStatusRequest request)
+        {
+            try
+            {
+                repository.ChangeOrderStatus(request);
+                return Ok(new SuccessResponse(200, "Cập nhật thành công"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponse(422, ex.Message, ex.ToString()));
+            }
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace ShopAppApi.Repositories.Orders
         public Task Update(long Id, UpdateMenuRequest menu);
         Task<OrderVM> Show(long Id);
         Task<List<OrderDetailVM>> GetOrderDetails(long OrderId);
+        public void ChangeOrderStatus(ChangeOrderStatusRequest request);
     }
 }
