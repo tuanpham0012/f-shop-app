@@ -17,6 +17,7 @@
                         <span class="text-sm font-semibold me-2">{{ `${info?.name} (${info?.phone})` }}</span>
                         <span class="checkout-label text-sm"> <i class="fa-solid fa-location-dot"></i> {{ info?.address }} <span class="badge text-bg-primary">Mặc định</span></span>
                     </div>
+                    <button @click="showAddressModal = true" class="open-modal-btn">Mở Quản Lý Địa Chỉ</button>
                 </div>
                 <div class="col-span-12 grid grid-cols-24 gap-3 p-2 pt-0 bg-white rounded-lg">
                     <div class="col-span-24 p-2">
@@ -116,6 +117,7 @@
         </div>
     </div>
     <div class="mb-5"></div>
+    <EditAddressModal v-if="showAddressModal" />
 </template>
 <script setup lang="ts">
 import { onBeforeMount, computed, ref, watch, reactive } from "vue";
@@ -125,6 +127,7 @@ import { useCommonStore } from "@/stores/common";
 import { useAuthStore } from "@/stores/auth";
 import { displayPrice } from "@/services/utils";
 import { successMessage } from "@/helpers/toast";
+import EditAddressModal from "@/components/address-components/EditAddress.vue";
 const cartStore = useCartStore();
 const commonStore = useCommonStore();
 const authStore = useAuthStore();
@@ -139,12 +142,13 @@ const orderInfo = reactive({
     shippingUnitId: 1,
     paymentMethodId: 1,
     voucher: [],
-    note: ''
+    note: "",
 });
 
 const checkoutElm = ref<any>(null);
 const stopElm = ref<any>(0);
 const stopPoint = ref<any>(null);
+const showAddressModal = ref(false);
 
 const info = computed(() => authStore.$state.info);
 

@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('product_comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->integer('rate')->default(5);
-            $table->text('comment')->nullable();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('email', 100)->nullable();
-            $table->string('name')->nullable();
+            $table->foreignId('sku_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
+            $table->integer('rating')->default(5);
+            $table->string('product_info')->default(5);
+            $table->text('content')->nullable();
+            $table->integer('likes')->nullable();
+            $table->text('seller_response')->nullable();
             $table->timestamps();
         });
     }

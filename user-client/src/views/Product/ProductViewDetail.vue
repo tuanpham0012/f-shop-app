@@ -87,7 +87,6 @@
                         <span class="flex justify-center items-center text-success" v-if="!product.soldOut">Còn hàng</span>
                         <span class="flex justify-center items-center text-danger" v-else>Hết hàng</span>
                     </div>
-                    {{ skuSelect }}
                     <div class="mb-2 bg-gray-100 flex gap-3 p-3 rounded-sm">
                         <span class="text-xl text-primary font-medium">{{ displayPrice(skuSelect?.price ?? product.price) + "đ" }}</span>
                         <span class="text-base text-gray-400 font-normal line-through">{{ displayPrice(skuSelect?.price ?? product.price) + "đ" }}</span>
@@ -157,18 +156,15 @@
                 </div>
             </div>
             <div class="container-lg col-span-12 mt-4 bg-white mb-6">
-                <div class="product-details-tab">
-                    <ul class="nav nav-pills justify-center" role="tablist">
-                        <li class="nav-item cursor-pointer" v-for="(item, index) in tabViews" :key="index" @click="tabViewIndex = item.id">
-                            <a class="inline-flex gap-3 items-center justify-center p-3 nav-link" :class="{ active: tabViewIndex == item.id }"><i :class="item.icon"></i>{{ item.label }}</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="p-5">
-                            <ProductDescription :alias="$route.params.productCode" v-if="tabViewIndex == 1" />
-                            <div class="Comment" v-if="tabViewIndex == 2">this is comment tab</div>
-                        </div>
-                    </div>
+                <div class="p-5">
+                    <ProductDescription :alias="$route.params.productCode" />
+                </div>
+            </div>
+            <div class="container-lg col-span-12 mt-4 bg-white mb-6">
+                <div class="p-5">
+                    <h3 class="page-title">ĐÁNH GIÁ SẢN PHẨM</h3>
+                    <RatingOverview />
+                    <ReviewList />
                 </div>
             </div>
         </div>
@@ -193,6 +189,8 @@ import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import ProductDescription from "./ProductDescription.vue";
 import LoadingComponent from "@/components/LoadingComponent.vue";
 import { useCartStore } from "@/stores/cart";
+import RatingOverview from "@/components/product-components/RatingOverview.vue";
+import ReviewList from "@/components/product-components/ReviewList.vue";
 
 const route = useRoute();
 const productStore = useProductStore();
@@ -214,7 +212,7 @@ const tabViews = reactive([
     },
     {
         id: 2,
-        label: "Đánh giá",
+        label: "ĐÁNH GIÁ SẢN PHẨM",
         icon: "fa-solid fa-comment-dots",
     },
 ]);
@@ -257,8 +255,7 @@ const selectOption = (value: any) => {
     if (index >= 0) {
         oldValue = selected.value[index].optionValueId;
         selected.value.splice(index, 1);
-        if(oldValue == item.optionValueId)
-        return
+        if (oldValue == item.optionValueId) return;
     }
     selected.value.push(item);
     skus.value.every((sku: any) => {
@@ -291,7 +288,6 @@ watch(
     (newValue) => {
         if (skus.value.length == 1) skuSelect.value = skus.value[0];
         console.log(skus.value[0]);
-        
     },
     { deep: true }
 );

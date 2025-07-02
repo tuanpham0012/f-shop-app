@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('provinces', function (Blueprint $table) {
             $table->id();
             $table->string('country_code',255)->nullable();
+            $table->string('province_code',255)->nullable();
+            $table->string('place_type',255)->nullable();
             $table->string('name',100)->nullable();
+            $table->string('short_name',100)->nullable();
             $table->string('lat',255)->nullable();
             $table->string('lng',255)->nullable();
             $table->string('zipcode',255)->nullable();

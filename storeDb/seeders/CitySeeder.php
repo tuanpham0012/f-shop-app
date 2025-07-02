@@ -5,17 +5,46 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\File;
 
 class CitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        DB::table('cities')->insert([
+  /**
+   * Run the database seeds.
+   *
+   * @return void
+   */
+  public function run()
+  {
+    $path = resource_path('data.json');
+
+    if (!File::exists($path)) {
+      abort(404);
+    }
+
+    // Đọc và chuyển đổi
+    $jsonString = File::get($path);
+    $data = json_decode($jsonString, true);
+    
+    foreach ($data as $item) {
+      $provinceId = DB::table('provinces')->insertGetId([
+        'country_code' => null,
+        'name' => $item['name'],
+        'short_name' => $item['place_type'] && $item['place_type'] === 'Tỉnh' ? 'Tỉnh ' . $item['short_name'] : $item['short_name'],
+        'zipcode' => $item['zipcode'] ?? null,
+        'province_code' => $item['code'] ?? null,
+        'place_type' => $item['place_type'] ?? null
+      ]);
+      foreach($item['wards'] as $ward) {
+        DB::table('wards')->insert([
+          'ward_code' => $ward['ward_code'],
+          'name' => $ward['name'],
+          'short_name' => $ward['name'],
+          'province_id' => $provinceId
+        ]);
+      }
+    }
+    /*DB::table('cities')->insert([
           [
             "country_code" => "VN",
             "name" => "Hà Nội",
@@ -584,5 +613,6 @@ class CitySeeder extends Seeder
             "country_id" => 244
           ]
         ]);
-    }
+        */
+  }
 }
