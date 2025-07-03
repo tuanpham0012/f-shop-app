@@ -120,5 +120,91 @@ namespace ShopAppApi.Repositories.RepoCustomer
             }
 
         }
+
+        public async Task<DeliveryAddress> CreateDelivery(DeliveryRequest request)
+        {
+            if (request.Default == true)
+            {
+                // Set all other addresses to not default
+                var existingDefault = _context.DeliveryAddresses
+                    .Where(d => d.CustomerId == request.CustomerId && d.Default == true)
+                    .ToList();
+
+                foreach (var address in existingDefault)
+                {
+                    address.Default = false;
+                }
+                await _context.SaveChangesAsync();
+            }
+            var deliveryAddress = new DeliveryAddress
+            {
+                FullName = request.FullName,
+                Address = request.Address,
+                Phone = request.Phone,
+                ProvinceId = request.ProvinceId,
+                WardId = request.WardId,
+                Default = request.Default,
+                CustomerId = request.CustomerId ?? 0
+            };
+            _context.DeliveryAddresses.Add(deliveryAddress);
+            await _context.SaveChangesAsync();
+            return deliveryAddress;
+        }
+
+        public async Task<List<DeliveryAddressVM>> GetDelivery(long customerId)
+        {
+            return await _context.DeliveryAddresses
+                .Include(d => d.Province)
+                .Include(d => d.Ward)
+                .Where(d => d.CustomerId == customerId)
+                .Select(d => new DeliveryAddressVM
+                {
+                    Id = d.Id,
+                    CustomerId = d.CustomerId,
+                    FullName = d.FullName,
+                    Address = d.Address,
+                    Phone = d.Phone,
+                    ProvinceId = d.ProvinceId,
+                    WardId = d.WardId,
+                    Lat = d.Lat,
+                    Lng = d.Lng,
+                    Default = d.Default,
+                    DetailAddress = $"{d.Address},{(d.Province != null ? d.Province.Name ?? "" : "")},{(d.Ward != null ? d.Ward.Name ?? "" : "")}, ",
+                })
+                .ToListAsync();
+        }
+
+        public async Task<DeliveryAddress> UpdateDelivery(long customerId, DeliveryRequest request)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            var deliveryAddress = await _context.DeliveryAddresses.FirstOrDefaultAsync(d => d.Id == request.CustomerId && d.CustomerId == customerId);
+            if (deliveryAddress != null)
+            {
+                deliveryAddress.FullName = request.FullName;
+                deliveryAddress.Address = request.Address;
+                deliveryAddress.Phone = request.Phone;
+                deliveryAddress.ProvinceId = request.ProvinceId;
+                deliveryAddress.WardId = request.WardId;
+                deliveryAddress.Default = request.Default;
+
+                if (request.Default == true)
+                {
+                    // Set all other addresses to not default
+                    var existingDefault = _context.DeliveryAddresses
+                        .Where(d => d.CustomerId == customerId && d.Default == true && d.Id != deliveryAddress.Id)
+                        .ToList();
+
+                    foreach (var address in existingDefault)
+                    {
+                        address.Default = false;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            return deliveryAddress;
+        }
+
     }
 }

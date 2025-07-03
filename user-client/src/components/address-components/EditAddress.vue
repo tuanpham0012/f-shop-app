@@ -10,15 +10,15 @@
 
             <div class="modal-body">
                 <div class="address-list">
-                    <div v-for="address in addresses" :key="address.id" class="address-item">
+                    <div v-for="address in deliveryAddresses" :key="address.id" class="address-item" :class="{ 'default-address': address.default }">
                         <div class="address-icon">
                             <div class="location-dot"></div>
                         </div>
                         <div class="address-content">
-                            <div class="address-name">{{ address.name }}</div>
+                            <div class="address-name">{{ address.fullName }}</div>
                             <div class="address-phone">{{ address.phone }}</div>
-                            <div class="address-detail">{{ address.detail }}</div>
-                            <span v-if="address.isDefault" class="default-badge">Mặc định</span>
+                            <div class="address-detail">{{ address.detailAddress }}</div>
+                            <span v-if="address.default" class="default-badge">Mặc định</span>
                         </div>
                         <button class="update-btn">Cập nhật</button>
                     </div>
@@ -44,119 +44,109 @@
             </div>
 
             <div class="modal-body">
-                <form @submit.prevent="submitForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input v-model="newAddress.fullName" type="text" placeholder="Họ và tên" class="form-input" required />
-                        </div>
-                        <div class="form-group">
-                            <input v-model="newAddress.phone" type="tel" placeholder="Số điện thoại" class="form-input" required />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <select v-model="newAddress.location" class="form-select" required>
-                                <option value="">Tỉnh/Thành phố</option>
-                                <option value="hanoi">Hà Nội</option>
-                                <option value="hochiminh">Hồ Chí Minh</option>
-                                <option value="danang">Đà Nẵng</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select v-model="newAddress.location" class="form-select" required>
-                                <option value="">Phường/Xã</option>
-                                <option value="phuong1">Phường 1</option>
-                                <option value="phuong2">Phường 2</option>
-                                <option value="phuong3">Phường 3</option>
-                            </select>
-                        </div>
-                    </div>
-
+                <div class="form-row">
                     <div class="form-group">
-                        <textarea v-model="newAddress.detailAddress" placeholder="Địa chỉ cụ thể" class="form-textarea" rows="3" required></textarea>
+                        <input v-model="newAddress.fullName" type="text" placeholder="Họ và tên" class="form-input" required />
                     </div>
-
-                    <button type="button" class="add-location-btn">
-                        <span class="plus-icon">+</span>
-                        Thêm vị trí
-                    </button>
-
-                    <div class="address-type">
-                        <span class="address-type-label">Loại địa chỉ:</span>
-                        <div class="address-type-options">
-                            <label class="address-type-option">
-                                <input type="radio" v-model="newAddress.type" value="home" name="addressType" />
-                                <span class="radio-label">Nhà Riêng</span>
-                            </label>
-                            <label class="address-type-option">
-                                <input type="radio" v-model="newAddress.type" value="office" name="addressType" />
-                                <span class="radio-label">Văn Phòng</span>
-                            </label>
-                        </div>
+                    <div class="form-group">
+                        <input v-model="newAddress.phone" type="tel" placeholder="Số điện thoại" class="form-input" required />
                     </div>
-                </form>
+                </div>
+                <!-- <div class="form-row">
+                    <div class="form-group">
+                        <select v-model="newAddress.provinceId" class="form-select" required>
+                            <option :value="null">Tỉnh/Thành phố</option>
+                            <option v-for="(item, index) in provinces" :key="index" :value="item.id">{{ item.shortName }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select v-model="newAddress.wardId" class="form-select" required>
+                            <option :value="null">Phường/Xã</option>
+                            <option v-for="(item, index) in wards" :key="index" :value="item.id">{{ item.name }}</option>
+                        </select>
+                    </div>
+                </div> -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <SelectSearch v-model="newAddress.provinceId" :listData="provinces" placeholder="Tỉnh/Thành phố" display="shortName" ref="provinceSelect" required />
+                    </div>
+                    <div class="form-group">
+                        <SelectSearch v-model="newAddress.wardId" :listData="wards" placeholder="Phường/Xã" display="shortName" ref="wardSelect" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <textarea v-model="newAddress.address" placeholder="Địa chỉ cụ thể" class="form-textarea" rows="3" required></textarea>
+                </div>
+
+                <button type="button" class="add-location-btn">
+                    <span class="plus-icon">+</span>
+                    Thêm vị trí
+                </button>
             </div>
-
+            <div class="form-group px-5">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" v-model="newAddress.default" id="checkChecked" />
+                    <label class="form-check-label" for="checkChecked"> Đặt làm địa chỉ mặc định </label>
+                </div>
+            </div>
             <div class="modal-footer">
                 <button @click="backToList" class="cancel-btn">Trở Lại</button>
-                <button @click="submitForm" class="confirm-btn">Hoàn thành</button>
+                <button @click="save" class="confirm-btn">Hoàn thành</button>
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, computed, onBeforeMount, watch } from "vue";
+import { useCommonStore } from "@/stores/common";
+import { useUserStore } from "@/stores/user";
+import SelectSearch from "../input-form/SelectSearch.vue";
+import { successMessage } from "@/helpers/toast";
+
+const commonStore = useCommonStore();
+const userStore = useUserStore();
 
 interface Address {
-    id: number;
-    name: string;
-    phone: string;
-    detail: string;
-    isDefault: boolean;
-}
-
-interface NewAddress {
+    id: number | null;
     fullName: string;
     phone: string;
-    location: string;
+    address: string;
     detailAddress: string;
-    type: string;
+    default: boolean;
+    provinceId: number | null;
+    wardId: number | null;
 }
 
 const showAddressModal = ref(false);
 const currentView = ref<"list" | "add">("list");
 
-const addresses = ref<Address[]>([
-    {
-        id: 1,
-        name: "Phạm Quốc Tuấn",
-        phone: "(+84) 983 776 901",
-        detail: "Công Ty Cp Fm Quảng Ich, Số 46, Gamuda City\nPhường Yên Sở, Quận Hoàng Mai, Hà Nội",
-        isDefault: true,
-    },
-    {
-        id: 2,
-        name: "Phạm Quốc Tuấn",
-        phone: "(+84) 983 776 901",
-        detail: "Số 111, Đường Khương Đình\nPhường Thượng Đình, Quận Thanh Xuân, Hà Nội",
-        isDefault: false,
-    },
-]);
+const provinces = computed<any>(() => commonStore.provinces.data);
+const wards = computed<any>(() => commonStore.wards.data);
 
-const newAddress = reactive<NewAddress>({
+const deliveryAddresses = computed(() => userStore.deliveryAddresses.data);
+
+const wardSelect = ref<any>(null);
+
+const newAddress = reactive<Address>({
+    id: null,
     fullName: "",
     phone: "",
-    location: "",
+    address: "",
+    provinceId: null,
+    wardId: null,
     detailAddress: "",
-    type: "home",
+    default: deliveryAddresses.value.length > 0 ? false : true,
 });
 
 const showAddAddressForm = () => {
     currentView.value = "add";
+    commonStore.getProvinces();
 };
 
 const backToList = () => {
     currentView.value = "list";
+    userStore.getListDeliveryAddresses({ page: 1, limit: 10 });
 };
 
 const closeModal = () => {
@@ -172,28 +162,43 @@ const closeModal = () => {
     });
 };
 
-const submitForm = () => {
-    // Add validation logic here
-    if (newAddress.fullName && newAddress.phone && newAddress.location && newAddress.detailAddress) {
-        // Add new address to list
-        addresses.value.push({
-            id: addresses.value.length + 1,
-            name: newAddress.fullName,
-            phone: newAddress.phone,
-            detail: `${newAddress.detailAddress}\n${newAddress.location}`,
-            isDefault: false,
+const save = async () => {
+    // Handle save logic here
+    await userStore
+        .createDeliveryAddresses(newAddress)
+        .then(() => {
+            console.log("Address saved successfully");
+            successMessage("Địa chỉ đã được lưu thành công!");
+        })
+        .catch((error) => {
+            console.error("Error saving address:", error);
         });
-
-        // Close modal and reset
-        closeModal();
-        alert("Địa chỉ đã được thêm thành công!");
-    } else {
-        alert("Vui lòng điền đầy đủ thông tin!");
-    }
+    // Reset form and go back to list view
+    backToList();
 };
+
+watch(
+    () => newAddress.provinceId,
+    (newProvinceId) => {
+        if (newProvinceId) {
+            commonStore.getWards(newProvinceId);
+            setTimeout(() => {
+                console.log(wardSelect.value);
+                wardSelect.value.toggleShow(true);
+            }, 100);
+        } else {
+            commonStore.wards.data = [];
+        }
+    }
+);
+
+onBeforeMount(() => {
+    commonStore.getProvinces();
+    userStore.getListDeliveryAddresses({ page: 1, limit: 10 });
+});
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .open-modal-btn:hover {
     background-color: #e55a2b;
 }
@@ -263,12 +268,16 @@ const submitForm = () => {
 
 .address-list {
     margin-bottom: 20px;
+    .default-address{
+        background-color: #f0f0f0;
+    }
 }
 
 .address-item {
     display: flex;
     align-items: flex-start;
-    padding: 16px 0;
+    padding: 16px 12px;
+    border-radius: 8px;
     border-bottom: 1px solid #f0f0f0;
 }
 
@@ -284,7 +293,7 @@ const submitForm = () => {
 .location-dot {
     width: 12px;
     height: 12px;
-    background-color: #ff6b35;
+    background-color: var(--bs-primary);
     border-radius: 50%;
 }
 
@@ -313,7 +322,7 @@ const submitForm = () => {
 
 .default-badge {
     display: inline-block;
-    background-color: #ff6b35;
+    background-color: var(--bs-primary);
     color: white;
     font-size: 12px;
     padding: 2px 8px;
@@ -352,8 +361,8 @@ const submitForm = () => {
 }
 
 .add-address-btn:hover {
-    border-color: #ff6b35;
-    color: #ff6b35;
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
 }
 
 .plus-icon {
@@ -481,7 +490,7 @@ const submitForm = () => {
 }
 
 .confirm-btn {
-    background-color: #ff6b35;
+    background-color: var(--bs-primary);
     border: none;
     color: white;
 }

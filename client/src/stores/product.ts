@@ -22,7 +22,7 @@ export const useProductStore = defineStore("product", {
             },
             entry: null as any,
             errors: null,
-            descriptionProduct: null as any,
+            descriptionProduct: '' as any,
             searchProduct: {
                 code: 200,
                 message: "",

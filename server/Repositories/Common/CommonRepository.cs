@@ -32,6 +32,28 @@ namespace ShopAppApi.Repositories.Common
             return cachedData ?? [];
         }
 
+        public async Task<List<Province>> Provinces()
+        {
+            string cacheKey = "Provinces";
+            var cachedData = await cache.GetOrCreateAsync(cacheKey, async () =>
+            {
+                var provinces = await context.Provinces.ToListAsync();
+                return provinces;
+            });
+            return cachedData ?? [];
+        }
+
+        public async Task<List<Ward>> Wards(long provinceId)
+        {
+            string cacheKey = $"Wards_{provinceId}";
+            var cachedData = await cache.GetOrCreateAsync(cacheKey, async () =>
+            {
+                var wards = await context.Wards.Where(w => w.ProvinceId == provinceId).ToListAsync();
+                return wards;
+            });
+            return cachedData ?? [];
+        }
+
         public async Task<string> GetServerName()
         {
             var connection = context.Database.GetDbConnection();

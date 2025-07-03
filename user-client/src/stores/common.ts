@@ -7,6 +7,7 @@ import {
     _destroy,
 } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
+import { provide } from "vue";
 
 export const useCommonStore = defineStore("common", {
     state: () => {
@@ -18,6 +19,18 @@ export const useCommonStore = defineStore("common", {
                 meta: null,
             },
             shippingUnits: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null,
+            },
+            provinces: {
+                code: 200,
+                message: "",
+                data: [],
+                meta: null,
+            },
+            wards: {
                 code: 200,
                 message: "",
                 data: [],
@@ -40,6 +53,24 @@ export const useCommonStore = defineStore("common", {
             await _getList(`${apiUrl}/master-data/shipping-units`, null)
                 .then((res) => {
                     this.shippingUnits = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getProvinces() {
+            await _getList(`${apiUrl}/master-data/provinces`, null)
+                .then((res) => {
+                    this.provinces = res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        async getWards(provinceId: number) {
+            await _getList(`${apiUrl}/master-data/wards/${provinceId}`, null)
+                .then((res) => {
+                    this.wards = res.data;
                 })
                 .catch((err) => {
                     console.log(err);

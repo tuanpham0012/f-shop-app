@@ -38,6 +38,35 @@ namespace ShopAppApi.Controllers.User
             }
 
         }
+
+        [HttpGet("provinces")]
+        public async Task<IActionResult> GetProvinces()
+        {
+            try
+            {
+                var entries = await repository.Provinces();
+                return Ok(new ResponseCollection<Province>(entries));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpGet("wards/{provinceId}")]
+        public async Task<IActionResult> GetWards(long provinceId)
+        {
+            try
+            {
+                var entries = await repository.Wards(provinceId);
+                return Ok(new ResponseCollection<Ward>(entries));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         
         [HttpGet("server-name")]
         public async Task<IActionResult> GetSQLServerName()

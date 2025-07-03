@@ -33,6 +33,8 @@ public partial class Sku
 
     public virtual Product Product { get; set; } = null!;
 
+    public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
+
     public virtual ICollection<ProductWarehouse> ProductWarehouses { get; set; } = new List<ProductWarehouse>();
 
     public virtual ICollection<Variant> Variants { get; set; } = new List<Variant>();
