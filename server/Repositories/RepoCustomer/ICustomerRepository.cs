@@ -13,8 +13,9 @@ namespace ShopAppApi.Repositories.RepoCustomer
         Task Update(int id, UpdateCustomerRequest customer);
         Boolean Delete(int id);
 
-        Task<DeliveryAddress> CreateDelivery(DeliveryRequest request);
+        void CreateDelivery(DeliveryRequest request);
         Task<List<DeliveryAddressVM>> GetDelivery(long customerId);
-        Task<DeliveryAddress> UpdateDelivery(long customerId, DeliveryRequest request);
+        Task<DeliveryAddressVM> Show(long deliveryId);
+        void UpdateDelivery(long customerId, DeliveryRequest request);
     }
 }

@@ -121,7 +121,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
 
         }
 
-        public async Task<DeliveryAddress> CreateDelivery(DeliveryRequest request)
+        public void CreateDelivery(DeliveryRequest request)
         {
             if (request.Default == true)
             {
@@ -134,7 +134,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
                 {
                     address.Default = false;
                 }
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             var deliveryAddress = new DeliveryAddress
             {
@@ -147,8 +147,7 @@ namespace ShopAppApi.Repositories.RepoCustomer
                 CustomerId = request.CustomerId ?? 0
             };
             _context.DeliveryAddresses.Add(deliveryAddress);
-            await _context.SaveChangesAsync();
-            return deliveryAddress;
+            _context.SaveChanges();
         }
 
         public async Task<List<DeliveryAddressVM>> GetDelivery(long customerId)
@@ -174,10 +173,11 @@ namespace ShopAppApi.Repositories.RepoCustomer
                 .ToListAsync();
         }
 
-        public async Task<DeliveryAddress> UpdateDelivery(long customerId, DeliveryRequest request)
+        public void UpdateDelivery(long id, DeliveryRequest request)
         {
             using var transaction = _context.Database.BeginTransaction();
-            var deliveryAddress = await _context.DeliveryAddresses.FirstOrDefaultAsync(d => d.Id == request.CustomerId && d.CustomerId == customerId);
+            var deliveryAddress = _context.DeliveryAddresses.FirstOrDefault(d => d.Id == id);
+            Console.WriteLine($"DeliveryAddress: {id}");
             if (deliveryAddress != null)
             {
                 deliveryAddress.FullName = request.FullName;
@@ -186,12 +186,13 @@ namespace ShopAppApi.Repositories.RepoCustomer
                 deliveryAddress.ProvinceId = request.ProvinceId;
                 deliveryAddress.WardId = request.WardId;
                 deliveryAddress.Default = request.Default;
-
+                _context.SaveChanges();
+                Console.WriteLine($"DeliveryAddress: {deliveryAddress.FullName}");
                 if (request.Default == true)
                 {
                     // Set all other addresses to not default
                     var existingDefault = _context.DeliveryAddresses
-                        .Where(d => d.CustomerId == customerId && d.Default == true && d.Id != deliveryAddress.Id)
+                        .Where(d => d.Default == true && d.Id != deliveryAddress.Id)
                         .ToList();
 
                     foreach (var address in existingDefault)
@@ -200,10 +201,39 @@ namespace ShopAppApi.Repositories.RepoCustomer
                     }
                 }
 
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                _context.SaveChanges();
+                transaction.Commit();
             }
-            return deliveryAddress;
+        }
+
+        public async Task<DeliveryAddressVM> Show(long deliveryId)
+        {
+            var result = await _context.DeliveryAddresses
+                .Where(d => d.Id == deliveryId)
+                .Select(d => new DeliveryAddressVM
+                {
+                    Id = d.Id,
+                    CustomerId = d.CustomerId,
+                    FullName = d.FullName,
+                    Address = d.Address,
+                    Phone = d.Phone,
+                    ProvinceId = d.ProvinceId,
+                    WardId = d.WardId,
+                    Lat = d.Lat,
+                    Lng = d.Lng,
+                    Default = d.Default,
+                    DetailAddress = $"{d.Address},{(d.Province != null ? d.Province.Name ?? "" : "")},{(d.Ward != null ? d.Ward.Name ?? "" : "")}, ",
+                })
+                .FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                // Return a new DeliveryAddressVM or throw an exception as per your application's needs
+                // Here, returning a new empty DeliveryAddressVM
+                return new DeliveryAddressVM();
+            }
+
+            return result;
         }
 
     }

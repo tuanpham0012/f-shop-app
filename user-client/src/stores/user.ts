@@ -11,13 +11,13 @@ export const useUserStore = defineStore("user", {
                 data: [] as any[],
                 meta: null as any,
             },
-            deliveryAddresse: null as any,
+            deliveryAddress: null as any,
         };
     },
 
     actions: {
         async getListDeliveryAddresses(query: any) {
-            await _getList(`${apiUrl}/user/delivery/get`, query)
+            await _getList(`${apiUrl}/user/delivery-address/get-list`, query)
                 .then((res) => {
                     this.deliveryAddresses = res.data;
                 })
@@ -26,15 +26,19 @@ export const useUserStore = defineStore("user", {
                 });
         },
         async createDeliveryAddresses(data: any) {
-            return await _create(`${apiUrl}/user/delivery/create`, data);
+            return await _create(`${apiUrl}/user/delivery-address/create`, data);
         },
         async updateDeliveryAddresses(id:any, data: any) {
-            return await _update(`${apiUrl}/user/delivery/${id}`, data);
+            return await _update(`${apiUrl}/user/delivery-address/update/${id}`, data);
         },
-        async show(id: any) {
-            await _show(`${apiUrl}/user/delivery/${id}`)
+        async getDeliveryAddress(id: any) {
+            if(!id) {
+                this.deliveryAddress = null;
+                return;
+            }
+            await _show(`${apiUrl}/user/delivery-address/edit/${id}`)
                 .then((res) => {
-                    this.deliveryAddresse = res.data.data;
+                    this.deliveryAddress = res.data.data;
                 })
                 .catch((err) => {
                     console.log(err);

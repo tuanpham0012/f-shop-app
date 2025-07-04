@@ -58,13 +58,7 @@ class ProductSeeder extends Seeder
             DB::table('products')->insert($products);
         }
 
-        $attributes = [
-            'Màu sắc' => ['Đỏ', 'Xanh', 'Vàng'],
-            'Kích thước' => ['S', 'M'],
-            'Chất liệu' => ['Cotton', 'Lụa']
-        ];
-
-        $getProducts = DB::table('products')->skip(1000)->take(15)->get();
+        $getProducts = DB::table('products')->get();
         foreach ($getProducts as $product) {
             $randomKeys = array_rand($images, rand(5, 8));
             $randomProducts = array_intersect_key($images, array_flip($randomKeys));
@@ -83,17 +77,18 @@ class ProductSeeder extends Seeder
             }
             DB::table('product_images')->insert($productImg);
 
-            $this->generateVariants($product, $attributes);
+            $this->generateVariants($product);
         }
     }
 
-    public function generateVariants(mixed $product, array $attributes): void
+    public function generateVariants(mixed $product): void
     {
         $attributes = [
             'Màu sắc' => ['Đỏ', 'Xanh', 'Vàng'],
             'Kích thước' => ['S', 'M'],
             'Chất liệu' => ['Cotton', 'Lụa']
         ];
+        
         $randomKeys = array_rand($attributes, 2);
         $randomAttributes = array_intersect_key($attributes, array_flip($randomKeys));
         $optionIds = [];

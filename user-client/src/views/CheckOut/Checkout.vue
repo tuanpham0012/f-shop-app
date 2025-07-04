@@ -117,7 +117,7 @@
         </div>
     </div>
     <div class="mb-5"></div>
-    <EditAddressModal v-if="showAddressModal" />
+    <EditAddressModal v-if="showAddressModal" @close-modal="showAddressModal = false" />
 </template>
 <script setup lang="ts">
 import { onBeforeMount, computed, ref, watch, reactive } from "vue";

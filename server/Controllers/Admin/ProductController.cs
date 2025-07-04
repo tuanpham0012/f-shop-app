@@ -104,5 +104,19 @@ namespace ShopAppApi.Controllers.Admin
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("reset-data-elastic")]
+        public async Task<IActionResult> ResetDataElastic()
+        {
+            try
+            {
+                _repo.ResetDataElastic();
+                return Ok(new SuccessResponse(200, "Cập nhật thành công"));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

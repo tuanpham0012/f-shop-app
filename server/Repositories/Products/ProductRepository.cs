@@ -912,6 +912,29 @@ namespace ShopAppApi.Repositories.Products
             }
 
         }
+
+        public void ResetDataElastic()
+        {
+            elasticsearch.DeleteIndex(elsIndex);
+            var skus = _context.Skus.Include(s => s.Product).AsNoTracking().ToList();
+            foreach (var _sku in skus)
+            {
+                elasticsearch.CreateDocument<SkuVM>(elsIndex, new SkuVM
+                {
+                    Id = _sku.Id,
+                    ProductId = _sku.ProductId,
+                    Barcode = _sku.Barcode,
+                    Price = _sku.Price,
+                    Name = _sku.Name,
+                    ImagePath = fileHelper.GetLink(_sku.ImagePath),
+                    ImageCode = _sku.ImageCode,
+                    Stock = _sku.Stock,
+                    ProductBarcode = _sku.Product.Barcode,
+                    ProductName = _sku.Product.Name,
+                    ProductCode = _sku.Product.Code,
+                });
+            }
+        }
     }
 }
 

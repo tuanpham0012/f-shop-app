@@ -5,22 +5,22 @@
         <div v-if="currentView === 'list'" class="modal1" @click.stop>
             <div class="modal-header">
                 <h2>Địa Chỉ Của Tôi</h2>
-                <button @click="closeModal" class="close-btn">×</button>
+                <button @click="closeModal()" class="close-btn">×</button>
             </div>
 
             <div class="modal-body">
                 <div class="address-list">
-                    <div v-for="address in deliveryAddresses" :key="address.id" class="address-item" :class="{ 'default-address': address.default }">
+                    <div v-for="item in deliveryAddresses" :key="item.id" class="address-item" :class="{ 'default-address': item.default }">
                         <div class="address-icon">
                             <div class="location-dot"></div>
                         </div>
                         <div class="address-content">
-                            <div class="address-name">{{ address.fullName }}</div>
-                            <div class="address-phone">{{ address.phone }}</div>
-                            <div class="address-detail">{{ address.detailAddress }}</div>
-                            <span v-if="address.default" class="default-badge">Mặc định</span>
+                            <div class="address-name">{{ item.fullName }}</div>
+                            <div class="address-phone">{{ item.phone }}</div>
+                            <div class="address-detail">{{ item.detailAddress }}</div>
+                            <span v-if="item.default" class="default-badge">Mặc định</span>
                         </div>
-                        <button class="update-btn">Cập nhật</button>
+                        <button @click="showEditAddressForm(item.id)" class="update-btn">Cập nhật</button>
                     </div>
                 </div>
 
@@ -46,10 +46,10 @@
             <div class="modal-body">
                 <div class="form-row">
                     <div class="form-group">
-                        <input v-model="newAddress.fullName" type="text" placeholder="Họ và tên" class="form-input" required />
+                        <input v-model="address.fullName" type="text" placeholder="Họ và tên" class="form-input" required />
                     </div>
                     <div class="form-group">
-                        <input v-model="newAddress.phone" type="tel" placeholder="Số điện thoại" class="form-input" required />
+                        <input v-model="address.phone" type="tel" placeholder="Số điện thoại" class="form-input" required />
                     </div>
                 </div>
                 <!-- <div class="form-row">
@@ -68,15 +68,15 @@
                 </div> -->
                 <div class="form-row">
                     <div class="form-group">
-                        <SelectSearch v-model="newAddress.provinceId" :listData="provinces" placeholder="Tỉnh/Thành phố" display="shortName" ref="provinceSelect" required />
+                        <SelectSearch v-model="address.provinceId" :listData="provinces" placeholder="Tỉnh/Thành phố" display="shortName" ref="provinceSelect" required />
                     </div>
                     <div class="form-group">
-                        <SelectSearch v-model="newAddress.wardId" :listData="wards" placeholder="Phường/Xã" display="shortName" ref="wardSelect" required />
+                        <SelectSearch v-model="address.wardId" :listData="wards" placeholder="Phường/Xã" display="shortName" ref="wardSelect" required />
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <textarea v-model="newAddress.address" placeholder="Địa chỉ cụ thể" class="form-textarea" rows="3" required></textarea>
+                    <textarea v-model="address.address" placeholder="Địa chỉ cụ thể" class="form-textarea" rows="3" required></textarea>
                 </div>
 
                 <button type="button" class="add-location-btn">
@@ -86,7 +86,7 @@
             </div>
             <div class="form-group px-5">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" v-model="newAddress.default" id="checkChecked" />
+                    <input class="form-check-input" type="checkbox" v-model="address.default" id="checkChecked" />
                     <label class="form-check-label" for="checkChecked"> Đặt làm địa chỉ mặc định </label>
                 </div>
             </div>
@@ -106,6 +106,8 @@ import { successMessage } from "@/helpers/toast";
 
 const commonStore = useCommonStore();
 const userStore = useUserStore();
+
+const emit = defineEmits(["close-modal", "update-address-list"]);
 
 interface Address {
     id: number | null;
@@ -139,8 +141,17 @@ const newAddress = reactive<Address>({
     default: deliveryAddresses.value.length > 0 ? false : true,
 });
 
+const address = computed(() => userStore.deliveryAddress ?? newAddress);
+
 const showAddAddressForm = () => {
     currentView.value = "add";
+    userStore.getDeliveryAddress(null);
+    commonStore.getProvinces();
+};
+
+const showEditAddressForm = (id: number) => {
+    currentView.value = "add";
+    userStore.getDeliveryAddress(id);
     commonStore.getProvinces();
 };
 
@@ -150,41 +161,46 @@ const backToList = () => {
 };
 
 const closeModal = () => {
-    showAddressModal.value = false;
-    currentView.value = "list";
-    // Reset form
-    Object.assign(newAddress, {
-        fullName: "",
-        phone: "",
-        location: "",
-        detailAddress: "",
-        type: "home",
-    });
+    emit("close-modal");
 };
 
 const save = async () => {
     // Handle save logic here
-    await userStore
-        .createDeliveryAddresses(newAddress)
-        .then(() => {
-            console.log("Address saved successfully");
-            successMessage("Địa chỉ đã được lưu thành công!");
-        })
-        .catch((error) => {
-            console.error("Error saving address:", error);
-        });
+    if (address.value.id) {
+        // Update existing address
+        await userStore
+            .updateDeliveryAddresses(address.value.id, address.value)
+            .then(() => {
+                console.log("Address updated successfully");
+                successMessage("Địa chỉ đã được cập nhật thành công!");
+            })
+            .catch((error) => {
+                console.error("Error updating address:", error);
+            });
+    } else {
+        await userStore
+            .createDeliveryAddresses(address.value)
+            .then(() => {
+                console.log("Address saved successfully");
+                successMessage("Địa chỉ đã được lưu thành công!");
+            })
+            .catch((error) => {
+                console.error("Error saving address:", error);
+            });
+    }
+    userStore.getListDeliveryAddresses({ page: 1, limit: 10 });
     // Reset form and go back to list view
     backToList();
 };
 
 watch(
-    () => newAddress.provinceId,
+    () => address.value.provinceId,
     (newProvinceId) => {
         if (newProvinceId) {
             commonStore.getWards(newProvinceId);
             setTimeout(() => {
                 console.log(wardSelect.value);
-                wardSelect.value.toggleShow(true);
+                // wardSelect.value.toggleShow(true);
             }, 100);
         } else {
             commonStore.wards.data = [];
@@ -268,7 +284,7 @@ onBeforeMount(() => {
 
 .address-list {
     margin-bottom: 20px;
-    .default-address{
+    .default-address {
         background-color: #f0f0f0;
     }
 }

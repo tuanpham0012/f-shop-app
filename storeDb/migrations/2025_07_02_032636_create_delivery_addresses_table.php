@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('delivery_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->string('full_name', 500)->nullable();
             $table->string('address', 500)->nullable();
             $table->string('phone', 25)->nullable();
             $table->foreignId('province_id')->nullable()->constrained();
-            $table->foreignId('district_id')->nullable()->constrained();
             $table->foreignId('ward_id')->nullable()->constrained();
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
