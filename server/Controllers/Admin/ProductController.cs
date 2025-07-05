@@ -106,7 +106,7 @@ namespace ShopAppApi.Controllers.Admin
         }
 
         [HttpGet("reset-data-elastic")]
-        public async Task<IActionResult> ResetDataElastic()
+        public IActionResult ResetDataElastic()
         {
             try
             {
