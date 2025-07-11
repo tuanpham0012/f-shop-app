@@ -100,6 +100,6 @@ class DatabaseSeeder extends Seeder
                 "code" =>"hp"
             ],
         ]);
-        $this->call([PaymentMethodSeeder::class, ShippingUnitSeeder::class, MenuSeeder::class, CategorySeeder::class, SupplierSeeder::class, ProductSeeder::class, CustomerSeeder::class]);
+        $this->call([ CitySeeder::class, PaymentMethodSeeder::class, ShippingUnitSeeder::class, MenuSeeder::class, CategorySeeder::class, SupplierSeeder::class, ProductSeeder::class, CustomerSeeder::class]);
     }
 }

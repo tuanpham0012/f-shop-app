@@ -3,6 +3,7 @@ using ShopAppApi.Data;
 using ShopAppApi.Repositories.RepoCustomer;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.Admin
 {
@@ -16,7 +17,7 @@ namespace ShopAppApi.Controllers.Admin
         public async Task<IActionResult> Index([FromQuery] CustomerRequest request)
         {
             var entries = await _repo.GetAll(request);
-            return Ok(new ResponsePaginatedCollection<Customer>(entries, 201, ""));
+            return Ok(new ResponsePaginatedCollection<CustomerVM>(entries, 201, ""));
         }
         [HttpGet("{Id}")]
         public IActionResult Show(int Id)

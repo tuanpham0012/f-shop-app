@@ -42,4 +42,22 @@ namespace ShopAppApi.Request
         public byte Status { get; set; } = 0;
         public byte Gender { get; set; } = 0;
     }
+
+    public class DeliveryRequest
+    {
+        public long? CustomerId { get; set; }
+        [Required]
+        public string FullName { get; set; } = null!;
+
+        [Required]
+        public string Address { get; set; } = null!;
+        [Required]
+        public string Phone { get; set; } = null!;
+
+        [Required]
+        public long ProvinceId { get; set; }
+        [Required]
+        public long WardId { get; set; }
+        public bool? Default { get; set; }
+    }
 }

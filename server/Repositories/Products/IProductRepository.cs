@@ -20,5 +20,8 @@ namespace ShopAppApi.Repositories.Products
         Task<ProductVM> GetSkuProduct(long Id);
         Task<string?> GetDescriptionProduct(string Alias);
         void UpdateDesctionProduct(long Id, ProductDesRequest request);
+        Task<List<SkuVM>> SearchProduct(BaseRequest Request);
+
+        void ResetDataElastic();
     }
 }

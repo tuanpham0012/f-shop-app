@@ -17,12 +17,20 @@ export const useProductStore = defineStore("product", {
             entries: {
                 code: 200,
                 message: "",
-                data: [],
+                data: [] as any[],
                 meta: null as any,
             },
             entry: null as any,
             errors: null,
-            descriptionProduct: null as any,
+            descriptionProduct: '' as any,
+            searchProduct: {
+                code: 200,
+                message: "",
+                data: [] as any[],
+                meta: null as any,
+                loading: false,
+                loadFull: false,
+            },
         };
     },
 
@@ -88,6 +96,29 @@ export const useProductStore = defineStore("product", {
                             console.log(err);
                         });
                 },
+        async getListSearchProduct(search: any) {
+            if(this.searchProduct.loadFull) {
+                return;
+            }
+            this.searchProduct.loading = true;
+            if(!search || search.length < 1) {
+                return;
+            }
+            await _getList(`${adminUrl}/products/search`,  search)
+                .then((res:any) => {
+                    if(res.data.data.length > 0) {
+                        this.searchProduct.data.push(...res.data.data);
+                        this.searchProduct.loadFull = false;
+                    }else {
+                        this.searchProduct.loadFull = true;
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                }).finally(() => {
+                    this.searchProduct.loading = false;
+                });
+        },
     },
 });
 

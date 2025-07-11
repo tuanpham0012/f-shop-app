@@ -1,6 +1,6 @@
 <template lang="">
     <!-- <div class="description" id="reset-this-root" v-html="description"></div> -->
-    <div class="relative">
+    <div class="relative" v-if="description">
         <iframe
             v-if="description"
             :srcdoc="description"
@@ -32,18 +32,12 @@
 import { ref, computed, onBeforeMount, watch } from "vue";
 import { useProductStore } from "../../stores/product";
 const productStore = useProductStore();
-const props = defineProps({
-    alias: {
-        type: [String, Array],
-        default: "",
-    },
-});
 
 const iframe = ref<any>(null);
 
 const showMore = ref(false);
 
-const description = computed(() => productStore.$state.descriptionProduct.data);
+const description = computed(() => productStore.$state.descriptionProduct.data ?? "");
 
 const setIframeHeight = () => {
     let count = 0;

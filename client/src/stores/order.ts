@@ -28,7 +28,7 @@ export const useOrderStore = defineStore("order", {
                 });
         },
         async create(data: any) {
-            return await _create(`${apiUrl}/taxes`, data);
+            return await _create(`${adminUrl}/orders`, data);
         },
         async update(id: any, data: any) {
             return await _update(`${apiUrl}/taxes/${id}`, data);
@@ -57,5 +57,9 @@ export const useOrderStore = defineStore("order", {
         async delete(id: any) {
             return await _destroy(`${apiUrl}/taxes/${id}`);
         },
+
+        async changeOrderStatus(data: any) {
+            return await _create(`${adminUrl}/orders/change-order-status`, data);
+        }
     },
 });

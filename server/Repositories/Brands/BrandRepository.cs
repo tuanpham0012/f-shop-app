@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers;
 using ShopAppApi.Helpers.Interfaces;
-using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
+using ShopAppApi.Services.RedisCache;
 using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Products

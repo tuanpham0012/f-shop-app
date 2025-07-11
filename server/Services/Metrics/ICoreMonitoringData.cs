@@ -1,4 +1,4 @@
-﻿namespace ShopAppApi.Repositories.Metrics
+﻿namespace ShopAppApi.Services.Metrics
 {
     public interface ICoreMonitoringData
     {

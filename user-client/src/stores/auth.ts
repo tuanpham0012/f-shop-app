@@ -7,6 +7,7 @@ export const useAuthStore = defineStore("auth", {
     return {
       token: null as string | null,
       info: null as any,
+      countTryLogin: 0,
     };
   },
 
@@ -17,11 +18,17 @@ export const useAuthStore = defineStore("auth", {
             this.token = res.data.data.token;
             if (this.token) {
               localStorage.setItem("token", this.token);
+              this.countTryLogin = 0;
             }
           })
           .catch((err) => {
             console.log(err);
+            this.countTryLogin++;
           });
+    },
+
+    async socialLogin() {
+      await _getList(`${apiUrl}/auth/login-google`, {})
     },
     async getInfo() {
       await _show(`${apiUrl}/auth/info`)

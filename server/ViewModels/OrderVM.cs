@@ -53,4 +53,12 @@ public partial class OrderVM
     public string TextStatus { get; set; } = string.Empty;
 
     public int ProductCount { get; set; }
+    public List<OrderStatus> OrderStatusesChange { get; set; } = new List<OrderStatus>();
+    public bool ShowChangeStatus { get; set; } = false;
+}
+
+public partial class OrderStatus
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
 }

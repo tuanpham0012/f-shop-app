@@ -21,9 +21,9 @@ namespace ShopAppApi.Controllers.User
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
-        
+
         [HttpGet("shipping-units")]
         public async Task<IActionResult> GetShippingUnit()
         {
@@ -36,7 +36,53 @@ namespace ShopAppApi.Controllers.User
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
+
+        [HttpGet("provinces")]
+        public async Task<IActionResult> GetProvinces()
+        {
+            try
+            {
+                var entries = await repository.Provinces();
+                return Ok(new ResponseCollection<Province>(entries));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+        [HttpGet("wards/{provinceId}")]
+        public async Task<IActionResult> GetWards(long provinceId)
+        {
+            try
+            {
+                var entries = await repository.Wards(provinceId);
+                return Ok(new ResponseCollection<Ward>(entries));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpGet("server-name")]
+        public async Task<IActionResult> GetSQLServerName()
+        {
+            try
+            {
+                var entries = await repository.GetServerName();
+                Console.WriteLine(entries);
+                return Ok(entries);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
     }
 }

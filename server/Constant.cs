@@ -6,5 +6,15 @@ namespace ShopAppApi
         public const string UserMenuCache = "UserMenuCache";
         public const string CategoryCache = "CategoryCache";
         public const string BrandCache = "BrandCache";
+
+        public enum OrderStatus : byte
+        {
+            Pending = 0,
+            Processing = 1,
+            Shipped = 2,
+            Delivered = 3,
+            Cancelled = 4,
+            Returned = 5,
+        }
     }
 }

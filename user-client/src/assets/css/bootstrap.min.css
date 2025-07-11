@@ -5361,6 +5361,7 @@ fieldset:disabled .btn {
     flex-wrap: wrap;
     padding: var(--bs-breadcrumb-padding-y) var(--bs-breadcrumb-padding-x);
     margin-bottom: var(--bs-breadcrumb-margin-bottom);
+    margin-top: var(--bs-breadcrumb-margin-bottom);
     font-size: var(--bs-breadcrumb-font-size);
     list-style: none;
     background-color: var(--bs-breadcrumb-bg);

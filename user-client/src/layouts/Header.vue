@@ -122,7 +122,7 @@
           </div>
           <!-- End .compare-dropdown -->
 
-          <div class="dropdown cart-dropdown ps-3 pe-8" v-if="route.name !== 'Cart'">
+          <div class="dropdown cart-dropdown ps-3 pe-4" v-if="route.name !== 'Cart'">
             <router-link
               :to="{name: 'Cart'}"
               class="dropdown-toggle"
@@ -140,6 +140,14 @@
             <!-- End .dropdown-menu -->
           </div>
           <!-- End .cart-dropdown -->
+          <!-- End .header-search -->
+          <div class="wishlist relative ps-3 pe-4" >
+            <!-- <a href="#" title="Wishlist" @click="toggleLogin = !toggleLogin">
+              <i class="fa-solid fa-user text-xl"></i>
+            </a> -->
+            <GoogleLoginComponent/>
+          </div>
+          <!-- End .compare-dropdown -->
         </div>
         <!-- End .header-right -->
       </div>
@@ -153,12 +161,14 @@
 import { onBeforeMount, computed, ref } from "vue";
 import { useCategoryStore } from "@/stores/category";
 import { useMenuStore } from "@/stores/menu";
+import { useAuthStore } from "@/stores/auth";
 import CategoryTree from "./CategoryTree.vue";
 import MenuTree from "./MenuTree.vue";
 import CartModal from "@/components/CartModal.vue";
 import { useRoute } from "vue-router";
 
 import { useCartStore } from "@/stores/cart";
+import GoogleLoginComponent from "@/components/social-login/GoogleLoginComponent.vue";
 const cartStore = useCartStore();
 const addToCart = async () => {
   await cartStore.addToCart({
@@ -171,6 +181,9 @@ const route = useRoute();
 
 const categoryStore = useCategoryStore();
 const menuStore = useMenuStore();
+const authStore = useAuthStore();
+
+const toggleLogin = ref(false)
 
 const categories = computed(() => categoryStore.$state.listTree.data);
 const menu = computed(() => menuStore.$state.menu.data);
@@ -227,11 +240,7 @@ onBeforeMount(async () => {
   animation-name: fixedHeader;
   animation-duration: 0.4s;
   background-color: #fff;
-  box-shadow: 0 0 3px 5px rgba(51, 51, 51, 0.199);
-  .logo {
-    // display:none;
-  }
-  // margin-bottom: 70px;
+  box-shadow: 0 0 2px 5px rgba(236, 236, 236, 0.678);
   .container {
     height: 60px;
     z-index: 900000;

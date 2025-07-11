@@ -89,5 +89,34 @@ namespace ShopAppApi.Controllers.Admin
                 Skus = entry.Skus,
             }));
         }
+
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProduct([FromQuery]BaseRequest Request)
+        {
+            try
+            {
+                var entry = await _repo.SearchProduct(Request);
+                return Ok(new ResponseCollection<SkuVM>(entry));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("reset-data-elastic")]
+        public IActionResult ResetDataElastic()
+        {
+            try
+            {
+                _repo.ResetDataElastic();
+                return Ok(new SuccessResponse(200, "Cập nhật thành công"));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

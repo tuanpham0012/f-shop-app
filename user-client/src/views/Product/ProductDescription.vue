@@ -1,6 +1,7 @@
 <template lang="">
   <!-- <div class="description" id="reset-this-root" v-html="description"></div> -->
   <div class="relative" v-if="description">
+    <h3 class="">MÔ TẢ SẢN PHẨM</h3>
     <iframe
       v-if="description"
       :srcdoc="description"

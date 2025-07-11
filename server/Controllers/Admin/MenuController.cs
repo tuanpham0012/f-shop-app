@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopAppApi.Data;
 using ShopAppApi.Repositories.Menus;
-using ShopAppApi.Repositories.TelegramBotRepository;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.Services.TelegramBotRepository;
 using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Controllers.Admin

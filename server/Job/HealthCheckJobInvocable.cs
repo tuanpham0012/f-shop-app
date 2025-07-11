@@ -1,5 +1,5 @@
 ﻿using Coravel.Invocable;
-using ShopAppApi.Repositories.Metrics;
+using ShopAppApi.Services.Metrics;
 using System.Diagnostics;
 
 namespace ShopAppApi.Job

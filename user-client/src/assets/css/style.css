@@ -5905,7 +5905,8 @@ p {
 }
 
 .breadcrumb-nav {
-    border-bottom: 0.1rem solid rgba(235, 235, 235, 0.55)
+    border-bottom: 0.1rem solid rgba(235, 235, 235, 0.55);
+    margin-top: 1rem;
 }
 
 .breadcrumb-nav .container,

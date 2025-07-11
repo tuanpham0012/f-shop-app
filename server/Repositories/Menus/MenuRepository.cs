@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using ShopAppApi.Data;
-using ShopAppApi.Repositories.RedisCache;
 using ShopAppApi.Request;
+using ShopAppApi.Services.RedisCache;
 using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Menus

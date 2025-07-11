@@ -25,6 +25,12 @@ const routes = [
     
   },
   {
+    path: '/don-mua',
+    name: 'OrderHistory',
+    component: () => import('../views/Order/OrderHistory.vue')
+
+  },
+  {
     path: '/',
     name: 'Thanh toan',
     children: [

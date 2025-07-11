@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nest;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers.Interfaces;
 using ShopAppApi.Request;
 using ShopAppApi.Response;
+using ShopAppApi.Services.Elasticsearch;
 using ShopAppApi.ViewModels;
 using Slugify;
 using System.Collections.ObjectModel;
@@ -11,9 +13,10 @@ using System.Threading.Tasks;
 
 namespace ShopAppApi.Repositories.Products
 {
-    public class ProductRepository(ShopAppContext context, IFileHelper fileHelper, IConfiguration configuration) : IProductRepository
+    public class ProductRepository(ShopAppContext context, IFileHelper fileHelper, IConfiguration configuration, IElasticsearchService elasticsearch) : IProductRepository
     {
         private readonly ShopAppContext _context = context;
+        private readonly string elsIndex = "product";
         private readonly string driver = configuration.GetSection("FileStorage:Driver").Value!;
         public async Task Create(StoreProductRequest product)
         {
@@ -77,7 +80,7 @@ namespace ShopAppApi.Repositories.Products
                 foreach (var sku in product.Skus)
                 {
                     sku.ProductId = entry.Id;
-                    CreateOrUpdateSku(sku);
+                    await CreateOrUpdateSku(sku, entry);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
                 }
@@ -91,7 +94,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = entry.Price,
                     Barcode = entry.Code,
                 };
-                CreateOrUpdateSku(sku);
+                await CreateOrUpdateSku(sku, entry);
                 minPrice = sku.Price;
             }
 
@@ -108,6 +111,7 @@ namespace ShopAppApi.Repositories.Products
 
         public async Task<ProductVM> Show(long Id)
         {
+
             var query = _context.Products.AsQueryable().Select(p => new ProductVM
             {
                 Id = p.Id,
@@ -339,10 +343,11 @@ namespace ShopAppApi.Repositories.Products
                 {
                     sku.ProductId = _product.Id;
                     sku.Barcode ??= _product.Barcode;
-                    if(string.IsNullOrWhiteSpace(sku.ImagePath)){
+                    if (string.IsNullOrWhiteSpace(sku.ImagePath))
+                    {
                         sku.ImagePath = product.ImageThumb;
                     }
-                    CreateOrUpdateSku(sku);
+                    await CreateOrUpdateSku(sku, _product);
 
                     minPrice = sku.Price < minPrice ? sku.Price : minPrice;
                 }
@@ -356,7 +361,7 @@ namespace ShopAppApi.Repositories.Products
                     Price = _product.Price,
                     Barcode = _product.Barcode
                 };
-                CreateOrUpdateSku(sku);
+                await CreateOrUpdateSku(sku, _product);
                 minPrice = sku.Price;
                 maxStock = sku.Stock;
             }
@@ -367,7 +372,7 @@ namespace ShopAppApi.Repositories.Products
 
         }
 
-        private void CreateOrUpdateSku(SkusRequest sku)
+        private async Task CreateOrUpdateSku(SkusRequest sku, Product product)
         {
             var _sku = new Sku();
             if (sku.Id != null && sku.IsEdited == true)
@@ -382,14 +387,30 @@ namespace ShopAppApi.Repositories.Products
                     fileHelper.DeleteFile(_sku.ImagePath);
                     _sku.ImagePath = fileHelper.SaveFile(sku.ImagePath, "imgThumb");
                 }
-                    _sku.ProductId = sku.ProductId ?? 0;
-                    _sku.Name = sku.Name ?? "";
-                    _sku.Price = sku.Price;
-                    _sku.Barcode = sku.Barcode ?? "";
-                    _sku.Stock = sku.Stock;
-                    _sku.UpdatedAt = DateTime.UtcNow;
-                    _sku.ImageCode = sku.ImageCode ?? "";
-                    _context.SaveChanges();
+                _sku.ProductId = sku.ProductId ?? 0;
+                _sku.Name = sku.Name ?? "";
+                _sku.Price = sku.Price;
+                _sku.Barcode = sku.Barcode ?? "";
+                _sku.Stock = sku.Stock;
+                _sku.UpdatedAt = DateTime.UtcNow;
+                _sku.ImageCode = sku.ImageCode ?? "";
+                _context.SaveChanges();
+
+                await elasticsearch.UpdateDocument<SkuVM>(elsIndex, sku.Id.ToString() ?? "0", new SkuVM
+                {
+                    Id = _sku.Id,
+                    ProductId = _sku.ProductId,
+                    Barcode = _sku.Barcode,
+                    Price = _sku.Price,
+                    Name = _sku.Name,
+                    ImagePath = fileHelper.GetLink(_sku.ImagePath),
+                    ImageCode = _sku.ImageCode,
+                    Stock = _sku.Stock,
+                    ProductBarcode = product.Barcode,
+                    ProductName = product.Name,
+                    ProductCode = product.Code,
+                });
+
             }
             else if (sku.Id == null)
             {
@@ -407,6 +428,20 @@ namespace ShopAppApi.Repositories.Products
                 };
                 _context.Add(_sku);
                 _context.SaveChanges();
+                await elasticsearch.CreateDocument<SkuVM>(elsIndex, new SkuVM
+                {
+                    Id = _sku.Id,
+                    ProductId = _sku.ProductId,
+                    Barcode = _sku.Barcode,
+                    Price = _sku.Price,
+                    Name = _sku.Name,
+                    ImagePath = fileHelper.GetLink(_sku.ImagePath),
+                    ImageCode = _sku.ImageCode,
+                    Stock = _sku.Stock,
+                    ProductBarcode = product.Barcode,
+                    ProductName = product.Name,
+                    ProductCode = product.Code,
+                });
                 CreateOrUpdateVariant(sku.Variants, _sku);
             }
         }
@@ -819,6 +854,87 @@ namespace ShopAppApi.Repositories.Products
             transaction.Commit();
         }
 
+        public async Task<List<SkuVM>> SearchProduct(BaseRequest Request)
+        {
+            if (string.IsNullOrWhiteSpace(Request.Search))
+            {
+                return new List<SkuVM>();
+            }
+            string search = Request.Search.Trim();
+            int from = (Request.Page - 1) * Request.PageSize;
+            var searchResponse = await elasticsearch.ElasticClient().SearchAsync<SkuVM>(s => s
+            .Index(elsIndex)
+            .Query(q => q
+            .Match(mm => mm // Tìm kiếm trên nhiều fields
+                .Query(search)
+                .Field(p => p.Name)
+                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
+            ) || q
+            .Match(mm => mm // Tìm kiếm trên nhiều fields
+                .Query(search)
+                .Field(p => p.ProductName)
+                .Fuzziness(Fuzziness.Auto) // Cho phép lỗi chính tả nhỏ
+            ) || q
+            .Wildcard(w => w
+                .Field(f => f.ProductBarcode) // Rất quan trọng: dùng trường .keyword
+                .Value($"*{search}*")
+                .CaseInsensitive() // Tùy chọn: không phân biệt hoa thường
+            ))
+            .From(from)
+            .Size(Request.PageSize));
+
+            if (searchResponse.IsValid)
+            {
+                return searchResponse.Documents.Select(s => new SkuVM
+                {
+                    Id = s.Id,
+                    ProductId = s.ProductId,
+                    Barcode = s.Barcode,
+                    Price = s.Price,
+                    Name = $"{s.ProductName} - {s.Name} - {s.ProductBarcode}",
+                    ImagePath = s.ImagePath,
+                    ImageCode = s.ImageCode,
+                    Stock = s.Stock,
+                    ProductBarcode = s.ProductBarcode,
+                    ProductName = s.ProductName,
+                    ProductCode = s.ProductCode,
+                }).ToList();
+            }
+            else
+            {
+                Console.WriteLine($"Lỗi khi tìm kiếm sản phẩm: {searchResponse.DebugInformation}");
+                if (searchResponse.OriginalException != null)
+                {
+                    Console.WriteLine($"Exception gốc: {searchResponse.OriginalException.Message}");
+                }
+                // Trả về danh sách rỗng trong trường hợp lỗi hoặc không tìm thấy
+                return new List<SkuVM>();
+            }
+
+        }
+
+        public void ResetDataElastic()
+        {
+            elasticsearch.DeleteIndex(elsIndex);
+            var skus = _context.Skus.Include(s => s.Product).AsNoTracking().ToList();
+            foreach (var _sku in skus)
+            {
+                elasticsearch.CreateDocument<SkuVM>(elsIndex, new SkuVM
+                {
+                    Id = _sku.Id,
+                    ProductId = _sku.ProductId,
+                    Barcode = _sku.Barcode,
+                    Price = _sku.Price,
+                    Name = _sku.Name,
+                    ImagePath = fileHelper.GetLink(_sku.ImagePath),
+                    ImageCode = _sku.ImageCode,
+                    Stock = _sku.Stock,
+                    ProductBarcode = _sku.Product.Barcode,
+                    ProductName = _sku.Product.Name,
+                    ProductCode = _sku.Product.Code,
+                });
+            }
+        }
     }
 }
 

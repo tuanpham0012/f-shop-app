@@ -21,7 +21,11 @@ public partial class ShopAppContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
+    public virtual DbSet<CommentMedium> CommentMedia { get; set; }
+
     public virtual DbSet<Customer> Customers { get; set; }
+
+    public virtual DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
     public virtual DbSet<Discount> Discounts { get; set; }
 
@@ -49,6 +53,8 @@ public partial class ShopAppContext : DbContext
 
     public virtual DbSet<ProductWarehouse> ProductWarehouses { get; set; }
 
+    public virtual DbSet<Province> Provinces { get; set; }
+
     public virtual DbSet<ShippingUnit> ShippingUnits { get; set; }
 
     public virtual DbSet<Sku> Skus { get; set; }
@@ -61,17 +67,19 @@ public partial class ShopAppContext : DbContext
 
     public virtual DbSet<Variant> Variants { get; set; }
 
+    public virtual DbSet<Ward> Wards { get; set; }
+
     public virtual DbSet<Warehouse> Warehouses { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Data Source=localhost,1434;Initial Catalog=shop_app;User ID=sa;Password=Anhem123@;Trust Server Certificate=True");
+//     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//         => optionsBuilder.UseSqlServer("Server=localhost,1434;Database=shop_app;Trust Server Certificate=True;User ID=sa;Password=Anhem123@; Max Pool Size=20000;Connection Timeout=13000;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Brand>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__brands__3213E83F435E802F");
+            entity.HasKey(e => e.Id).HasName("PK__brands__3213E83F83EFA955");
 
             entity.ToTable("brands");
 
@@ -101,7 +109,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__carts__3213E83FD7854425");
+            entity.HasKey(e => e.Id).HasName("PK__carts__3213E83FD5E19A67");
 
             entity.ToTable("carts");
 
@@ -137,7 +145,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__categori__3213E83FE59D4F35");
+            entity.HasKey(e => e.Id).HasName("PK__categori__3213E83FFA06D386");
 
             entity.ToTable("categories");
 
@@ -182,9 +190,24 @@ public partial class ShopAppContext : DbContext
                 .HasColumnName("updated_at");
         });
 
+        modelBuilder.Entity<CommentMedium>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__comment___3213E83FF618446F");
+
+            entity.ToTable("comment_media");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+        });
+
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__customer__3213E83F929AEABC");
+            entity.HasKey(e => e.Id).HasName("PK__customer__3213E83F8A4120FE");
 
             entity.ToTable("customers");
 
@@ -227,9 +250,58 @@ public partial class ShopAppContext : DbContext
                 .HasColumnName("updated_at");
         });
 
+        modelBuilder.Entity<DeliveryAddress>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__delivery__3213E83F75927445");
+
+            entity.ToTable("delivery_addresses");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Address)
+                .HasMaxLength(500)
+                .HasColumnName("address");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.Default)
+                .IsRequired()
+                .HasDefaultValueSql("('0')")
+                .HasColumnName("default");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(500)
+                .HasColumnName("full_name");
+            entity.Property(e => e.Lat)
+                .HasMaxLength(255)
+                .HasColumnName("lat");
+            entity.Property(e => e.Lng)
+                .HasMaxLength(255)
+                .HasColumnName("lng");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(25)
+                .HasColumnName("phone");
+            entity.Property(e => e.ProvinceId).HasColumnName("province_id");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.WardId).HasColumnName("ward_id");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.DeliveryAddresses)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("delivery_addresses_customer_id_foreign");
+
+            entity.HasOne(d => d.Province).WithMany(p => p.DeliveryAddresses)
+                .HasForeignKey(d => d.ProvinceId)
+                .HasConstraintName("delivery_addresses_province_id_foreign");
+
+            entity.HasOne(d => d.Ward).WithMany(p => p.DeliveryAddresses)
+                .HasForeignKey(d => d.WardId)
+                .HasConstraintName("delivery_addresses_ward_id_foreign");
+        });
+
         modelBuilder.Entity<Discount>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__discount__3213E83F3ED33D9D");
+            entity.HasKey(e => e.Id).HasName("PK__discount__3213E83FA22F8F7A");
 
             entity.ToTable("discounts");
 
@@ -267,7 +339,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Menu>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__menus__3213E83F3EDED3E2");
+            entity.HasKey(e => e.Id).HasName("PK__menus__3213E83F6107A524");
 
             entity.ToTable("menus");
 
@@ -311,7 +383,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Migration>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__migratio__3213E83F4C884CEA");
+            entity.HasKey(e => e.Id).HasName("PK__migratio__3213E83F1B745871");
 
             entity.ToTable("migrations");
 
@@ -324,7 +396,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Option>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__options__3213E83F0D6FB2ED");
+            entity.HasKey(e => e.Id).HasName("PK__options__3213E83FA7B8420F");
 
             entity.ToTable("options");
 
@@ -359,7 +431,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<OptionValue>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__option_v__3213E83F98F97CD9");
+            entity.HasKey(e => e.Id).HasName("PK__option_v__3213E83F956D7A90");
 
             entity.ToTable("option_values");
 
@@ -397,7 +469,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83FE9426F7F");
+            entity.HasKey(e => e.Id).HasName("PK__orders__3213E83F7D86A95E");
 
             entity.ToTable("orders");
 
@@ -415,7 +487,9 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.DiscountAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("discount_amount");
-            entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.Note)
+                .HasMaxLength(1000)
+                .HasColumnName("note");
             entity.Property(e => e.OrderDate).HasColumnName("order_date");
             entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
             entity.Property(e => e.ReceiverName)
@@ -434,11 +508,15 @@ public partial class ShopAppContext : DbContext
             entity.Property(e => e.Status)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("status");
-            entity.Property(e => e.TaxFee).HasColumnName("tax_fee");
+            entity.Property(e => e.TaxFee)
+                .HasDefaultValueSql("('0')")
+                .HasColumnName("tax_fee");
             entity.Property(e => e.TotalAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("total_amount");
-            entity.Property(e => e.TotalPrice).HasColumnName("total_price");
+            entity.Property(e => e.TotalPrice)
+                .HasDefaultValueSql("('0')")
+                .HasColumnName("total_price");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
@@ -466,7 +544,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__order_de__3213E83FD10028ED");
+            entity.HasKey(e => e.Id).HasName("PK__order_de__3213E83FCA067B67");
 
             entity.ToTable("order_details");
 
@@ -486,11 +564,15 @@ public partial class ShopAppContext : DbContext
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("quantity");
             entity.Property(e => e.SkuId).HasColumnName("sku_id");
-            entity.Property(e => e.TaxFee).HasColumnName("tax_fee");
+            entity.Property(e => e.TaxFee)
+                .HasDefaultValueSql("('0')")
+                .HasColumnName("tax_fee");
             entity.Property(e => e.TotalAmount)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("total_amount");
-            entity.Property(e => e.UnitDiscount).HasColumnName("unit_discount");
+            entity.Property(e => e.UnitDiscount)
+                .HasDefaultValueSql("('0')")
+                .HasColumnName("unit_discount");
             entity.Property(e => e.UnitPrice)
                 .HasDefaultValueSql("('0')")
                 .HasColumnName("unit_price");
@@ -513,7 +595,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__payment___3213E83F4C5AF2B9");
+            entity.HasKey(e => e.Id).HasName("PK__payment___3213E83FCAD2920A");
 
             entity.ToTable("payment_methods");
 
@@ -547,7 +629,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__products__3213E83F6690B731");
+            entity.HasKey(e => e.Id).HasName("PK__products__3213E83F8416E234");
 
             entity.ToTable("products");
 
@@ -645,38 +727,47 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<ProductComment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F6437F6C7");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F0E774B96");
 
             entity.ToTable("product_comments");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Comment).HasColumnName("comment");
+            entity.Property(e => e.Content).HasColumnName("content");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
-            entity.Property(e => e.ParentId).HasColumnName("parent_id");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.Likes).HasColumnName("likes");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
-            entity.Property(e => e.Rate)
+            entity.Property(e => e.ProductInfo)
+                .HasMaxLength(255)
+                .HasDefaultValue("5")
+                .HasColumnName("product_info");
+            entity.Property(e => e.Rating)
                 .HasDefaultValueSql("('5')")
-                .HasColumnName("rate");
+                .HasColumnName("rating");
+            entity.Property(e => e.SellerResponse).HasColumnName("seller_response");
+            entity.Property(e => e.SkuId).HasColumnName("sku_id");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
 
+            entity.HasOne(d => d.Customer).WithMany(p => p.ProductComments)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("product_comments_customer_id_foreign");
+
             entity.HasOne(d => d.Product).WithMany(p => p.ProductComments)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("product_comments_product_id_foreign");
+
+            entity.HasOne(d => d.Sku).WithMany(p => p.ProductComments)
+                .HasForeignKey(d => d.SkuId)
+                .HasConstraintName("product_comments_sku_id_foreign");
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F459999EA");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FF32A18DF");
 
             entity.ToTable("product_images");
 
@@ -720,7 +811,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<ProductStatistic>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F3B96D783");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F2224F32C");
 
             entity.ToTable("product_statistics");
 
@@ -752,7 +843,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<ProductWarehouse>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FDF2E3D3F");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FD964ACEC");
 
             entity.ToTable("product_warehouses");
 
@@ -780,9 +871,69 @@ public partial class ShopAppContext : DbContext
                 .HasConstraintName("product_warehouses_warehouse_id_foreign");
         });
 
+        modelBuilder.Entity<Province>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__province__3213E83F761A0E09");
+
+            entity.ToTable("provinces");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(255)
+                .HasColumnName("code");
+            entity.Property(e => e.CountryCode)
+                .HasMaxLength(255)
+                .HasColumnName("country_code");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.GhnProvinceCode)
+                .HasMaxLength(255)
+                .HasColumnName("ghn_province_code");
+            entity.Property(e => e.GhnProvinceId)
+                .HasMaxLength(255)
+                .HasColumnName("ghn_province_id");
+            entity.Property(e => e.Lat)
+                .HasMaxLength(255)
+                .HasColumnName("lat");
+            entity.Property(e => e.Lng)
+                .HasMaxLength(255)
+                .HasColumnName("lng");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+            entity.Property(e => e.PlaceType)
+                .HasMaxLength(255)
+                .HasColumnName("place_type");
+            entity.Property(e => e.ProvinceCode)
+                .HasMaxLength(255)
+                .HasColumnName("province_code");
+            entity.Property(e => e.ShortName)
+                .HasMaxLength(100)
+                .HasColumnName("short_name");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.VnpProvinceCode)
+                .HasMaxLength(255)
+                .HasColumnName("vnp_province_code");
+            entity.Property(e => e.VnpProvinceId)
+                .HasMaxLength(255)
+                .HasColumnName("vnp_province_id");
+            entity.Property(e => e.VtpProvinceCode)
+                .HasMaxLength(255)
+                .HasColumnName("vtp_province_code");
+            entity.Property(e => e.VtpProvinceId)
+                .HasMaxLength(255)
+                .HasColumnName("vtp_province_id");
+            entity.Property(e => e.Zipcode)
+                .HasMaxLength(255)
+                .HasColumnName("zipcode");
+        });
+
         modelBuilder.Entity<ShippingUnit>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipping__3213E83F7ADF8141");
+            entity.HasKey(e => e.Id).HasName("PK__shipping__3213E83F8BAC5B10");
 
             entity.ToTable("shipping_units");
 
@@ -816,7 +967,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Sku>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__skus__3213E83F2790D227");
+            entity.HasKey(e => e.Id).HasName("PK__skus__3213E83F706F43BB");
 
             entity.ToTable("skus");
 
@@ -855,7 +1006,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Supplier>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__supplier__3213E83F8854A5D0");
+            entity.HasKey(e => e.Id).HasName("PK__supplier__3213E83F82684278");
 
             entity.ToTable("suppliers");
 
@@ -900,7 +1051,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Tax>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__taxes__3213E83FE8892257");
+            entity.HasKey(e => e.Id).HasName("PK__taxes__3213E83F8D4CBC49");
 
             entity.ToTable("taxes");
 
@@ -923,7 +1074,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__users__3213E83F93908477");
+            entity.HasKey(e => e.Id).HasName("PK__users__3213E83F5B1D1A5E");
 
             entity.ToTable("users");
 
@@ -956,7 +1107,7 @@ public partial class ShopAppContext : DbContext
 
         modelBuilder.Entity<Variant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__variants__3213E83FB35E2550");
+            entity.HasKey(e => e.Id).HasName("PK__variants__3213E83F5816FD79");
 
             entity.ToTable("variants");
 
@@ -991,9 +1142,56 @@ public partial class ShopAppContext : DbContext
                 .HasConstraintName("variants_sku_id_foreign");
         });
 
+        modelBuilder.Entity<Ward>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__wards__3213E83F9A62C932");
+
+            entity.ToTable("wards");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.GhnWardCode)
+                .HasMaxLength(255)
+                .HasColumnName("ghn_ward_code");
+            entity.Property(e => e.GhnWardId)
+                .HasMaxLength(255)
+                .HasColumnName("ghn_ward_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+            entity.Property(e => e.ProvinceId).HasColumnName("province_id");
+            entity.Property(e => e.ShortName)
+                .HasMaxLength(100)
+                .HasColumnName("short_name");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.VnpWardCode)
+                .HasMaxLength(255)
+                .HasColumnName("vnp_ward_code");
+            entity.Property(e => e.VnpWardId)
+                .HasMaxLength(255)
+                .HasColumnName("vnp_ward_id");
+            entity.Property(e => e.VtpWardCode)
+                .HasMaxLength(255)
+                .HasColumnName("vtp_ward_code");
+            entity.Property(e => e.VtpWardId)
+                .HasMaxLength(255)
+                .HasColumnName("vtp_ward_id");
+            entity.Property(e => e.WardCode)
+                .HasMaxLength(100)
+                .HasColumnName("ward_code");
+
+            entity.HasOne(d => d.Province).WithMany(p => p.Wards)
+                .HasForeignKey(d => d.ProvinceId)
+                .HasConstraintName("wards_province_id_foreign");
+        });
+
         modelBuilder.Entity<Warehouse>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__warehous__3213E83F29BE303C");
+            entity.HasKey(e => e.Id).HasName("PK__warehous__3213E83F3B87A981");
 
             entity.ToTable("warehouses");
 

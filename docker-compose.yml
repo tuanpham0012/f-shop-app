@@ -85,6 +85,39 @@ services:
       restart: unless-stopped
       networks:
         - qipf-network
+  elasticsearch:
+    container_name: elasticsearch
+    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.16.0
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=1231234
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - TZ=Asia/Ho_Chi_Minh
+      - xpack.security.enabled=true
+    volumes:
+      - c:/volumes/shop_app/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - "8004:9200"
+    networks:
+      - qipf-network
+
+  kibana:
+    container_name: kibana
+    restart: unless-stopped
+    image: docker.elastic.co/kibana/kibana:8.16.0
+    volumes:
+      - c:/volumes/shop_app/kibana/data:/usr/share/kibana/data
+    ports:
+      - 8005:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME="kibana_system"
+      - ELASTICSEARCH_PASSWORD=1231234
+    networks:
+      - qipf-network
+    depends_on:
+      - elasticsearch
 
   # influxdb:
   #   image: influxdb:latest

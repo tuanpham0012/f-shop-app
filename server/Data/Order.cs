@@ -21,6 +21,10 @@ public partial class Order
 
     public long ShippingUnitId { get; set; }
 
+    public double TaxFee { get; set; }
+
+    public double TotalPrice { get; set; }
+
     public double TotalAmount { get; set; }
 
     public double DiscountAmount { get; set; }
@@ -33,17 +37,13 @@ public partial class Order
 
     public string? ReceiverName { get; set; }
 
+    public string? Note { get; set; }
+
     public byte Status { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
-    public double? TaxFee { get; set; }
-
-    public double? TotalPrice { get; set; }
-
-    public string? Note { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
 
