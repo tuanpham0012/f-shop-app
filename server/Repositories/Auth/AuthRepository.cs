@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Google.Apis.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -100,6 +101,68 @@ namespace ShopAppApi.Repositories.Auth
                 Phone = entry.Phone,
             };
             return result;
+        }
+
+        public async Task<LoginInfoVM> LoginWithGoogle(string idToken)
+        {
+            if (string.IsNullOrWhiteSpace(idToken))
+            {
+                throw new ArgumentException("ID token không được để trống.");
+            }
+
+            var payload = await VerifyGoogleTokenAsync(idToken);
+            if (payload == null)
+            {
+                throw new UnauthorizedAccessException("Invalid Google token.");
+            }
+            // Kiểm tra xem email đã tồn tại trong hệ thống chưa
+            var customer = await context.Customers.AsNoTracking().SingleOrDefaultAsync(c => c.Email == payload.Email);
+            if (customer == null)
+            {
+                // Nếu chưa tồn tại, tạo mới người dùng
+                customer = new Customer
+                {
+                    Email = payload.Email,
+                    Name = payload.Name ?? $"{payload.FamilyName} {payload.GivenName}",
+                    Address = string.Empty, // Hoặc giá trị mặc định khác
+                    Phone = string.Empty,   // Hoặc giá trị mặc định khác
+                    Salt = string.Empty,    // Không cần salt cho đăng nhập Google
+                    Password = string.Empty,  // Không cần password cho đăng nhập Google
+                    Status = 1,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                context.Customers.Add(customer);
+                await context.SaveChangesAsync();
+            }
+
+            return new LoginInfoVM
+            {
+                Id = customer.Id,
+                Name = customer.Name,
+                Email = customer.Email,
+                Address = customer.Address,
+                Phone = customer.Phone,
+                Token = GenerateJwtToken(customer) // Tạo JWT token cho người dùng
+            };
+        }
+
+
+        private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(string idToken)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { configuration["SocialAuthentication:Google:ClientId"] ?? throw new UnauthorizedAccessException("Invalid ClientId") }   // bắt buộc khớp aud
+            };
+
+            try
+            {
+                return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            }
+            catch (InvalidJwtException ex)
+            {
+                throw new UnauthorizedAccessException("Invalid Google token", ex);
+            }
         }
     }
 }

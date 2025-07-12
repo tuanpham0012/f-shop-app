@@ -39,7 +39,6 @@ app.directive('click-outside', {
 app.component('Cropper', Cropper);
 app.use(GoogleLogin, {
   clientId: `${import.meta.env.VITE_VUE_APP_GG_CLIENT_ID}`,
-//   redirectUri: 'http://localhost:50002/auth/callback',
 });
 // app.component('QuillEditor', QuillEditor)
 app.use(createPinia())

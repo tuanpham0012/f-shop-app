@@ -8,5 +8,6 @@ namespace ShopAppApi.Repositories.Auth
     {
         Task<LoginInfoVM> Login(LoginRequest request);
         Task<LoginInfoVM> GetInfo(long customerId);
+        Task<LoginInfoVM> LoginWithGoogle(string idToken);
     }
 }

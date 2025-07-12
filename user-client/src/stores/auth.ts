@@ -30,6 +30,9 @@ export const useAuthStore = defineStore("auth", {
     async socialLogin() {
       await _getList(`${apiUrl}/auth/login-google`, {})
     },
+    async loginWithGoogle(token: string) {
+      await _create(`${apiUrl}/auth/login-google`, {idToken: token})
+    },
     async getInfo() {
       await _show(`${apiUrl}/auth/info`)
           .then((res) => {
