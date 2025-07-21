@@ -17,7 +17,7 @@
                                     <a class="nav-link active" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="true">Register</a>
                                 </li>
                             </ul>
-                            <div class="tab-content" id="tab-content-5">
+                            <div class="tab-content px-12" id="tab-content-5">
                                 <div class="tab-pane fade" id="signin" role="tabpanel" aria-labelledby="signin-tab">
                                     <form action="#">
                                         <div class="form-group">
@@ -52,10 +52,7 @@
                                         <p class="text-center">or sign in with</p>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
+                                                <GoogleLoginComponent />
                                             </div>
                                             <!-- End .col-6 -->
                                             <div class="col-sm-6">
@@ -91,7 +88,7 @@
                                                 <i class="icon-long-arrow-right"></i>
                                             </button>
 
-                                            <div class="custom-control custom-checkbox">
+                                            <div class="flex">
                                                 <input type="checkbox" class="custom-control-input" id="register-policy" required="" />
                                                 <label class="custom-control-label" for="register-policy">I agree to the <a href="#">privacy policy</a> *</label>
                                             </div>
@@ -100,19 +97,16 @@
                                         <!-- End .form-footer -->
                                     </form>
                                     <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
+                                        <p class="text-center mb-0">or sign in with</p>
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
+                                                <GoogleLoginComponent />
                                             </div>
                                             <!-- End .col-6 -->
                                             <div class="col-sm-6">
                                                 <a href="#" class="btn btn-login btn-f">
                                                     <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
+                                                    Login With Facebookkk
                                                 </a>
                                             </div>
                                             <!-- End .col-6 -->
@@ -136,8 +130,8 @@
         <!-- End .modal-dialog -->
     </div>
 </template>
-<script>
-export default {};
+<script setup lang="ts">
+import GoogleLoginComponent from './GoogleLoginComponent.vue';
 </script>
 <style scoped lang="scss">
 </style>
