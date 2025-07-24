@@ -2,9 +2,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Google.Apis.Auth;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using ShopAppApi.Data;
 using ShopAppApi.Helpers.Interfaces;
@@ -14,11 +15,12 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace ShopAppApi.Repositories.Auth
 {
-    public class AuthRepository(IConfiguration _config, ShopAppContext _context, IStringHelper stringHelper) : IAuthRepository
+    public class AuthRepository(IConfiguration _config, ShopAppContext _context, IStringHelper stringHelper, IHttpClientFactory httpClientFactory) : IAuthRepository
     {
         private readonly IConfiguration configuration = _config;
         private readonly ShopAppContext context = _context;
         private readonly string loginFailMsg = "Sai thông tin đăng nhập!";
+        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
         public async Task<LoginInfoVM> Login(LoginRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Username))
@@ -103,14 +105,47 @@ namespace ShopAppApi.Repositories.Auth
             return result;
         }
 
-        public async Task<LoginInfoVM> LoginWithGoogle(string idToken)
+        public async Task<LoginInfoVM> LoginWithGoogle(string code)
         {
-            if (string.IsNullOrWhiteSpace(idToken))
+            if (string.IsNullOrWhiteSpace(code))
             {
                 throw new ArgumentException("ID token không được để trống.");
             }
 
-            var payload = await VerifyGoogleTokenAsync(idToken);
+            // --- BƯỚC 1: Đổi Authorization Code lấy Token ---
+            var googleSettings = configuration.GetSection("Google");
+            var tokenEndpoint = "https://oauth2.googleapis.com/token";
+
+            var requestParams = new Dictionary<string, string>
+        {
+            { "code", code },
+            { "client_id", configuration["SocialAuthentication:Google:ClientId"] ?? throw new UnauthorizedAccessException("Invalid ClientId") },
+            { "client_secret", configuration["SocialAuthentication:Google:ClientSecret"] ?? throw new UnauthorizedAccessException("Invalid ClientSecret") },
+            // Redirect URI phải khớp với cái bạn đã đăng ký trên Google Console.
+            // Thư viện vue3-google-login mặc định dùng 'postmessage' cho Code flow.
+            // Hoặc bạn có thể dùng redirect URI của backend.
+            { "redirect_uri", "postmessage" },
+            { "grant_type", "authorization_code" }
+        };
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var response = await httpClient.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestParams));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new UnauthorizedAccessException($"Failed to exchange code for token: {errorContent}");
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var tokenData = JsonSerializer.Deserialize<GoogleTokenResponse>(responseContent);
+
+            if (tokenData == null || string.IsNullOrWhiteSpace(tokenData.IdToken))
+            {
+                throw new UnauthorizedAccessException("Invalid Google token response.");
+            }
+
+            var payload = await VerifyGoogleTokenAsync(tokenData.IdToken);
             if (payload == null)
             {
                 throw new UnauthorizedAccessException("Invalid Google token.");
@@ -164,5 +199,23 @@ namespace ShopAppApi.Repositories.Auth
                 throw new UnauthorizedAccessException("Invalid Google token", ex);
             }
         }
+    }
+
+    public class GoogleTokenResponse
+    {
+        [JsonPropertyName("id_token")]
+        public string IdToken { get; set; }
+
+        [JsonPropertyName("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonPropertyName("expires_in")]
+        public int ExpiresIn { get; set; }
+
+        [JsonPropertyName("token_type")]
+        public string TokenType { get; set; }
+
+        [JsonPropertyName("scope")]
+        public string Scope { get; set; }
     }
 }
