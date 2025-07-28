@@ -27,11 +27,25 @@ export const useAuthStore = defineStore("auth", {
           });
     },
 
+    logout () {
+      this.token = null;
+      this.info = null;
+    },
+
     async socialLogin() {
       await _getList(`${apiUrl}/auth/login-google`, {})
     },
-    async loginWithGoogle(token: string) {
-      await _create(`${apiUrl}/auth/login-google`, {idToken: token})
+    async loginWithGoogle(token: string, type:number = 1) {
+      await _create(`${apiUrl}/auth/login-google`, {token: token, type: type}).then((res) => {
+                console.log("Login successful");
+                console.log("User Info", res.data);
+                this.info = res.data.data;
+                this.token = res.data.data.token;
+            })
+            .catch((error) => {
+                // Handle error
+                console.error("Login failed", error);
+            })
     },
     async getInfo() {
       await _show(`${apiUrl}/auth/info`)

@@ -6333,6 +6333,7 @@ fieldset:disabled .btn {
     }
 
     .modal-dialog {
+        --bs-modal-width: 575px;
         max-width: var(--bs-modal-width);
         margin-right: auto;
         margin-left: auto

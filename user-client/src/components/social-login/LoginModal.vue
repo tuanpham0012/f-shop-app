@@ -3,7 +3,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" @click="$emit('close')" aria-label="Close">
                         <span aria-hidden="true"><i class="icon-close"></i></span>
                     </button>
 
@@ -50,7 +50,7 @@
                                     </form>
                                     <div class="form-choice">
                                         <p class="text-center">or sign in with</p>
-                                        <div class="row">
+                                        <div class="flex gap-3">
                                             <div class="col-sm-6">
                                                 <GoogleLoginComponent />
                                             </div>
@@ -96,17 +96,17 @@
                                         </div>
                                         <!-- End .form-footer -->
                                     </form>
-                                    <div class="form-choice">
-                                        <p class="text-center mb-0">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
+                                    <div class="">
+                                        <p class="text-center mb-3">or sign in with</p>
+                                        <div class="flex gap-3 flex-wrap">
+                                            <div class="col-12">
                                                 <GoogleLoginComponent />
                                             </div>
                                             <!-- End .col-6 -->
-                                            <div class="col-sm-6">
+                                            <div class="col-12">
                                                 <a href="#" class="btn btn-login btn-f">
                                                     <i class="icon-facebook-f"></i>
-                                                    Login With Facebookkk
+                                                    Login With Facebook
                                                 </a>
                                             </div>
                                             <!-- End .col-6 -->
@@ -131,7 +131,31 @@
     </div>
 </template>
 <script setup lang="ts">
-import GoogleLoginComponent from './GoogleLoginComponent.vue';
+import { onBeforeMount, onBeforeUnmount, ref } from "vue";
+import GoogleLoginComponent from "./GoogleLoginComponent.vue";
+
+const body = document.body;
+
+const emits = defineEmits(["close"]);
+
+let savedScrollY = ref(0); // Biến để lưu vị trí scroll
+
+onBeforeMount(() => {
+    savedScrollY.value = window.scrollY;
+    
+    // Áp dụng style để "đóng băng" body
+    body.style.position = "fixed";
+    body.style.top = `-${savedScrollY}px`;
+    body.style.width = "100%";
+});
+
+onBeforeUnmount(() => {
+    body.style.position = "";
+    body.style.top = "";
+    body.style.width = "";
+
+    // Trả lại vị trí scroll cũ
+    window.scrollTo(0, savedScrollY.value);
+});
 </script>
-<style scoped lang="scss">
-</style>
+<style lang="scss"></style>

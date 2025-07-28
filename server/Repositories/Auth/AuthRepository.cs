@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Elastic.Clients.Elasticsearch;
 using Google.Apis.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -105,51 +106,47 @@ namespace ShopAppApi.Repositories.Auth
             return result;
         }
 
-        public async Task<LoginInfoVM> LoginWithGoogle(string code)
+        public async Task<LoginInfoVM> LoginWithGoogle(LoginGoogleRequest request)
         {
-            if (string.IsNullOrWhiteSpace(code))
+            string IdToken = request.Token ?? throw new UnauthorizedAccessException("Invalid Token");
+            if (request.Type == TokenType.Code)
             {
-                throw new ArgumentException("ID token không được để trống.");
+                // --- BƯỚC 1: Đổi Authorization Code lấy Token ---
+                var googleSettings = configuration.GetSection("Google");
+                var tokenEndpoint = "https://oauth2.googleapis.com/token";
+
+                var requestParams = new Dictionary<string, string>
+                    {
+                        { "code", request.Token },
+                        { "client_id", configuration["SocialAuthentication:Google:ClientId"] ?? throw new UnauthorizedAccessException("Invalid ClientId") },
+                        { "client_secret", configuration["SocialAuthentication:Google:ClientSecret"] ?? throw new UnauthorizedAccessException("Invalid ClientSecret") },
+                        // Redirect URI phải khớp với cái bạn đã đăng ký trên Google Console.
+                        // Thư viện vue3-google-login mặc định dùng 'postmessage' cho Code flow.
+                        // Hoặc bạn có thể dùng redirect URI của backend.
+                        { "redirect_uri", "postmessage" },
+                        { "grant_type", "authorization_code" }
+                    };
+
+                var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestParams));
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new UnauthorizedAccessException($"Failed to exchange code for token: {errorContent}");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var tokenData = JsonSerializer.Deserialize<GoogleTokenResponse>(responseContent);
+
+                if (tokenData == null || string.IsNullOrWhiteSpace(tokenData.IdToken))
+                {
+                    throw new UnauthorizedAccessException("Invalid Google token response.");
+                }
+                IdToken = tokenData.IdToken;
             }
 
-            // --- BƯỚC 1: Đổi Authorization Code lấy Token ---
-            var googleSettings = configuration.GetSection("Google");
-            var tokenEndpoint = "https://oauth2.googleapis.com/token";
-
-            var requestParams = new Dictionary<string, string>
-        {
-            { "code", code },
-            { "client_id", configuration["SocialAuthentication:Google:ClientId"] ?? throw new UnauthorizedAccessException("Invalid ClientId") },
-            { "client_secret", configuration["SocialAuthentication:Google:ClientSecret"] ?? throw new UnauthorizedAccessException("Invalid ClientSecret") },
-            // Redirect URI phải khớp với cái bạn đã đăng ký trên Google Console.
-            // Thư viện vue3-google-login mặc định dùng 'postmessage' cho Code flow.
-            // Hoặc bạn có thể dùng redirect URI của backend.
-            { "redirect_uri", "postmessage" },
-            { "grant_type", "authorization_code" }
-        };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var response = await httpClient.PostAsync(tokenEndpoint, new FormUrlEncodedContent(requestParams));
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new UnauthorizedAccessException($"Failed to exchange code for token: {errorContent}");
-            }
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var tokenData = JsonSerializer.Deserialize<GoogleTokenResponse>(responseContent);
-
-            if (tokenData == null || string.IsNullOrWhiteSpace(tokenData.IdToken))
-            {
-                throw new UnauthorizedAccessException("Invalid Google token response.");
-            }
-
-            var payload = await VerifyGoogleTokenAsync(tokenData.IdToken);
-            if (payload == null)
-            {
-                throw new UnauthorizedAccessException("Invalid Google token.");
-            }
+            var payload = await VerifyGoogleTokenAsync(IdToken) ?? throw new UnauthorizedAccessException("Invalid Google token");
             // Kiểm tra xem email đã tồn tại trong hệ thống chưa
             var customer = await context.Customers.AsNoTracking().SingleOrDefaultAsync(c => c.Email == payload.Email);
             if (customer == null)

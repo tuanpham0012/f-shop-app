@@ -11,7 +11,7 @@ import 'vue-advanced-cropper/dist/style.css';
 
 import globalComponent from '@/helpers/import-global-components';
 
-import GoogleLogin from 'vue3-google-login';
+import vue3GoogleLogin from 'vue3-google-login';
 
 // import { QuillEditor } from '@vueup/vue-quill'
 // import '@vueup/vue-quill/dist/vue-quill.snow.css';
@@ -37,7 +37,7 @@ app.directive('click-outside', {
 });
 
 app.component('Cropper', Cropper);
-app.use(GoogleLogin, {
+app.use(vue3GoogleLogin , {
   clientId: `${import.meta.env.VITE_VUE_APP_GG_CLIENT_ID}`,
 });
 // app.component('QuillEditor', QuillEditor)

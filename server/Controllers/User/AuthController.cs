@@ -63,7 +63,7 @@ namespace ShopAppApi.Controllers.User
         [HttpPost("login-google")]
         public async Task<IActionResult> LoginGoogle([FromBody] LoginGoogleRequest request)
         {
-            var payload = await repository.LoginWithGoogle(request.IdToken);
+            var payload = await repository.LoginWithGoogle(request);
             if (payload == null)
             {
                 return BadRequest("Invalid Google token.");

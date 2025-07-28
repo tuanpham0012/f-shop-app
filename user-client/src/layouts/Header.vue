@@ -107,8 +107,20 @@
                     </div>
                     <!-- End .cart-dropdown -->
                     <div class="relative px-3">
-                        <button class="flex items-center"><i class="icon-user text-3xl"></i>Đăng nhập</button>
-                        <LoginModal />
+                        <button v-if="!userInfo" class="flex items-center" @click="showModalLogin = true"><i class="icon-user text-3xl"></i>Đăng nhập</button>
+
+                        <div class="relative dropdown cart-dropdown ps-4 pt-1 pe-4" v-else>
+                            <a class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"> <i class="icon-user text-3xl"></i> {{ userInfo ? userInfo.name : "Đăng nhập" }} </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-cart-products mb-1">
+                                    <ul>
+                                        <li @click="() => authStore.logout()">Đăng xuất</li>
+                                    </ul>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <LoginModal v-if="showModalLogin" @close="showModalLogin = false" />
                     </div>
                     <!-- End .header-search -->
 
@@ -151,11 +163,15 @@ const authStore = useAuthStore();
 
 const toggleLogin = ref(false);
 
+const userInfo = computed(() => authStore.$state.info ?? null);
+
 const categories = computed(() => categoryStore.$state.listTree.data);
 const menu = computed(() => menuStore.$state.menu.data);
 const header = ref(null);
 
 const carts = computed(() => cartStore.$state.carts.data);
+
+const showModalLogin = ref(false);
 
 onBeforeMount(async () => {
     window.onscroll = function () {
