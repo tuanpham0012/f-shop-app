@@ -155,8 +155,8 @@ namespace ShopAppApi.Repositories.Auth
                 customer = new Customer
                 {
                     Email = payload.Email,
-                    Name = payload.Name ?? $"{payload.FamilyName} {payload.GivenName}",
-                    Address = string.Empty, // Hoặc giá trị mặc định khác
+                    Name = $"{payload.FamilyName} {payload.GivenName}" ?? payload.Name,
+                    Address = payload.Picture, // Hoặc giá trị mặc định khác
                     Phone = string.Empty,   // Hoặc giá trị mặc định khác
                     Salt = string.Empty,    // Không cần salt cho đăng nhập Google
                     Password = string.Empty,  // Không cần password cho đăng nhập Google

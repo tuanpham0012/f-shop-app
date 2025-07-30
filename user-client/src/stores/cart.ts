@@ -60,6 +60,15 @@ export const useCartStore = defineStore("cart", {
 
     async checkout(data: any) {
       return await _create(`${apiUrl}/cart/checkout`, data);
+    },
+    clearCart(){
+      this.carts = {
+        code: 200,
+        message: "",
+        data: [],
+        meta: null,
+      };
+      localStorage.removeItem("cart");
     }
   },
 });

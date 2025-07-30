@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { _getList, _create, _show, _update, _destroy } from "@/helpers/axiosConfig";
 import { apiUrl } from "@/helpers/config";
+import { useCartStore } from "@/stores/cart";
 
 export const useAuthStore = defineStore("auth", {
   state: () => {
@@ -30,6 +31,8 @@ export const useAuthStore = defineStore("auth", {
     logout () {
       this.token = null;
       this.info = null;
+      useCartStore().clearCart();
+      localStorage.removeItem("token");
     },
 
     async socialLogin() {
@@ -40,6 +43,7 @@ export const useAuthStore = defineStore("auth", {
                 console.log("Login successful");
                 console.log("User Info", res.data);
                 this.info = res.data.data;
+                localStorage.setItem("token", res.data.data.token);
                 this.token = res.data.data.token;
             })
             .catch((error) => {
@@ -48,6 +52,7 @@ export const useAuthStore = defineStore("auth", {
             })
     },
     async getInfo() {
+      if(!this.token) return;
       await _show(`${apiUrl}/auth/info`)
           .then((res) => {
             this.info = res.data.data;

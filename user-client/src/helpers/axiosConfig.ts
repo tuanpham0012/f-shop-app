@@ -36,12 +36,12 @@ http.interceptors.response.use(
     (error) => {
         // console.log("error:", error);
         errorMessage(error.message ?? "something went wrong!");
-        if (error.response.status === 401) {
-            const authStore = useAuthStore();
-            if (authStore.countTryLogin < 3) {
-                authStore.login({ username: "tuanpham0012@gmail.com", password: "password@123A" });
-            }
-        }
+        // if (error.response.status === 401) {
+        //     const authStore = useAuthStore();
+        //     if (authStore.countTryLogin < 3) {
+        //         authStore.login({ username: "tuanpham0012@gmail.com", password: "password@123A" });
+        //     }
+        // }
         // document.body.classList.remove("loading");
         return Promise.reject(error);
     }

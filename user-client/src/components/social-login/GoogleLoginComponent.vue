@@ -6,13 +6,13 @@
         </a>
       </GoogleLogin
     > -->
-    <GoogleLogin style="display: unset" :callback="callback" flow="implicit" ux_mode="redirect">
+    <GoogleLogin style="display: unset" :callback="callback" flow="implicit" ux_mode="redirect" prompt auto-login>
         <button class="btn btn-login btn-g w-100"><i class="icon-google"></i> Login With Google</button>
     </GoogleLogin>
 </template>
 
 <script setup>
-// import { GoogleLogin } from "vue3-google-login";
+import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 // const login = () => {
@@ -35,9 +35,27 @@ import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 
-const callback = (response) => {
+const callback = async (response) => {
   // This callback will be triggered when the user selects or login to
   // his Google account from the popup
   console.log("Đã nhận được response từ Google:", response);
+  let token = '';
+  let type = 1;
+  if (response.credential) {
+    token = response.credential;
+    type = 2;
+  }else if (response.code) {
+    token = response.code;
+    type = 1;
+  } else {
+    console.error("Không nhận được mã xác thực từ Google");
+    return;
+  }
+
+  await authStore.loginWithGoogle(token, type);
+
 };
+onMounted(() => {
+
+})
 </script>

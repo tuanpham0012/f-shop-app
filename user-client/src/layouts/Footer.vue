@@ -29,7 +29,7 @@
                   required
                 />
                 <div class="input-group-append">
-                  <button class="btn btn-primary" type="submit">
+                  <button class="rounded-none h-[46px] flex bg-primary text-white items-center px-4 rounded-e-3xl" type="submit">
                     <span>Subscribe</span><i class="icon-long-arrow-right"></i>
                   </button>
                 </div>
