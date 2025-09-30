@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('url')->nullable();
+            $table->string('name');
+            $table->string('path')->nullable();
             $table->string('icon')->nullable();
             $table->unsignedTinyInteger('position')->default(1);
             $table->nestedSet();
-            $table->boolean('hidden')->default(0);
+            $table->boolean('active')->default(1);
+            $table->tinyInteger('type')->default(0)->comment('0: admin, 1: user');
             $table->boolean('group_menu')->default(false);
             $table->timestamps();
         });

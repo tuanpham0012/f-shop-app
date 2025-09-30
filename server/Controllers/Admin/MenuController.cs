@@ -32,7 +32,7 @@ namespace ShopAppApi.Controllers.Admin
         [HttpGet("admin-menu")]
         public async Task<IActionResult> GetAdminMenu()
         {
-            var entries = await _repo.GetAdminMenu();
+            var entries = await _repo.GetMenu(0);
 
             return Ok(new ResponseCollection<MenuTree>(entries));
         }
@@ -40,7 +40,7 @@ namespace ShopAppApi.Controllers.Admin
         [HttpGet("user-menu")]
         public async Task<IActionResult> GetUserMenu()
         {
-            var entries = await _repo.GetUserMenu();
+            var entries = await _repo.GetMenu(1);
 
             return Ok(new ResponseCollection<MenuTree>(entries));
         }

@@ -30,12 +30,12 @@ namespace ShopAppApi.Repositories.Menus
             // Thêm node mới
             var newMenu = new Menu
             {
-                Title = menu.Title,
+                Name = menu.Name,
                 Lft = left,
                 Rgt = right,
                 ParentId = menu.ParentId,
-                Url = menu.Url,
-                Hidden = menu.Hidden,
+                Path = menu.Path,
+                Active = menu.Active,
                 GroupMenu = menu.GroupMenu,
             };
 
@@ -49,13 +49,13 @@ namespace ShopAppApi.Repositories.Menus
             using var transaction = await _context.Database.BeginTransactionAsync();
             var _menu = await _context.Menus.SingleOrDefaultAsync(c => c.Id == Id) ?? throw new ArgumentException("Dữ liệu không tồn tại"); ;
 
-            _menu.Title = menu.Title;
+            _menu.Name = menu.Name;
             _menu.Lft = menu.Lft;
             _menu.Rgt = menu.Rgt;
             _menu.ParentId = menu.ParentId;
-            _menu.Hidden = menu.Hidden;
+            _menu.Active = menu.Active;
             _menu.GroupMenu = menu.GroupMenu;
-            _menu.Url = menu.Url;
+            _menu.Path = menu.Path;
             _menu.Icon = menu.Icon;
             _menu.UpdatedAt = DateTime.UtcNow;
 
@@ -64,9 +64,9 @@ namespace ShopAppApi.Repositories.Menus
 
         }
 
-        public async Task<List<Menu>> GetAll()
+        public async Task<List<Menu>> GetAll(int type = 0)
         {
-            return await _context.Menus.AsQueryable().OrderBy(q => q.Lft).OrderBy(m => m.Position).AsNoTracking().ToListAsync();
+            return await _context.Menus.AsQueryable().Where(m => m.Type == type).OrderBy(_ => _.ParentId).ThenBy(m => m.Position).AsNoTracking().ToListAsync();
         }
 
         public List<MenuTree> BuildTree(List<Menu> menus)
@@ -74,13 +74,13 @@ namespace ShopAppApi.Repositories.Menus
             var lookup = menus.ToDictionary(c => c.Id, c => new MenuTree
             {
                 Id = c.Id,
-                Title = c.Title,
+                Name = c.Name,
                 Icon = c.Icon,
-                Url = c.Url,
-                Lft = c.Lft,
-                Rgt = c.Rgt,
+                Path = c.Path,
                 ParentId = c.ParentId,
                 GroupMenu = c.GroupMenu,
+                Active = c.Active,
+                Position = c.Position,
                 Children = []
             });
 
@@ -110,20 +110,20 @@ namespace ShopAppApi.Repositories.Menus
             return menu ?? throw new ArgumentException("Menu not found");
         }
 
-        public async Task<List<MenuTree>> GetAdminMenu()
+        public async Task<List<MenuTree>> GetMenu(int type)
         {
-            string cacheKey = Constants.AdminMenuCache;
+            string cacheKey = @$"MenuCache_{type}";
             try
             {
                 var result = await _cache.GetOrCreateAsync(
                     cacheKey,
                     async () => {
-                        var entries = await GetAll();
+                        var entries = await GetAll(type);
                         var tree = BuildTree(entries);
-                        return tree.Where(x => x.Id == 1).FirstOrDefault()?.Children ?? new List<MenuTree>();
+                        return tree ?? new List<MenuTree>();
                             }
                         );
-                    return result ?? [];
+                    return result ?? new List<MenuTree>();
             }
             catch (Exception ex)
             {

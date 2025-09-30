@@ -5,9 +5,9 @@ namespace ShopAppApi.Request
     public class StoreMenuRequest
     {
         [Required]
-        public string Title { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
-        public string? Url { get; set; }
+        public string? Path { get; set; }
 
         public string? Icon { get; set; }
 
@@ -15,15 +15,15 @@ namespace ShopAppApi.Request
 
         public bool? GroupMenu { get; set; }
 
-        public bool? Hidden { get; set; }
+        public bool? Active { get; set; }
     }
 
     public class UpdateMenuRequest
     {
         [Required]
-        public string Title { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
-        public string? Url { get; set; }
+        public string? Path { get; set; }
 
         public string? Icon { get; set; }
 
@@ -33,7 +33,7 @@ namespace ShopAppApi.Request
 
         public int? ParentId { get; set; }
 
-        public bool? Hidden { get; set; }
+        public bool? Active { get; set; }
 
         public bool? GroupMenu { get; set; }
     }

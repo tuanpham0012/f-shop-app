@@ -12,98 +12,202 @@ class MenuSeeder extends Seeder
      */
     public function run(): void
     {
-        $menus = [
+
+        $menuAdmin = [
             [
-                // 'id' => 1,
-                'title' => 'Admin Root',
-                'icon' => '',
-                'url' => null,
-                '_lft' => 1,
-                '_rgt' => 2,
-                'parent_id' => null
+                'name' => 'Dashboard',
+                'icon' => '<i class="fa-solid fa-house"></i>',
+                'path' => '/admin/dashboard',
+                'type' => 0,
+                'children' => []
             ],
             [
-                // 'id' => 2,
-                'title' => 'User Root',
-                'icon' => '',
-                'url' => null,
-                '_lft' => 0,
-                '_rgt' => 11,
-                'parent_id' => null
+                'name' => 'Bán hàng',
+                'icon' => '<i class="fa-brands fa-themeisle"></i>',
+                'path' => null,
+                'type' => 0,
+                'children' => [
+                    [
+                        'name' => 'Đơn hàng',
+                        'icon' => '<i class="fa-brands fa-jedi-order"></i>',
+                        'path' => '/orders',
+                        'type' => 0,
+                        'children' => []
+                    ]
+                ]
             ],
             [
-                // 'id' => 3,
-                'title' => 'Dashboard',
-                'url' => null,
-                'icon' => '<i class="menu-icon tf-icons bx bx-home-circle"></i>',
-                '_lft' => 1,
-                '_rgt' => 10,
-                'parent_id' => 1
+                'name' => 'Quản lý Người dùng',
+                'icon' => '<i class="fa-solid fa-users"></i>',
+                'path' => null,
+                'type' => 0,
+                'children' => [
+                    [
+                        'name' => 'Người dùng',
+                        'icon' => '<i class="fa-solid fa-user"></i>',
+                        'path' => '/users',
+                        'type' => 0,
+                        'children' => [
+                            [
+                                'name' => 'Người dùng',
+                                'icon' => '<i class="fa-solid fa-user"></i>',
+                                'path' => '/users',
+                                'type' => 0,
+                                'children' => []
+                            ],
+                            [
+                                'name' => 'Khách hàng',
+                                'icon' => '<i class="fa-solid fa-person-military-pointing"></i>',
+                                'path' => '/customers',
+                                'type' => 0,
+                                'children' => []
+                            ]
+                        ]
+                    ],
+                    [
+                        'name' => 'Khách hàng',
+                        'icon' => '<i class="fa-solid fa-person-military-pointing"></i>',
+                        'path' => '/customers',
+                        'type' => 0,
+                        'children' => []
+                    ]
+                ]
             ],
             [
-                // 'id' => 4,
-                'title' => 'Quản lý',
-                'url' => null,
-                'icon' => '<i class="fa-solid fa-gears"></i>',
-                '_lft' => 2,
-                '_rgt' => 9,
-                'parent_id' => 1
-            ],
-            [
-                // 'id' => 5,
-                'title' => 'Khách hàng',
-                'url' => '/customers',
-                'icon' => '',
-                '_lft' => 3,
-                '_rgt' => 8,
-                'parent_id' => 4
-            ],
-            [
-                // 'id' => 6,
-                'title' => 'Sản phẩm',
-                'url' => '/products',
-                'icon' => '',
-                '_lft' => 4,
-                '_rgt' => 7,
-                'parent_id' => 1
-            ],
-            [
-                // 'id' => 6,
-                'title' => 'Danh sách sản phẩm',
-                'url' => '/products',
-                'icon' => '',
-                '_lft' => 4,
-                '_rgt' => 7,
-                'parent_id' => 6
-            ],
-            [
-                // 'id' => 7,
-                'title' => 'Thể loại',
-                'url' => '/categories',
-                'icon' => '',
-                '_lft' => 4,
-                '_rgt' => 7,
-                'parent_id' => 6
-            ],
-            [
-                // 'id' => 8,
-                'title' => 'Thương hiệu',
-                'url' => '/brands',
-                'icon' => '',
-                '_lft' => 4,
-                '_rgt' => 7,
-                'parent_id' => 6
-            ],
-            [
-                // 'id' => 9,
-                'title' => 'Menu',
-                'url' => '/menus',
-                'icon' => '',
-                '_lft' => 5,
-                '_rgt' => 6,
-                'parent_id' => 4
-            ],
+                'name' => 'Cài đặt Hệ thống',
+                'icon' => '<i class="fa-solid fa-sliders"></i>',
+                'path' => '/admin/settings',
+                'type' => 0,
+                'children' => [
+                    [
+                        'name' => 'Danh mục',
+                        'icon' => '<i class="fa-solid fa-table-list"></i>',
+                        'path' => '/categories',
+                        'type' => 0,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Thương hiệu',
+                        'icon' => '<i class="fa-solid fa-copyright"></i>',
+                        'path' => '/brands',
+                        'type' => 0,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Sản phẩm',
+                        'icon' => '<i class="fa-brands fa-product-hunt"></i>',
+                        'path' => '/products',
+                        'type' => 0,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Thuế sản phẩm',
+                        'icon' => '<i class="fa-solid fa-person-chalkboard"></i>',
+                        'path' => '/taxes',
+                        'type' => 0,
+                        'children' => []
+                    ],
+                ]
+            ]
+
         ];
-        \DB::table("menus")->insert($menus);
+        $menuUser = [
+            [
+                'name' => 'Dashboard',
+                'icon' => 'fas fa-tachometer-alt',
+                'path' => '/admin/dashboard',
+                'type' => 1,
+                'children' => []
+            ],
+            [
+                'name' => 'Bán hàng',
+                'icon' => 'fas fa-users',
+                'type' => 1,
+                'path' => null,
+                'children' => [
+                    [
+                        'name' => 'Đơn hàng',
+                        'icon' => '',
+                        'path' => '/admin/orders',
+                        'type' => 1,
+                        'children' => []
+                    ]
+                ]
+            ],
+            [
+                'name' => 'Quản lý Người dùng',
+                'icon' => 'fas fa-users',
+                'type' => 1,
+                'path' => null,
+                'children' => [
+                    [
+                        'name' => 'Người dùng',
+                        'icon' => '',
+                        'path' => '/admin/users',
+                        'type' => 1,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Khách hàng',
+                        'icon' => '',
+                        'path' => '/admin/users/create',
+                        'type' => 1,
+                        'children' => []
+                    ]
+                ]
+            ],
+            [
+                'name' => 'Cài đặt Hệ thống',
+                'icon' => 'fas fa-cogs',
+                'path' => '/admin/settings',
+                'type' => 1,
+                'children' => [
+                    [
+                        'name' => 'Danh mục',
+                        'icon' => '',
+                        'path' => '/admin/categories',
+                        'type' => 1,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Thương hiệu',
+                        'icon' => '',
+                        'path' => '/admin/users/create',
+                        'type' => 1,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Sản phẩm',
+                        'icon' => '',
+                        'path' => '/admin/users/create',
+                        'type' => 1,
+                        'children' => []
+                    ],
+                    [
+                        'name' => 'Thuế sản phẩm',
+                        'icon' => '',
+                        'path' => '/admin/users/create',
+                        'type' => 1,
+                        'children' => []
+                    ],
+                ]
+            ]
+        ];
+        $this->insertMenu(null, $menuAdmin);
+        $this->insertMenu(null, $menuUser);
+    }
+
+    public function insertMenu($parentId = null, $menus)
+    {
+        foreach ($menus as $key => $menu) {
+            $children = $menu['children'];
+            unset($menu['children']);
+            $menu['position'] = $key + 1;
+            $menu['parent_id'] = $parentId;
+            $menuId = \DB::table('menus')->insertGetId($menu);
+            if (!empty($children)) {
+                $this->insertMenu($menuId, $children);
+            }
+        }
     }
 }

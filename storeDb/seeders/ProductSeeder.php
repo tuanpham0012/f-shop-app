@@ -30,9 +30,9 @@ class ProductSeeder extends Seeder
             '1744621537_42XLMFOEZMK28OGI.png',
             '1743480197_5O24OTQTDL3EDJNP.jpg',
         ];
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $products = [];
-            for ($j = 0; $j < 25; $j++) {
+            for ($j = 0; $j < 30; $j++) {
                 $name = fake()->lastName . ' ' . fake()->firstName . ' ' . fake()->name;
                 $products[] = [
                     'code' => Str::random(10),
