@@ -114,7 +114,7 @@ namespace ShopAppApi.Repositories.CartRepo
                         OptionValueId = v.OptionValueId,
                         Code = v.OptionValue.Code ?? "",
                         OptionName = v.Option.Name,
-                        ValueName = v.OptionValue.Label
+                        ValueName = v.OptionValue.Label ?? ""
                     }).ToList()
                 },
                 TotalPrice = (long)(x.Quantity * x.Sku.Price)

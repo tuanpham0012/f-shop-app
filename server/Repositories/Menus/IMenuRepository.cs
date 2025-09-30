@@ -7,13 +7,12 @@ namespace ShopAppApi.Repositories.Menus
 {
     public interface IMenuRepository
     {
-        public Task<List<Menu>> GetAll(int type = 0);
+        public Task<List<Menu>> GetAll(MenuRequest request);
         public Task Create(StoreMenuRequest menu);
         public Task Update(long Id, UpdateMenuRequest menu);
         public Task<Menu> Show(long Id);
         public List<MenuTree> BuildTree(List<Menu> menus);
         public Task<List<MenuTree>> GetMenu(int type);
-        public Task<List<MenuTree>> GetUserMenu();
     }
 
     // public partial class MenuTree

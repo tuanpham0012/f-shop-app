@@ -23,7 +23,7 @@ namespace ShopAppApi.Controllers.Admin
         public async Task<IActionResult> GetTree([FromQuery(Name = "type")] string? type)
         {
             var mnType = type != null && menuType.ContainsKey(type) ? menuType[type] : 0;
-            var entries = await _repo.GetAll();
+            var entries = await _repo.GetAll(new MenuRequest { type = mnType > 0 ? mnType : null });
             var tree = _repo.BuildTree(entries);
 
             return Ok(new ResponseCollection<MenuTree>(mnType > 0 ? tree.Where(x => x.Id == mnType).First().Children : tree));
@@ -46,9 +46,9 @@ namespace ShopAppApi.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery]MenuRequest request)
         {
-            var entries = await _repo.GetAll();
+            var entries = await _repo.GetAll(request);
             var tree = _repo.BuildTree(entries);
 
             return Ok(new ResponseCollection<MenuTree>(tree));

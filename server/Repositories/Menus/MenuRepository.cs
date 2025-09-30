@@ -17,25 +17,27 @@ namespace ShopAppApi.Repositories.Menus
         public async Task Create(StoreMenuRequest menu)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-            var parent = await _context.Menus.FirstOrDefaultAsync(c => c.Id == menu.ParentId);
-            int left = parent != null ? parent.Rgt : 1;
-            int right = left + 1;
+            // var parent = await _context.Menus.FirstOrDefaultAsync(c => c.Id == menu.ParentId);
+            // int left = parent != null ? parent.Rgt : 1;
+            // int right = left + 1;
 
-            // Update các node bên phải của vị trí cần thêm
-            await _context.Database.ExecuteSqlRawAsync(
-                "UPDATE menus SET _rgt = _rgt + 2 WHERE _rgt >= {0}", left);
-            await _context.Database.ExecuteSqlRawAsync(
-                "UPDATE menus SET _lft = _lft + 2 WHERE _lft > {0}", left);
+            // // Update các node bên phải của vị trí cần thêm
+            // await _context.Database.ExecuteSqlRawAsync(
+            //     "UPDATE menus SET _rgt = _rgt + 2 WHERE _rgt >= {0}", left);
+            // await _context.Database.ExecuteSqlRawAsync(
+            //     "UPDATE menus SET _lft = _lft + 2 WHERE _lft > {0}", left);
 
             // Thêm node mới
             var newMenu = new Menu
             {
                 Name = menu.Name,
-                Lft = left,
-                Rgt = right,
+                Lft = 0,
+                Rgt = 0,
                 ParentId = menu.ParentId,
                 Path = menu.Path,
                 Active = menu.Active,
+                Type = menu.Type,
+                Icon = menu.Icon,
                 GroupMenu = menu.GroupMenu,
             };
 
@@ -64,9 +66,14 @@ namespace ShopAppApi.Repositories.Menus
 
         }
 
-        public async Task<List<Menu>> GetAll(int type = 0)
+        public async Task<List<Menu>> GetAll(MenuRequest request)
         {
-            return await _context.Menus.AsQueryable().Where(m => m.Type == type).OrderBy(_ => _.ParentId).ThenBy(m => m.Position).AsNoTracking().ToListAsync();
+            var query = _context.Menus.AsQueryable();
+            if (request.type != null)
+            {
+                query = query.Where(x => x.Type == request.type);
+            }
+            return await query.OrderBy(_ => _.ParentId).ThenBy(m => m.Position).AsNoTracking().ToListAsync();
         }
 
         public List<MenuTree> BuildTree(List<Menu> menus)
@@ -113,17 +120,19 @@ namespace ShopAppApi.Repositories.Menus
         public async Task<List<MenuTree>> GetMenu(int type)
         {
             string cacheKey = @$"MenuCache_{type}";
+            var request = new MenuRequest { type = type };
             try
             {
                 var result = await _cache.GetOrCreateAsync(
                     cacheKey,
-                    async () => {
-                        var entries = await GetAll(type);
+                    async () =>
+                    {
+                        var entries = await GetAll(request);
                         var tree = BuildTree(entries);
                         return tree ?? new List<MenuTree>();
-                            }
+                    }
                         );
-                    return result ?? new List<MenuTree>();
+                return result ?? new List<MenuTree>();
             }
             catch (Exception ex)
             {
@@ -132,26 +141,6 @@ namespace ShopAppApi.Repositories.Menus
             }
 
         }
-        public async Task<List<MenuTree>> GetUserMenu()
-        {
-            string cacheKey = Constants.UserMenuCache;
-            try
-            {
-                var result = await _cache.GetOrCreateAsync(
-                    cacheKey,
-                    async () => {
-                        var entries = await GetAll();
-                        var tree = BuildTree(entries);
-                        return tree.Where(x => x.Id == 2).FirstOrDefault()?.Children ?? new List<MenuTree>();
-                            }
-                        );
-                    return result ?? [];
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw;
-            }
-        }
+        
     }
 }

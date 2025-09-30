@@ -9,7 +9,7 @@ using ShopAppApi.ViewModels;
 
 namespace ShopAppApi.Repositories.Orders
 {
-    public class OrderRepository(ShopAppContext context, IRedisCache cache, IFileHelper fileHelper) : IOrderRepository
+    public class OrderRepository(ShopAppContext context, IFileHelper fileHelper) : IOrderRepository
     {
 
         public async Task Create(StoreOrderRequest request)
@@ -300,7 +300,7 @@ namespace ShopAppApi.Repositories.Orders
                     {
                         Code = v.OptionValue.Code ?? "",
                         OptionName = v.Option.Name,
-                        ValueName = v.OptionValue.Label
+                        ValueName = v.OptionValue.Label ?? ""
                     }).ToList()
                 }
             }).AsNoTracking().ToListAsync();

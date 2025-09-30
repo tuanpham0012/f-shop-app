@@ -2,6 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopAppApi.Request
 {
+
+    public class MenuRequest
+    {
+        public int? type { get; set; }
+    }
     public class StoreMenuRequest
     {
         [Required]
@@ -16,6 +21,8 @@ namespace ShopAppApi.Request
         public bool? GroupMenu { get; set; }
 
         public bool? Active { get; set; }
+
+        public byte Type { get; set; } = 0;
     }
 
     public class UpdateMenuRequest
