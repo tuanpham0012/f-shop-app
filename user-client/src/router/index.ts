@@ -42,7 +42,7 @@ const routes = [
       },
       {
         path: '/thanh-toan/:ids*',
-        name: 'checkout',
+        name: 'Checkout',
         component: () => import('../views/Checkout/Checkout.vue')
         
       }
