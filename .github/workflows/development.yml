@@ -2,11 +2,11 @@ name: Docker CI
 
 on:
     push:
-        branches: [main]
+        branches: [product]
 
 jobs:
     build-ubuntu:
-        runs-on: [self-hosted, ubuntu-112]
+        runs-on: [runner-01]
         name: Build Ubuntu
         steps:
             - uses: actions/checkout@v4.2.1
