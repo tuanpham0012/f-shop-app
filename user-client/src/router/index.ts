@@ -4,12 +4,12 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/src/views/Home/HomeView.vue')
+    component: () => import('@/views/Home/HomeView.vue')
   },
   {
     path: '/danh-muc/:categoryCode',
     name: 'Category',
-    component: () => import('@/src/views/Product/FindProductByCategory.vue')
+    component: () => import('@/views/Product/FindProductByCategory.vue')
     
   },
   {
