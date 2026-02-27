@@ -4,30 +4,30 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('../views/Home/HomeView.vue')
+    component: () => import('@/src/views/Home/HomeView.vue')
   },
   {
     path: '/danh-muc/:categoryCode',
     name: 'Category',
-    component: () => import('../views/Product/FindProductByCategory.vue')
+    component: () => import('@/src/views/Product/FindProductByCategory.vue')
     
   },
   {
     path: '/thuong-hieu/:brandCode',
     name: 'FindProductByBrand',
-    component: () => import('../views/Product/FindProductByCategory.vue')
+    component: () => import('@/views/Product/FindProductByCategory.vue')
     
   },
   {
     path: '/san-pham/:productCode',
     name: 'ProductDetail',
-    component: () => import('../views/Product/ProductViewDetail.vue')
+    component: () => import('@/views/Product/ProductViewDetail.vue')
     
   },
   {
     path: '/don-mua',
     name: 'OrderHistory',
-    component: () => import('../views/Order/OrderHistory.vue')
+    component: () => import('@/views/Order/OrderHistory.vue')
 
   },
   {
@@ -37,13 +37,13 @@ const routes = [
       {
         path: '/gio-hang',
         name: 'Cart',
-        component: () => import('../views/Checkout/Cart.vue')
+        component: () => import('@/views/Checkout/Cart.vue')
         
       },
       {
         path: '/thanh-toan/:ids*',
         name: 'Checkout',
-        component: () => import('../views/Checkout/Checkout.vue')
+        component: () => import('@/views/Checkout/Checkout.vue')
         
       }
     ]
