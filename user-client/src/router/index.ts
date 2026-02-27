@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/',
-    name: 'Thanh toan',
+    name: 'Checkouts',
     children: [
       {
         path: '/gio-hang',
