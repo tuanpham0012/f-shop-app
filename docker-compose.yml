@@ -13,7 +13,7 @@ services:
       - "5022:5022"
       - "5023:5023"
     volumes:
-      - c:/volumes/shop_app/mssql/data:/var/opt/mssql/data
+      - /home/volumes/shop_app/mssql/data:/var/opt/mssql/data
       - ./hosts:/etc/hosts
     restart: unless-stopped
     hostname: sqlserver
@@ -32,7 +32,7 @@ services:
     ports:
       - "8003:6379"
     volumes:
-      - c:/volumes/shop_app/redis/redis_data:/data
+      - /home/volumes/shop_app/redis/redis_data:/data
     networks:
       - qipf-network
   web-api:
@@ -96,7 +96,7 @@ services:
       - TZ=Asia/Ho_Chi_Minh
       - xpack.security.enabled=true
     volumes:
-      - c:/volumes/shop_app/elasticsearch/data:/usr/share/elasticsearch/data
+      - /home/volumes/shop_app/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - "8004:9200"
     networks:
