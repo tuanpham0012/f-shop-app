@@ -26,16 +26,16 @@ const routes = [
         name: "OrderHistory",
         component: () => import("@/views/Order/OrderHistory.vue"),
     },
-    {
-        path: "/gio-hang",
-        name: "Cart",
-        component: () => import("@/views/Checkout/Cart.vue"),
-    },
-    {
-        path: "/thanh-toan/:ids*",
-        name: "Checkout",
-        component: () => import("@/views/Checkout/Checkout.vue"),
-    },
+    // {
+    //     path: "/gio-hang",
+    //     name: "Cart",
+    //     component: () => import("@/views/Checkout/Cart.vue"),
+    // },
+    // {
+    //     path: "/thanh-toan/:ids*",
+    //     name: "Checkout",
+    //     component: () => import("@/views/Checkout/Checkout.vue"),
+    // },
 ];
 
 const router = createRouter({
